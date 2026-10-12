@@ -1,0 +1,35 @@
+<Project>
+	<!--
+		COPY TO: Directory.Packages.props  (repository root)
+
+		Central Package Management is already on — the SDK sets ManagePackageVersionsCentrally — so this
+		file only declares versions. Every PackageReference the SDK injects needs a matching PackageVersion
+		here, or restore fails with NU1010 naming the ones you missed.
+
+		The first three are injected by the SDK itself. Telemetry and SourceLink are on by default; turn
+		telemetry off per repository with <ExcludePurviewTelemetry>true</ExcludePurviewTelemetry> before the
+		SDK import if you do not want it.
+
+		The last four are the test stack: TUnit is the framework, TUnit.Core is what a shared testing
+		project gets instead of the runner, TUnit.Mocks is the substitute library, and Bogus is the
+		test-data generator.
+
+		Check these against the SDK's current release before you commit — they are the versions this
+		playbook builds with today, not a promise about tomorrow.
+	-->
+	<PropertyGroup>
+		<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+	</PropertyGroup>
+	<ItemGroup>
+		<!-- Injected by the SDK. -->
+		<PackageVersion Include="Purview.Telemetry.SourceGenerator" Version="5.0.1" />
+		<PackageVersion Include="Microsoft.Extensions.Telemetry.Abstractions" Version="10.10.0" />
+		<PackageVersion Include="Microsoft.SourceLink.GitHub" Version="10.0.401" />
+
+		<!-- Wired into test and shared-testing projects by the SDK. -->
+		<PackageVersion Include="TUnit" Version="1.72.4" />
+		<PackageVersion Include="TUnit.Core" Version="1.72.4" />
+		<PackageVersion Include="TUnit.Mocks" Version="1.72.4" />
+		<PackageVersion Include="Bogus" Version="35.6.5" />
+	</ItemGroup>
+</Project>

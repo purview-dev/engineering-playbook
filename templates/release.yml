@@ -1,0 +1,30 @@
+# COPY TO: .github/workflows/release.yml
+#
+# A release is driven by a version bump in package.json, so the job only wakes when that file changes.
+# Use `release-mode: NuGet` instead of `GitHubRelease` once the repository publishes a package.
+name: Release
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - package.json
+
+# Serialize releases. The shared workflow deliberately defines no concurrency group, because
+# serialisation is a repository decision: two releases racing each other is a worse outcome than a
+# queued one.
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Tag and release
+    uses: purview-dev/build/.github/workflows/purview-release.yml@main
+    with:
+      # The reusable workflow evaluates release eligibility (release-explain) and decides from the
+      # verdict; the tool never silently declines to release when it has been asked to.
+      release-mode: GitHubRelease
+      run-pack: false
+      validate-pack: false
+    secrets: inherit

@@ -1,0 +1,31 @@
+{
+	"$schema": "https://raw.githubusercontent.com/purview-dev/build/main/purview-build.schema.json",
+	// COPY TO: .config/purview-build.json
+	//
+	// Paths inside this file are anchored to the REPOSITORY ROOT, not to this file's own directory, so
+	// moving the file into .config/ does not change what it points at. That is why the path below starts
+	// with `src/` even though the file lives in `.config/`.
+	//
+	// The file is validated against a JSON Schema generated from the tool's own settings, so a mistyped
+	// key is an error naming the key rather than a line that is silently ignored. `//` comments and
+	// trailing commas are tolerated.
+	"Build": {
+		// Canonical solution for restore, build, lint and test.
+		"Solution": "src/Acme.slnx",
+		"TestRoot": "src/tests",
+		// The SDK categorises test projects by filename, so a `*UnitTests.csproj` project is Unit.
+		"TestPatterns": "*UnitTests.csproj",
+		"TestProjects": "*",
+		"TestFilter": "/*/*/*/*[Category=Unit]",
+		// Turn packing on when you ship a package, and add a PackValidation block with an exhaustive
+		// RequiredContent manifest at the same time. RequireExplicitContent defaults to true, so a
+		// repository that packs without a matching rule gets an error.
+		"RunPack": false,
+		"ValidatePack": false
+	},
+	// `None` here and `release-mode: GitHubRelease` in the release workflow: a release is the v{version}
+	// tag plus a GitHub release, with no package to publish. Use `NuGet` for a package repository.
+	"Release": {
+		"Mode": "None"
+	}
+}

@@ -1,0 +1,9 @@
+<Project>
+	<!--
+		COPY TO: src/Directory.Build.targets
+
+		Two lines, and both are required: without the .props import nothing is configured, and without the
+		.targets import nothing is applied at build time.
+	-->
+	<Import Sdk="Purview.BuildSdk" Project="Sdk.targets" />
+</Project>

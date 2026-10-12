@@ -302,6 +302,14 @@ Then break a rule on purpose — add a `ProjectReference` from the domain to the
 a file so it no longer matches its folder — and confirm the build refuses. A convention you have not
 watched fail is a convention you are guessing about.
 
+## Step 13 — Or copy the templates
+
+Every file in steps 1–11 has a copy-paste version in
+[`templates/`](https://github.com/purview-dev/engineering-playbook/tree/main/templates), with `Acme` standing
+in for your namespace prefix and a comment explaining the one thing about each file that is easy to get
+wrong. The [templates README](https://github.com/purview-dev/engineering-playbook/blob/main/templates/README.md)
+maps each template to its destination path and lists which files each profile needs.
+
 ## What you have now
 
 | Concern | Where it lives | Enforced by |

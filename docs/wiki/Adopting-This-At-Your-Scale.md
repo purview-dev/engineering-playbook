@@ -115,7 +115,8 @@ where it belongs. A migration that leaves the conventions undocumented is a migr
 
 ## See also
 
-- [Getting Started](Getting-Started.md)
+- [Getting Started](Getting-Started.md) — the same steps, in order, with the files inline
+- [Templates](https://github.com/purview-dev/engineering-playbook/tree/main/templates) — the copy-paste versions
 - [Engineering Principles](Engineering-Principles.md)
 - [Worked Examples](Worked-Examples.md)
 - [Contributing](Contributing.md)

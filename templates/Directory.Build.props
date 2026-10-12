@@ -1,0 +1,35 @@
+<Project>
+	<!--
+		COPY TO: src/Directory.Build.props
+
+		This is the whole of the repository's SDK configuration. MSBuild walks up from each project to the
+		nearest Directory.Build.props, so putting this at `src/` keeps the repository root for
+		repository-level configuration only. Putting it at the root works identically.
+
+		NamespacePrefix must be set BEFORE the import: the SDK derives RootNamespace from it during .props
+		evaluation, and AssemblyName follows the resolved RootNamespace. So `src/src/Domain/Domain.csproj`
+		becomes `Acme.Domain` without the prefix being repeated anywhere.
+	-->
+	<PropertyGroup>
+		<NamespacePrefix>Acme</NamespacePrefix>
+	</PropertyGroup>
+
+	<Import Sdk="Purview.BuildSdk" Project="Sdk.props" />
+
+	<!--
+		OPTIONAL. The SDK strips a set of layer suffixes from RootNamespace by default, so a project named
+		`Infrastructure` would declare its types in `Acme` rather than `Acme.Infrastructure`. The full list
+		is ServiceDefaults, Infrastructure, Abstractions, ClientShared, Persistence, DataAccess, Extensions,
+		Contracts, Framework, Utilities, AppHost, Helpers, Library, Common, Shared, Infra, Utils, Core, Data,
+		Host, Util, Lib, EF.
+
+		Uncomment to keep a suffix. The item MUST come after the import, because the SDK's defaults have to
+		exist before they can be removed. Removing a suffix the SDK never declared is a no-op, so this line
+		is safe to add and does not have to be kept in step with the SDK's list.
+	-->
+	<!--
+	<ItemGroup>
+		<NamespaceRemoveSuffix Remove="Infrastructure" />
+	</ItemGroup>
+	-->
+</Project>

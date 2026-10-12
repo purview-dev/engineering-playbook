@@ -1,0 +1,31 @@
+# COPY TO: mkdocs.yml
+#
+# Three lines here are load-bearing: `edit_uri` is the only mechanism that turns a reader into a
+# contributor, `docs_dir` keeps the wiki in a folder rather than at the repository root, and
+# `techdocs-core` is what the aggregating portal expects.
+site_name: Acme
+site_description: Developer documentation for Acme
+repo_url: https://github.com/acme/acme
+edit_uri: edit/main/docs/wiki/
+docs_dir: docs/wiki
+
+theme:
+  name: material
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: cyan
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: cyan
+  features: [navigation.instant, navigation.sections, navigation.top, search.highlight, search.suggest, content.code.copy]
+
+# `techdocs-core` is required for the aggregating portal to pick the pages up.
+plugins: [search, techdocs-core]
+
+# NOTE: Mermaid is NOT enabled. `pymdownx.superfences` is configured without a Mermaid custom fence, so a
+# ```mermaid block renders as unstyled text. Put raw Mermaid source in a ```text block instead — it is
+# copy-pasteable into any renderer and does not pretend to be a diagram.
+markdown_extensions: [admonition, attr_list, md_in_html, pymdownx.details, pymdownx.superfences]

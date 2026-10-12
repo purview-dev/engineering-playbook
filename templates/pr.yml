@@ -1,0 +1,33 @@
+# COPY TO: .github/workflows/pr.yml
+#
+# The repository owns only this caller; the pipeline lives once, in purview-dev/build.
+name: PR
+
+on:
+  pull_request:
+    branches: [main]
+    # `ready_for_review` is not one of the default activity types, so a draft PR would never
+    # re-evaluate the required build gate once it is marked ready for review.
+    types: [opened, synchronize, reopened, ready_for_review]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build and test
+    uses: purview-dev/build/.github/workflows/purview-build.yml@main
+    with:
+      # The shared workflow defaults to run-pack: true and validate-pack: true, which is the opposite of
+      # what a repository that ships no package wants. Keep these two in step with Build:RunPack and
+      # Build:ValidatePack in .config/purview-build.json, or the workflow and the JSON will disagree
+      # about what a green build means.
+      run-pack: false
+      validate-pack: false
+      # Mirrors Build:TestFilter in .config/purview-build.json. It is repeated here rather than left to
+      # the JSON so the gate is visible in the workflow that enforces it.
+      test-filter: "/*/*/*/*[Category=Unit]"
+      # Pin this when global.json pins an SDK, so the runner can resolve global.json at all.
+      # dotnet-version: "10.0.x"
+    secrets: inherit
