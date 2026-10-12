@@ -59,6 +59,11 @@ This repository contains `Acme.<Product>`, <one sentence on what it is and who u
   Redis, MySQL, RabbitMQ, Azurite and NATS. It is experimental and prerelease, so pin the version you adopt.
   Put the suite in its own `*.IntegrationTests` project so the tier comes from the name, and make it skip
   itself when no backend is reachable — a missing runtime must be a skip, never a pass.
+- **Package versions are central, and a family's version is a property.** All versions live in
+  `Directory.Packages.props`. A version shared by a family — `TUnit`/`TUnit.Core`/`TUnit.Mocks`, an EF Core
+  provider against EF Core, any `Purview.*` product released as a set — is declared once in a labelled
+  `PropertyGroup` and referenced as `Version="$(TUnitVersion)"`, so a bump cannot be applied to half the
+  family. A package with no family keeps its literal version inline.
 - **Pass a `CancellationToken`** wherever a downstream method accepts one.
 - **The build is the authority.** A convention the build checks is checked by the build; a convention only a
   reviewer can check is stated as a review obligation and never described as enforced.

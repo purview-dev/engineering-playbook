@@ -53,21 +53,66 @@ matching `PackageVersion` or restore fails with `NU1010`:
 	<PropertyGroup>
 		<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
 	</PropertyGroup>
-	<ItemGroup>
-		<PackageVersion Include="Purview.Telemetry.SourceGenerator" Version="5.0.1" />
-		<PackageVersion Include="Microsoft.Extensions.Telemetry.Abstractions" Version="10.10.0" />
+
+	<!-- Version Definitions -->
+	<PropertyGroup Label=".NET Versions">
+		<MSExtensionVersion>10.10.0</MSExtensionVersion>
+	</PropertyGroup>
+	<PropertyGroup Label="Purview Versions">
+		<PurviewTelemetryVersion>5.0.1</PurviewTelemetryVersion>
+	</PropertyGroup>
+	<PropertyGroup Label="Testing Versions">
+		<TUnitVersion>1.72.4</TUnitVersion>
+	</PropertyGroup>
+
+	<!-- Packages -->
+	<ItemGroup Label="Purview">
+		<PackageVersion Include="Purview.Telemetry.SourceGenerator" Version="$(PurviewTelemetryVersion)" />
+	</ItemGroup>
+	<ItemGroup Label="Microsoft Extensions">
+		<PackageVersion Include="Microsoft.Extensions.Telemetry.Abstractions" Version="$(MSExtensionVersion)" />
+	</ItemGroup>
+	<ItemGroup Label="Other">
 		<PackageVersion Include="Microsoft.SourceLink.GitHub" Version="10.0.401" />
-		<PackageVersion Include="TUnit" Version="1.72.4" />
-		<PackageVersion Include="TUnit.Core" Version="1.72.4" />
-		<PackageVersion Include="TUnit.Mocks" Version="1.72.4" />
+	</ItemGroup>
+	<ItemGroup Label="Testing">
+		<PackageVersion Include="TUnit" Version="$(TUnitVersion)" />
+		<PackageVersion Include="TUnit.Core" Version="$(TUnitVersion)" />
+		<PackageVersion Include="TUnit.Mocks" Version="$(TUnitVersion)" />
 		<PackageVersion Include="Bogus" Version="35.6.5" />
 	</ItemGroup>
 </Project>
 ```
 
-The first three are injected by the SDK itself — telemetry and SourceLink are on by default. The last
-four are the test stack: TUnit is the framework, TUnit.Mocks the substitute library, Bogus the test-data
-generator. See [Testing and Test Data](Testing-And-Test-Data.md).
+`Purview.Telemetry.SourceGenerator`, `Microsoft.Extensions.Telemetry.Abstractions` and
+`Microsoft.SourceLink.GitHub` are injected by the SDK itself — telemetry and SourceLink are on by
+default. The rest are the test stack: TUnit is the framework, TUnit.Mocks the substitute library, Bogus
+the test-data generator. See [Testing and Test Data](Testing-And-Test-Data.md).
+
+### Versions are properties, packages are items
+
+The shape above is the convention, and it is worth following from the first file rather than retrofitting
+later: **a version shared by a family of packages is declared once as a property, and every
+`PackageVersion` in that family references it.**
+
+The failure it prevents is the partial bump. `TUnit`, `TUnit.Core` and `TUnit.Mocks` ship together and
+must move together; bump two of the three by hand and restore still succeeds, because NuGet has no idea
+they are related. What you get is a mismatch that surfaces at run time, in a test run, as something that
+looks like a product bug. With one `$(TUnitVersion)` there is no half-done upgrade to miss in review — the
+family moves, or it does not. The same applies to an EF Core provider against EF Core, an Aspire client
+against its hosting package, and every `Purview.*` product whose packages are released as a set.
+
+Two rules keep it from becoming indirection for its own sake:
+
+- **Declare a property when the version governs a family**, or when the packages belong to a product that
+  releases them together — even where you reference only one of them today, because the property is where
+  the second one will look. A package with no family, like `Bogus` or `Microsoft.SourceLink.GitHub`, keeps
+  its literal version inline.
+- **Group with `Label`.** The file then reads as a short list of decisions — .NET, Purview, testing,
+  everything else — rather than one long alphabetical block in which a stale version is invisible.
+
+This is a convention, not something the build checks: nothing fails if you inline every version. It is on
+the reviewer, and it is cheap to keep because the file is read far more often than it is written.
 
 ## Step 3 — Import the SDK, and name the namespace prefix
 
@@ -399,6 +444,7 @@ empty by design), and the `Justfile` (see step 12). `templates/README.md` says w
 | Concern | Where it lives | Enforced by |
 | -- | -- | -- |
 | Framework, language version, nullable, analyzers | `global.json` + the SDK import | The build |
+| Package versions, and a family moving as one | `Directory.Packages.props` | The build (`NU1010`) for presence; review for the property style |
 | Assembly and namespace identity | `NamespacePrefix` + the folder name | The build |
 | Code style | Bootstrapped `.editorconfig` | The build, with the style policy validated |
 | Test wiring | The `.csproj` filename | The build |

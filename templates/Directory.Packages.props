@@ -6,30 +6,73 @@
 		file only declares versions. Every PackageReference the SDK injects needs a matching PackageVersion
 		here, or restore fails with NU1010 naming the ones you missed.
 
-		The first three are injected by the SDK itself. Telemetry and SourceLink are on by default; turn
-		telemetry off per repository with <ExcludePurviewTelemetry>true</ExcludePurviewTelemetry> before the
-		SDK import if you do not want it.
+		THE SHAPE: versions first as properties, packages second as items.
+		==================================================================
+		A version shared by a family of packages is declared once in a labelled PropertyGroup and
+		referenced by every PackageVersion in that family. The failure this prevents is the partial bump:
+		TUnit moved to a new version but TUnit.Mocks left behind, EF Core's provider a minor ahead of
+		EF Core itself. Those mismatches restore cleanly and fail at run time, which is the worst place
+		to find them. With one property there is no half-done upgrade to review — the family moves or it
+		does not.
 
-		The last four are the test stack: TUnit is the framework, TUnit.Core is what a shared testing
-		project gets instead of the runner, TUnit.Mocks is the substitute library, and Bogus is the
-		test-data generator.
+		Declare a property when the version governs more than one package, or when the packages belong to
+		a product that releases them together (every Purview.* family does, even where you reference only
+		one today — the property is where the second one will look). A package with no family keeps its
+		literal version inline; a property per package is just indirection.
 
-		Check these against the SDK's current release before you commit — they are the versions this
-		playbook builds with today, not a promise about tomorrow.
+		Group with Label so the file reads as a short list of decisions rather than one long alphabetical
+		block. Delete the groups you do not need: the ones below are illustrative, not a required set.
+
+		Check these versions against the SDK's current release before you commit — they are the versions
+		this playbook builds with today, not a promise about tomorrow.
 	-->
 	<PropertyGroup>
 		<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
 	</PropertyGroup>
-	<ItemGroup>
-		<!-- Injected by the SDK. -->
-		<PackageVersion Include="Purview.Telemetry.SourceGenerator" Version="5.0.1" />
-		<PackageVersion Include="Microsoft.Extensions.Telemetry.Abstractions" Version="10.10.0" />
-		<PackageVersion Include="Microsoft.SourceLink.GitHub" Version="10.0.401" />
 
-		<!-- Wired into test and shared-testing projects by the SDK. -->
-		<PackageVersion Include="TUnit" Version="1.72.4" />
-		<PackageVersion Include="TUnit.Core" Version="1.72.4" />
-		<PackageVersion Include="TUnit.Mocks" Version="1.72.4" />
+	<!-- Version Definitions -->
+	<PropertyGroup Label=".NET Versions">
+		<MSExtensionVersion>10.10.0</MSExtensionVersion>
+	</PropertyGroup>
+	<PropertyGroup Label="Purview Versions">
+		<PurviewTelemetryVersion>5.0.1</PurviewTelemetryVersion>
+	</PropertyGroup>
+	<PropertyGroup Label="Testing Versions">
+		<!--
+			Purview.Containers is experimental and prerelease, so pin it exactly: its API, defaults and
+			packaging rules can change between releases. Delete this line and the Purview.Containers
+			packages below if no suite needs a container.
+		-->
+		<PurviewContainersVersion>1.0.0-prerelease.6</PurviewContainersVersion>
+		<TUnitVersion>1.72.4</TUnitVersion>
+	</PropertyGroup>
+
+	<!-- Packages -->
+	<ItemGroup Label="Purview">
+		<!-- Injected by the SDK. Turn it off per repository with <ExcludePurviewTelemetry>true</ExcludePurviewTelemetry>
+		     before the SDK import if you do not want it. -->
+		<PackageVersion Include="Purview.Telemetry.SourceGenerator" Version="$(PurviewTelemetryVersion)" />
+	</ItemGroup>
+	<ItemGroup Label="Microsoft Extensions">
+		<PackageVersion Include="Microsoft.Extensions.Telemetry.Abstractions" Version="$(MSExtensionVersion)" />
+	</ItemGroup>
+	<ItemGroup Label="Other">
+		<!-- Injected by the SDK and added to every assembly. No family, so no property. -->
+		<PackageVersion Include="Microsoft.SourceLink.GitHub" Version="10.0.401" />
+	</ItemGroup>
+	<ItemGroup Label="Testing">
+		<!--
+			The test stack the SDK wires into test and shared-testing projects: TUnit is the framework,
+			TUnit.Core is what a shared testing project gets instead of the runner, TUnit.Mocks is the
+			substitute library, and Bogus is the test-data generator.
+		-->
+		<PackageVersion Include="TUnit" Version="$(TUnitVersion)" />
+		<PackageVersion Include="TUnit.Core" Version="$(TUnitVersion)" />
+		<PackageVersion Include="TUnit.Mocks" Version="$(TUnitVersion)" />
 		<PackageVersion Include="Bogus" Version="35.6.5" />
+		<!-- Container-backed integration suites. One module per service; the umbrella brings both backends. -->
+		<PackageVersion Include="Purview.Containers" Version="$(PurviewContainersVersion)" />
+		<PackageVersion Include="Purview.Containers.MsSql" Version="$(PurviewContainersVersion)" />
+		<PackageVersion Include="Purview.Containers.PostgreSql" Version="$(PurviewContainersVersion)" />
 	</ItemGroup>
 </Project>

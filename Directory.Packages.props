@@ -7,25 +7,49 @@
 		the SDK wires TUnit, TUnit.Core, TUnit.Mocks and Bogus into test projects, so their versions
 		must be resolvable here.
 
+		A version that is shared by a family of packages — or that belongs to a product whose packages
+		are released together — is declared once as a property and referenced by every `PackageVersion`
+		in that family. A package with no family keeps its literal version.
+
 		The playbook ships no NuGet package, so there are no packable projects and no package
 		metadata to declare.
 	-->
 	<PropertyGroup>
 		<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
 	</PropertyGroup>
-	<ItemGroup>
+
+	<!-- Version Definitions -->
+	<PropertyGroup Label=".NET Versions">
+		<MSExtensionVersion>10.10.0</MSExtensionVersion>
+	</PropertyGroup>
+	<PropertyGroup Label="Purview Versions">
+		<PurviewTelemetryVersion>5.0.1</PurviewTelemetryVersion>
+	</PropertyGroup>
+	<PropertyGroup Label="Testing Versions">
+		<TUnitVersion>1.72.4</TUnitVersion>
+	</PropertyGroup>
+
+	<!-- Packages -->
+	<ItemGroup Label="Purview">
 		<!--
-			The SDK injects these three itself, so under Central Package Management the versions have to
-			be declared here or restore fails with NU1010. Telemetry is on by default and can be turned
-			off per repository with `ExcludePurviewTelemetry`; SourceLink is added to every assembly.
+			The SDK injects this itself, so under Central Package Management the version has to be
+			declared here or restore fails with NU1010. Telemetry is on by default and can be turned
+			off per repository with `ExcludePurviewTelemetry`.
 		-->
-		<PackageVersion Include="Purview.Telemetry.SourceGenerator" Version="5.0.1" />
-		<PackageVersion Include="Microsoft.Extensions.Telemetry.Abstractions" Version="10.10.0" />
+		<PackageVersion Include="Purview.Telemetry.SourceGenerator" Version="$(PurviewTelemetryVersion)" />
+	</ItemGroup>
+	<ItemGroup Label="Microsoft Extensions">
+		<PackageVersion Include="Microsoft.Extensions.Telemetry.Abstractions" Version="$(MSExtensionVersion)" />
+	</ItemGroup>
+	<ItemGroup Label="Other">
+		<!-- Injected by the SDK and added to every assembly. -->
 		<PackageVersion Include="Microsoft.SourceLink.GitHub" Version="10.0.401" />
+	</ItemGroup>
+	<ItemGroup Label="Testing">
 		<!-- The test packages the SDK wires into test and shared-testing projects. -->
-		<PackageVersion Include="TUnit" Version="1.72.4" />
-		<PackageVersion Include="TUnit.Core" Version="1.72.4" />
-		<PackageVersion Include="TUnit.Mocks" Version="1.72.4" />
+		<PackageVersion Include="TUnit" Version="$(TUnitVersion)" />
+		<PackageVersion Include="TUnit.Core" Version="$(TUnitVersion)" />
+		<PackageVersion Include="TUnit.Mocks" Version="$(TUnitVersion)" />
 		<PackageVersion Include="Bogus" Version="35.6.5" />
 	</ItemGroup>
 </Project>

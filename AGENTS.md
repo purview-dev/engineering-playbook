@@ -80,6 +80,10 @@ demonstrate it.
 - **Factories on `TestBuilder` are flat, not nested.** `CA1034` is an `error` in the SDK's style policy and
   `PRSGD0008` rejects adding it to `NoWarn`.
 - **A test class lives in the namespace of the class under test**, and is named `{Class}Tests`.
+- **A family's package version is a property.** In `Directory.Packages.props`, a version shared by a family
+  of packages — `TUnit`/`TUnit.Core`/`TUnit.Mocks` here — is declared once in a labelled `PropertyGroup` and
+  referenced as `Version="$(TUnitVersion)"`, so a bump cannot be applied to half the family. A package with
+  no family, like `Bogus`, keeps its literal version inline.
 - **A clean build has no warnings.**
 
 ## Local commands
