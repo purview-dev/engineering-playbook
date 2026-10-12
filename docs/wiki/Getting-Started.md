@@ -11,9 +11,13 @@ the build already knows how to find.
 
 ## Step 1 — Pin the SDK in `global.json`
 
+There are **two** versions in play here, and the file pins both:
+
 ```json
 {
 	"sdk": {
+		"version": "10.0.401",
+		"rollForward": "disable",
 		"allowPrerelease": false
 	},
 	"msbuild-sdks": {
@@ -25,12 +29,19 @@ the build already knows how to find.
 }
 ```
 
-`msbuild-sdks` is what makes `<Import Sdk="Purview.BuildSdk" Project="Sdk.props" />` resolvable: MSBuild
-restores the SDK as a NuGet package and reads its `.props`/`.targets`. `test.runner` selects the
-Microsoft Testing Platform, which is the runner TUnit expects.
+`sdk.version` pins the **.NET SDK** — the `dotnet` that runs the build. `rollForward: "disable"` means
+exactly that version and nothing else, so a machine with several SDKs installed cannot pick a different
+one. `msbuild-sdks` pins **`Purview.BuildSdk`**, the MSBuild SDK that supplies the conventions: it is what
+makes `<Import Sdk="Purview.BuildSdk" Project="Sdk.props" />` resolvable, because MSBuild restores it as a
+NuGet package and reads its `.props`/`.targets`. `test.runner` selects the Microsoft Testing Platform,
+which is the runner TUnit expects.
 
-The SDK writes this file for you if it is missing, but pin the version explicitly rather than relying on
-the bootstrap's fallback.
+The SDK writes this file for you when it is missing, but what it writes is only the `msbuild-sdks` and
+`test` blocks — **it does not write an `sdk` block at all**, so there is no `sdk.version` and no
+`rollForward`. Until you add those two lines by hand, a machine with several .NET SDKs installed resolves
+latest-wins, and the build that passes locally is not necessarily the build CI runs. See [build-sdk:
+`global.json`
+bootstrapping](https://github.com/purview-dev/build-sdk/blob/main/docs/wiki/Repository-Bootstrap.md#globaljson-bootstrapping).
 
 ## Step 2 — Declare the versions the SDK injects, in `Directory.Packages.props`
 
@@ -222,7 +233,7 @@ beside it. This is where `TestBuilder` lives — see [Testing and Test Data](Tes
 	"Build": {
 		"Solution": "src/Acme.slnx",
 		"TestRoot": "src/tests",
-		"TestPatterns": "*UnitTests.csproj",
+		"TestPatterns": "*Tests.csproj",
 		"TestFilter": "/*/*/*/*[Category=Unit]"
 	},
 	"Release": {
@@ -233,6 +244,13 @@ beside it. This is where `TestBuilder` lives — see [Testing and Test Data](Tes
 
 Paths are anchored to the **repository root**, not to the configuration file, so moving the file into
 `.config/` does not change what it points at.
+
+`TestPatterns` is left at its default, `*Tests.csproj`, on purpose. Discovery and tiering are two
+mechanisms, and only one of them should carry the tier: `TestPatterns` chooses which project files are
+discovered, `TestFilter` chooses which discovered tests run. Leave discovery wide and the day you add
+`Domain.IntegrationTests` it is kept out of the pull-request tier by its category alone, with no second
+edit. Narrow `TestPatterns` and you have to remember both. See [Verification
+Model](Verification-Model.md).
 
 ## Step 9 — Add the caller workflow
 
@@ -289,7 +307,69 @@ Add `AGENTS.md` at the root: purpose, layout table, conventions, completion chec
 The SDK also mirrors a set of SDK skills into `.agents/` on build, so an agent gets the SDK's own
 guidance without you writing it. See [Agent Enablement](Agent-Enablement.md).
 
-## Step 12 — Prove it
+## Step 12 — Add the local tools and the commands that run them
+
+Step 13 runs `just`, and `just lint-check` runs CSharpier. Neither exists yet, so create both now.
+
+`.config/dotnet-tools.json` is the tool manifest, so CSharpier is restored at a pinned version rather than
+installed globally per machine:
+
+```json
+{
+	"version": 1,
+	"isRoot": true,
+	"tools": {
+		"csharpier": {
+			"version": "1.3.0",
+			"commands": ["csharpier"],
+			"rollForward": true
+		}
+	}
+}
+```
+
+Run `dotnet tool restore` once after adding it.
+
+`Justfile` at the repository root is the list of supported commands. The point of it is that every
+command a contributor needs is discoverable from `just --list`, so start with the four the next step uses:
+
+```text
+set quiet
+
+solution_file := "./src/Acme.slnx"
+build_configuration := "Debug"
+pipeline_tool := ".tools/purview-build/purview-build"
+
+# Builds the solution
+build *args:
+    dotnet build "{{ solution_file }}" --configuration "{{ build_configuration }}" {{ args }}
+
+# Runs the tests
+test filter="/*/*/*/*/" *args:
+    dotnet test --solution "{{ solution_file }}" --configuration "{{ build_configuration }}" \
+        --treenode-filter={{ filter }} {{ args }}
+
+# Checks formatting with CSharpier
+lint-check:
+    dotnet csharpier check .
+
+# Fixes formatting with CSharpier
+lint-fix:
+    dotnet csharpier format .
+
+# Runs the PR pipeline (restore, build, lint, tests) through the shared tool
+pipeline-pr *args:
+    if [ ! -x "{{ pipeline_tool }}" ]; then \
+        dotnet tool install Purview.Build --tool-path .tools/purview-build \
+            --add-source "https://api.nuget.org/v3/index.json"; \
+    fi
+    "{{ pipeline_tool }}" {{ args }}
+```
+
+There is deliberately no `Justfile` in `templates/`: the recipes are the list of things *your* repository
+actually does, and a copied list of someone else's is noise. The five above are the floor, not the shape.
+
+## Step 13 — Prove it
 
 ```text
 just build          # dotnet build (Debug)
@@ -302,13 +382,17 @@ Then break a rule on purpose — add a `ProjectReference` from the domain to the
 a file so it no longer matches its folder — and confirm the build refuses. A convention you have not
 watched fail is a convention you are guessing about.
 
-## Step 13 — Or copy the templates
+## Step 14 — Or copy the templates
 
-Every file in steps 1–11 has a copy-paste version in
+Most of the files in steps 1–12 have a copy-paste version in
 [`templates/`](https://github.com/purview-dev/engineering-playbook/tree/main/templates), with `Acme` standing
 in for your namespace prefix and a comment explaining the one thing about each file that is easy to get
 wrong. The [templates README](https://github.com/purview-dev/engineering-playbook/blob/main/templates/README.md)
 maps each template to its destination path and lists which files each profile needs.
+
+Four things in the steps above are deliberately **not** templated, because a copy of them would be wrong
+on arrival: the solution file (its paths depend on your project list), the two `.csproj` files (they are
+empty by design), and the `Justfile` (see step 12). `templates/README.md` says which, and why.
 
 ## What you have now
 

@@ -9,13 +9,19 @@ or on a runner that has the resource.
 The tier a test belongs to is a property of **where it lives**, not of an attribute someone remembered to
 add: the SDK reads the test project's name suffix and emits an assembly-level category for it.
 
-| Suffix | Category | Runs on a pull request? |
+| Project name | Category | Runs on a pull request? |
 | -- | -- | -- |
-| `.UnitTests` | `Unit` | Yes |
-| `.Architecture.UnitTests` | `Unit` | Yes |
-| `.ContractTests` | `Contract` | Usually |
-| `.IntegrationTests` | `Integration` | Only when the resource is available |
-| `.E2ETests` | `E2E` | No |
+| `<Target>.UnitTests` | `Unit` | Yes |
+| `Architecture.UnitTests` | `Unit` | Yes |
+| `<Target>.ContractTests` | `Contract` | Usually |
+| `<Target>.IntegrationTests` | `Integration` | Only when the resource is available |
+| `<Target>.E2ETests` | `E2E` | No |
+
+`Architecture.UnitTests` is named that way **deliberately**, and the obvious alternative is a trap. The
+SDK takes the category from the word before `Tests`, so `Architecture.ArchitectureTests` would get
+`Category=Architecture` — and a pull-request filter of `[Category=Unit]` would quietly stop running the
+dependency-direction rules. The rules are fast, deterministic and have no external resource, so they
+belong in the `Unit` tier; naming them `Architecture.UnitTests` is what puts them there.
 
 ## Why
 
@@ -40,7 +46,7 @@ Three steps, none of which is a hand-written attribute:
    	"Build": {
    		"Solution": "src/Acme.slnx",
    		"TestRoot": "src/tests",
-   		"TestPatterns": "*UnitTests.csproj",
+   		"TestPatterns": "*Tests.csproj",
    		"TestFilter": "/*/*/*/*[Category=Unit]"
    	}
    }
@@ -52,6 +58,15 @@ The filter string is a path, not a search: `/*/*/*/*` matches the tree-node dept
 `[Category=Unit]` restricts it to the categorised assemblies. Because the category comes from the assembly,
 adding a `Domain.IntegrationTests` project is enough to keep it out of the pull-request tier — no filter
 edit, no attribute, no list to forget.
+
+That last sentence is only true if **`TestPatterns` is left at its default**, `*Tests.csproj`.
+`TestPatterns` and `TestFilter` are two different mechanisms, applied in that order: `TestPatterns`
+decides which project files are *discovered* under `TestRoot`, and `TestFilter` decides which of the
+discovered tests *run*. Narrow `TestPatterns` to `*UnitTests.csproj` and you have added a second place
+that has to be edited before a new tier is ever seen — the list to forget, reintroduced. Keep the
+default, express the tier in `TestFilter` alone, and reach for `TestPatterns` only when you genuinely
+want a project excluded from discovery altogether. See [build: Configuration
+Reference](https://github.com/purview-dev/build/blob/main/docs/wiki/Configuration-Reference.md).
 
 ## What the pipeline actually runs
 

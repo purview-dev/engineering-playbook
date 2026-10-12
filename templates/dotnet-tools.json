@@ -1,0 +1,19 @@
+{
+	// Copy to `.config/dotnet-tools.json`, then run `dotnet tool restore` once.
+	//
+	// `just lint-check` and the shared pipeline's lint step both invoke `dotnet csharpier`, which
+	// resolves through this manifest. Without the file the command is not found, and a repository that
+	// relies on a globally installed CSharpier formats differently on every machine.
+	//
+	// `isRoot: true` stops the lookup walking further up the directory tree, so a parent folder's
+	// manifest cannot quietly supply a different version.
+	"version": 1,
+	"isRoot": true,
+	"tools": {
+		"csharpier": {
+			"version": "1.3.0",
+			"commands": ["csharpier"],
+			"rollForward": true
+		}
+	}
+}

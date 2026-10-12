@@ -10,6 +10,7 @@ already exists in this repository, with `Acme` standing in for your own namespac
 | [`Directory.Build.props`](Directory.Build.props) | `src/Directory.Build.props` | All |
 | [`Directory.Build.targets`](Directory.Build.targets) | `src/Directory.Build.targets` | All |
 | [`purview-build.json`](purview-build.json) | `.config/purview-build.json` | All |
+| [`dotnet-tools.json`](dotnet-tools.json) | `.config/dotnet-tools.json` | All |
 | [`pr.yml`](pr.yml) | `.github/workflows/pr.yml` | All |
 | [`release.yml`](release.yml) | `.github/workflows/release.yml` | All |
 | [`AGENTS.md`](AGENTS.md) | `AGENTS.md` | All |
@@ -43,6 +44,7 @@ Directory.Packages.props
 src/Directory.Build.props
 src/Directory.Build.targets
 purview-build.json
+dotnet-tools.json
 pr.yml
 AGENTS.md
 mkdocs.yml

@@ -231,8 +231,15 @@ string title = new('a', Convention.MaxTitleLength);    // new()        -> explic
 - **One test project.** TUnit, AAA, the naming convention, and `TestBuilder`. That is the whole of it.
 - **A shared fixture.** Move it into `SharedTestingInfra` and make the class public — a shared testing
   project is a library, so its fixtures are legitimately public API and `CA1515` does not apply.
-- **A database or a container.** Reach for the repository's own integration fixtures, and give the suite
-  its own test project so the tier is expressed by the name.
+- **A database or a container.** [`Purview.Containers`](https://purview.dev/docs/containers/) is the
+  organisation's answer: throwaway Linux containers behind one API, over either Microsoft WSL Containers
+  (no Docker installation on Windows) or Docker, with typed modules for SQL Server, PostgreSQL, Redis,
+  MySQL, RabbitMQ, Azurite and NATS. Give the suite its own test project so the tier is expressed by the
+  name, and make it skip itself when no backend is reachable.
+
+  It is **experimental and prerelease** — the API, defaults and packaging rules can change between
+  releases — so treat it as the direction of travel rather than a stability guarantee, and pin the
+  version you adopt.
 - **A package with a documented contract.** Add the consumer-verification script described in
   [Engineering Principles](Engineering-Principles.md).
 

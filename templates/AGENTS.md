@@ -54,6 +54,11 @@ This repository contains `Acme.<Product>`, <one sentence on what it is and who u
 - **Test data comes from `TestBuilder`.** Never construct a domain type inline in a test. Override only the
   value the test is proving. The exception is a test proving a type's own `Create`/`Hydrate` behaviour,
   which must name the rejected input itself.
+- **Containers come from `Purview.Containers`, not `Testcontainers` directly.** One API over Microsoft WSL
+  Containers (no Docker installation on Windows) or Docker, with typed modules for SQL Server, PostgreSQL,
+  Redis, MySQL, RabbitMQ, Azurite and NATS. It is experimental and prerelease, so pin the version you adopt.
+  Put the suite in its own `*.IntegrationTests` project so the tier comes from the name, and make it skip
+  itself when no backend is reachable — a missing runtime must be a skip, never a pass.
 - **Pass a `CancellationToken`** wherever a downstream method accepts one.
 - **The build is the authority.** A convention the build checks is checked by the build; a convention only a
   reviewer can check is stated as a review obligation and never described as enforced.

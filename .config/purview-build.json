@@ -11,8 +11,10 @@
 		// Canonical solution for restore, build, lint and test.
 		"Solution": "src/EngineeringPlaybook.slnx",
 		"TestRoot": "src/tests",
-		// The SDK categorises test projects by filename, so a `*UnitTests.csproj` project is Unit.
-		"TestPatterns": "*UnitTests.csproj",
+		// Discovery stays at the schema default so adding a second tier needs no edit here: the SDK
+		// categorises test projects by filename and `TestFilter` below selects the tier. Narrowing
+		// this to `*UnitTests.csproj` would make the tier a two-place edit.
+		"TestPatterns": "*Tests.csproj",
 		"TestProjects": "*",
 		"TestFilter": "/*/*/*/*[Category=Unit]",
 		// Nothing in this repository is packable, so there is no pack-validation manifest to satisfy.

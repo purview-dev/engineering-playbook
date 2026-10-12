@@ -42,6 +42,16 @@ Repository/
 `artifacts/`, `.tools/` and `TestResults/` are generated and gitignored; they are in the layout above
 only so that seeing them is not a surprise.
 
+Not every file above is created by [Getting Started](Getting-Started.md), and the difference is worth
+knowing before you follow it expecting a finished repository:
+
+| File | Where it comes from |
+| -- | -- |
+| `.editorconfig` | Written by the SDK on the first build |
+| `.gitignore`, `.gitattributes` | The SDK's own `templates/` folder, so they stay in step with it |
+| `commitlint.config.mts`, `nuget.config`, `LICENSE.md`, `package.json` | Repository-level choices; not covered by Getting Started |
+| Everything else | Getting Started steps 1–12, or [`templates/`](https://github.com/purview-dev/engineering-playbook/tree/main/templates) |
+
 ## Why
 
 The layout is not aesthetics. Three specific things depend on it:
@@ -76,18 +86,23 @@ describes, and no `using` is needed to reach the type under test.
 
 ## The suffix-stripping trap
 
-The SDK removes a set of **layer suffixes** from `RootNamespace`:
+The SDK removes a set of **layer suffixes** from `RootNamespace` — `Core`, `Infrastructure` and
+`Abstractions` are the ones you will meet first, alongside the `Shared*` and `SharedTesting*` project
+names.
 
-```text
-ServiceDefaults  Infrastructure  Abstractions  ClientShared  Persistence  DataAccess  Extensions
-Contracts  Framework  Utilities  AppHost  Helpers  Library  Common  Shared
-Infra  Utils  Core  Data  Host  Util  Lib  EF
-```
+The consequence is the thing to remember: a project called `Infrastructure` has `AssemblyName`
+`Acme.Infrastructure` but declares its types in namespace `Acme`, and a project called `Core` declares
+its types in `Acme` too. That is deliberate: such a project *is* the root layer, and
+`Acme.Core.ContainerBuilder` would be noise. [containers](https://github.com/purview-dev/containers) is
+the reference — its `Core` project holds `namespace Purview.Containers;`.
 
-A project called `Core` therefore has `AssemblyName` `Acme.Core` but declares its types in namespace
-`Acme`. That is deliberate: such a project *is* the root layer, and `Acme.Core.ContainerBuilder` would be
-noise. [containers](https://github.com/purview-dev/containers) is the reference — its `Core` project
-holds `namespace Purview.Containers;`.
+This page does not reproduce the list. The SDK owns it, a copy here is a second source of truth, and the
+two will drift the moment a suffix is added: see [build-sdk: Namespace
+stripping](https://github.com/purview-dev/build-sdk/blob/main/docs/wiki/Assembly-Name-Generation.md#namespace-stripping).
+
+One carve-out is worth knowing because it is the one people assume the other way round: Roslyn component
+suffixes — `SourceGenerators`, `Analyzers`, `CodeFixes` and their siblings — are **not** stripped. A
+generator, its analyzers and its code fixes are separate assemblies that each need their own namespace.
 
 The trap is that the strip is invisible in the project file, so the mismatch surfaces as a warning from
 the IDE's folder-structure rule rather than as a build error. If you want a layer to keep its suffix,
@@ -113,10 +128,24 @@ A test project file is usually empty, because the name carries everything:
 </Project>
 ```
 
-The recognised suffixes are `Unit`, `Integration`, `E2E`, `EndToEnd`, `Acceptance`, `Architecture`,
-`Contract`, and about forty more. The detected suffix becomes the project's baseline test category, which
-is what the pipeline filters on — so the tier a test belongs to is decided by where it lives, not by an
-attribute someone remembered to add.
+The detected suffix becomes the project's baseline test category, which is what the pipeline filters on —
+so the tier a test belongs to is decided by where it lives, not by an attribute someone remembered to add.
+
+**Detection is a pattern, not a list of blessed names.** The SDK matches the project name against
+`^.*\.([\w|_]\w*)Tests?$` and takes the captured word as `TestingType`. `Domain.GoldenTests` is therefore
+detected exactly as readily as `Domain.UnitTests`; it gets the runner, coverage and `[Category=Golden]`.
+There is no set of recognised suffixes to fall foul of.
+
+> **The silent failure is the missing target, not an unusual suffix.** The pattern requires the dot, so a
+> project named plainly `UnitTests` matches nothing. It is not detected as a test project at all — no
+> TUnit, no coverage, no `InternalsVisibleTo`, no `[Category]` — and the build says nothing, because a
+> project that is not a test project is simply a library. Name it `<Target>.UnitTests`.
+
+The SDK does ship an explicit list of roughly fifty test types, but it governs **`InternalsVisibleTo`
+generation**, not detection: a non-test project grants access to `{AssemblyName}.{TestType}Tests` for each
+name on that list. A suffix outside the list still builds, still runs and still gets its category — it
+just cannot reach the target project's `internal` members. See [build-sdk:
+InternalsVisibleTo](https://github.com/purview-dev/build-sdk/blob/main/docs/wiki/InternalsVisibleTo.md).
 
 Three consequences worth knowing:
 

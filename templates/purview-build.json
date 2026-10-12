@@ -13,8 +13,11 @@
 		// Canonical solution for restore, build, lint and test.
 		"Solution": "src/Acme.slnx",
 		"TestRoot": "src/tests",
-		// The SDK categorises test projects by filename, so a `*UnitTests.csproj` project is Unit.
-		"TestPatterns": "*UnitTests.csproj",
+		// Leave discovery at the schema default. TestPatterns and TestFilter are two mechanisms applied
+		// in order: TestPatterns decides which projects are DISCOVERED, TestFilter decides which tests
+		// RUN. The SDK categorises test projects by filename, so keeping discovery wide means adding
+		// Acme.IntegrationTests later needs no edit here — its category keeps it out of the PR tier.
+		"TestPatterns": "*Tests.csproj",
 		"TestProjects": "*",
 		"TestFilter": "/*/*/*/*[Category=Unit]",
 		// Turn packing on when you ship a package, and add a PackValidation block with an exhaustive
