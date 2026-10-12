@@ -62,9 +62,9 @@ build *args:
 restore *args:
     dotnet restore {{ solution_file }} {{ args }}
 
-# Runs tests for the solution with the specified configuration (default: Debug)
 # The reference implementation holds no shared external resource, so test modules are free to run in
 # parallel; append --max-parallel-test-modules 1 if a future suite needs serialisation.
+# Runs tests for the solution with the specified configuration (default: Debug)
 [group('Build and Test')]
 test filter="/*/*/*/*/" *args:
     echo "Running tests for {{ BLUE }}{{ test_solution }}{{ NORMAL }} with {{ YELLOW }}{{ build_configuration }}{{ NORMAL }}..."
