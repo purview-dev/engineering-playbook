@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<!--
+		Infrastructure depends on the Application layer (and, transitively, on the Domain). The dependency
+		points inward: nothing in Application or Domain names a type from this assembly, which is what
+		src/tests/Architecture.UnitTests/DependencyDirectionTests.cs asserts.
+
+		This project keeps its own namespace only because src/Directory.Build.props removes
+		`Infrastructure` from the SDK's `NamespaceRemoveSuffix` list. Without that line the SDK would
+		fold the types into `Purview.EngineeringPlaybook`. See docs/wiki/Repository-Shape.md.
+	-->
+	<ItemGroup>
+		<ProjectReference Include="../Application/Application.csproj" />
+	</ItemGroup>
+</Project>

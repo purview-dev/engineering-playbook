@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<!--
+		The whole project file. The SDK detects `UnitTests` in the name, so it wires the TUnit runner, the
+		test-context rule set, coverage, the `[Category: Unit]` assembly attribute, and the automatic
+		ProjectReference to the project the name targets (`../src/Domain/Domain.csproj`), plus the shared
+		testing project alongside. There is nothing left to declare.
+	-->
+</Project>

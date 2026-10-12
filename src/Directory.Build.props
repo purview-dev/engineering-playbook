@@ -1,0 +1,27 @@
+<Project>
+	<PropertyGroup>
+		<!--
+			Required before the SDK import: `RootNamespace` is derived from
+			`$(NamespacePrefix).$(MSBuildProjectName)`, and `AssemblyName` follows the resolved
+			`RootNamespace`. So `src/src/Domain/Domain.csproj` becomes `Purview.EngineeringPlaybook.Domain`
+			without the prefix being repeated in any project file.
+		-->
+		<NamespacePrefix>Purview.EngineeringPlaybook</NamespacePrefix>
+	</PropertyGroup>
+
+	<Import Sdk="Purview.BuildSdk" Project="Sdk.props" />
+
+	<!--
+		The SDK strips a set of layer suffixes from `RootNamespace` by default (`Core`, `Infrastructure`,
+		`Persistence`, `Abstractions`, `Contracts`, `Common`, ...), on the theory that such a project *is*
+		the root layer and its types belong in the repository's own namespace. This repository wants
+		`Infrastructure` to be a layer with its own namespace, so the suffix is removed from that list.
+
+		The item must come AFTER the import above, so the SDK's defaults exist to be removed. Removing an
+		entry the SDK never declared is a no-op, which is why `NamespaceRemoveSuffix Remove` is safe to
+		use for a suffix you want to keep rather than a flag that has to be kept in step.
+	-->
+	<ItemGroup>
+		<NamespaceRemoveSuffix Remove="Infrastructure" />
+	</ItemGroup>
+</Project>

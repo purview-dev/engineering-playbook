@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<!--
+		The Application layer depends on the Domain layer and on nothing else. That direction is the
+		subject of src/tests/Architecture.UnitTests/DependencyDirectionTests.cs: if this ProjectReference
+		ever pointed at Infrastructure, the architecture tests would fail the build.
+	-->
+	<ItemGroup>
+		<ProjectReference Include="../Domain/Domain.csproj" />
+	</ItemGroup>
+</Project>

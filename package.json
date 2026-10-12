@@ -1,0 +1,17 @@
+{
+	"name": "purview-engineering-playbook",
+	"version": "0.1.0-prerelease.1",
+	"license": "MIT",
+	"author": {
+		"name": "Kieron Lanning",
+		"url": "https://kieronlanning.dev/"
+	},
+	"homepage": "https://purview.dev/projects/engineering-playbook/",
+	"bugs": {
+		"url": "https://github.com/purview-dev/engineering-playbook/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/purview-dev/engineering-playbook.git"
+	}
+}

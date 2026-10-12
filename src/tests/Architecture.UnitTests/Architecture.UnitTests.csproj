@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<!--
+		The inferred target of this project is `Architecture`, which does not exist, so the SDK adds no
+		automatic ProjectReference. That is deliberate: a dependency-direction test has to see every
+		layer, so the references below are explicit and exhaustive.
+	-->
+	<ItemGroup>
+		<ProjectReference Include="../../src/Application/Application.csproj" />
+		<ProjectReference Include="../../src/Domain/Domain.csproj" />
+		<ProjectReference Include="../../src/Infrastructure/Infrastructure.csproj" />
+	</ItemGroup>
+</Project>

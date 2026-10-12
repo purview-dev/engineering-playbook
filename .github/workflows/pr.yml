@@ -1,0 +1,26 @@
+name: PR
+
+on:
+  pull_request:
+    branches: [main]
+    # `ready_for_review` is not one of the default activity types, so a draft PR would never
+    # re-evaluate the required build gate once it is marked ready for review.
+    types: [opened, synchronize, reopened, ready_for_review]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build and test
+    uses: purview-dev/build/.github/workflows/purview-build.yml@main
+    with:
+      # Mirrors Build:RunPack and Build:ValidatePack in .config/purview-build.json: this repository
+      # ships no NuGet package, so pack and pack validation are off and there is no manifest to keep.
+      run-pack: false
+      validate-pack: false
+      # Mirrors Build:TestFilter in .config/purview-build.json. The SDK categorises a
+      # `*UnitTests.csproj` project as Unit, which is every test project in this repository.
+      test-filter: "/*/*/*/*[Category=Unit]"
+    secrets: inherit

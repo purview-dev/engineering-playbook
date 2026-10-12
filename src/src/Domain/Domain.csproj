@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<!--
+		The whole project file. The SDK supplies the target framework, language version, nullable
+		context, analyzers and assembly identity; the namespace comes from the folder name via
+		`$(NamespacePrefix)` in src/Directory.Build.props. Nothing here is packable, so there is no
+		package metadata to declare either.
+	-->
+</Project>

@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<!--
+		The whole project file. The SDK wires the TUnit runner, the test-context rule set, coverage, the
+		`[Category: Unit]` assembly attribute, the automatic ProjectReference to
+		`../src/Application/Application.csproj`, and the shared testing project alongside.
+	-->
+</Project>

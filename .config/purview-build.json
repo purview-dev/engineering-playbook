@@ -1,0 +1,25 @@
+{
+	"$schema": "https://raw.githubusercontent.com/purview-dev/build/main/purview-build.schema.json",
+	// Pipeline configuration for the shared purview-build workflow
+	// (purview-dev/build/.github/workflows/purview-build.yml).
+	//
+	// The playbook ships no NuGet package: the reference implementation under `src/` is restored,
+	// built, linted and tested, and nothing is packed. `Release:Mode` therefore stays `None` in the
+	// repository configuration; the release workflow passes `release-mode: GitHubRelease` so a
+	// version bump produces a `v{version}` tag and a GitHub release.
+	"Build": {
+		// Canonical solution for restore, build, lint and test.
+		"Solution": "src/EngineeringPlaybook.slnx",
+		"TestRoot": "src/tests",
+		// The SDK categorises test projects by filename, so a `*UnitTests.csproj` project is Unit.
+		"TestPatterns": "*UnitTests.csproj",
+		"TestProjects": "*",
+		"TestFilter": "/*/*/*/*[Category=Unit]",
+		// Nothing in this repository is packable, so there is no pack-validation manifest to satisfy.
+		"RunPack": false,
+		"ValidatePack": false
+	},
+	"Release": {
+		"Mode": "None"
+	}
+}

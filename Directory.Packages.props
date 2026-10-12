@@ -1,0 +1,31 @@
+<Project>
+	<!--
+		Central Package Management for the Engineering Playbook.
+		==================================================================
+		`ManagePackageVersionsCentrally` is already set to true by the Purview.BuildSdk import, so
+		this file only declares versions. Only packages this repository actually consumes are listed;
+		the SDK wires TUnit, TUnit.Core, TUnit.Mocks and Bogus into test projects, so their versions
+		must be resolvable here.
+
+		The playbook ships no NuGet package, so there are no packable projects and no package
+		metadata to declare.
+	-->
+	<PropertyGroup>
+		<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+	</PropertyGroup>
+	<ItemGroup>
+		<!--
+			The SDK injects these three itself, so under Central Package Management the versions have to
+			be declared here or restore fails with NU1010. Telemetry is on by default and can be turned
+			off per repository with `ExcludePurviewTelemetry`; SourceLink is added to every assembly.
+		-->
+		<PackageVersion Include="Purview.Telemetry.SourceGenerator" Version="5.0.1" />
+		<PackageVersion Include="Microsoft.Extensions.Telemetry.Abstractions" Version="10.10.0" />
+		<PackageVersion Include="Microsoft.SourceLink.GitHub" Version="10.0.401" />
+		<!-- The test packages the SDK wires into test and shared-testing projects. -->
+		<PackageVersion Include="TUnit" Version="1.72.4" />
+		<PackageVersion Include="TUnit.Core" Version="1.72.4" />
+		<PackageVersion Include="TUnit.Mocks" Version="1.72.4" />
+		<PackageVersion Include="Bogus" Version="35.6.5" />
+	</ItemGroup>
+</Project>

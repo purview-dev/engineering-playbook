@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<!--
+		A shared testing project: it gets the test packages (TUnit.Core, Bogus) but not the test runner,
+		because it is consumed by test assemblies rather than executed. The SDK detects it by name and
+		every test project references it automatically.
+	-->
+	<ItemGroup>
+		<ProjectReference Include="../../src/Domain/Domain.csproj" />
+	</ItemGroup>
+</Project>

@@ -1,0 +1,27 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+    # A release is driven by a version bump, so the pipeline only wakes when package.json changes.
+    paths:
+      - package.json
+
+# Serialize releases; the reusable workflow skips when the v{version} tag already exists.
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Tag and release
+    uses: purview-dev/build/.github/workflows/purview-release.yml@main
+    with:
+      # The playbook publishes no NuGet package, so `NuGet` would publish nothing. `GitHubRelease`
+      # creates the `v{version}` tag and a GitHub release with generated notes, and skips the
+      # publish step entirely.
+      release-mode: GitHubRelease
+      # No packages are produced, so there is nothing to pack and nothing to validate.
+      run-pack: false
+      validate-pack: false
+    secrets: inherit
