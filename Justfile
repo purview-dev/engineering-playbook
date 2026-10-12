@@ -10,8 +10,7 @@ solution_file := root_folder + "EngineeringPlaybook.slnx"
 test_solution := solution_file
 build_configuration := "Debug"
 
-pipeline_feed := "https://api.nuget.org/v3/index.json"
-pipeline_tool := ".tools/purview-build/purview-build"
+pipeline_tool := "dotnet purview-build"
 
 # Displays the list of available commands
 
@@ -19,33 +18,31 @@ pipeline_tool := ".tools/purview-build/purview-build"
 default:
     just --list
 
-# Install the shared Purview.Build tool (authenticated to the Purview-Dev feed) if not present
+# Restore the repository's .NET local tools (.config/dotnet-tools.json)
 [private]
 ensure-pipeline-tool:
-    if [ ! -x "{{ pipeline_tool }}" ]; then \
-        dotnet tool install Purview.Build --tool-path .tools/purview-build --add-source "{{ pipeline_feed }}"; \
-    fi
+    dotnet tool restore
 
 # Run the PR pipeline (restore, build, lint, tests)
 [group('Pipeline')]
 pipeline-pr *args:
     just ensure-pipeline-tool
     echo "Running PR pipeline..."
-    "{{ pipeline_tool }}" {{ args }}
+    {{ pipeline_tool }} {{ args }}
 
 # Run the build pipeline (restore, build, lint)
 [group('Pipeline')]
 pipeline-build *args:
     just ensure-pipeline-tool
     echo "Running build pipeline..."
-    "{{ pipeline_tool }}" --Build:RunTests=false --Release:Mode=None {{ args }}
+    {{ pipeline_tool }} --Build:RunTests=false --Release:Mode=None {{ args }}
 
 # Run the pipeline with tests enabled
 [group('Pipeline')]
 pipeline-tests *args:
     just ensure-pipeline-tool
     echo "Running tests pipeline..."
-    "{{ pipeline_tool }}" --Build:RunTests=true --Release:Mode=None {{ args }}
+    {{ pipeline_tool }} --Build:RunTests=true --Release:Mode=None {{ args }}
 
 # -----------------------------------------------------------------------------
 # Build and Test

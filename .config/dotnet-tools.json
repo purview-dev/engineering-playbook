@@ -4,8 +4,17 @@
 	"tools": {
 		"csharpier": {
 			"version": "1.3.0",
-			"commands": ["csharpier"],
+			"commands": [
+				"csharpier"
+			],
 			"rollForward": true
+		},
+		"purview.build": {
+			"version": "0.5.2",
+			"commands": [
+				"purview-build"
+			],
+			"rollForward": false
 		}
 	}
 }
