@@ -368,10 +368,19 @@ installed globally per machine:
 			"version": "1.3.0",
 			"commands": ["csharpier"],
 			"rollForward": true
+		},
+		"purview.build": {
+			"version": "0.5.2",
+			"commands": ["purview-build"],
+			"rollForward": false
 		}
 	}
 }
 ```
+
+`Purview.Build` belongs here too, for the same reason CSharpier does: the manifest pins the version, and
+`dotnet tool restore` is the one command that installs it. A repository should never hand-roll
+`dotnet tool install --tool-path` for it.
 
 Run `dotnet tool restore` once after adding it.
 
@@ -383,7 +392,7 @@ set quiet
 
 solution_file := "./src/Acme.slnx"
 build_configuration := "Debug"
-pipeline_tool := ".tools/purview-build/purview-build"
+pipeline_tool := "dotnet purview-build"
 
 # Builds the solution
 build *args:
@@ -404,11 +413,8 @@ lint-fix:
 
 # Runs the PR pipeline (restore, build, lint, tests) through the shared tool
 pipeline-pr *args:
-    if [ ! -x "{{ pipeline_tool }}" ]; then \
-        dotnet tool install Purview.Build --tool-path .tools/purview-build \
-            --add-source "https://api.nuget.org/v3/index.json"; \
-    fi
-    "{{ pipeline_tool }}" {{ args }}
+    dotnet tool restore
+    {{ pipeline_tool }} {{ args }}
 ```
 
 There is deliberately no `Justfile` in `templates/`: the recipes are the list of things *your* repository

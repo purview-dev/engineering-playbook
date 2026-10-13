@@ -23,7 +23,7 @@
 		<MSExtensionVersion>10.10.0</MSExtensionVersion>
 	</PropertyGroup>
 	<PropertyGroup Label="Purview Versions">
-		<PurviewTelemetryVersion>5.0.1</PurviewTelemetryVersion>
+		<PurviewTelemetryVersion>5.0.3</PurviewTelemetryVersion>
 	</PropertyGroup>
 	<PropertyGroup Label="Testing Versions">
 		<TUnitVersion>1.72.4</TUnitVersion>
