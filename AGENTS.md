@@ -30,6 +30,7 @@ implementation whose only job is to prove the conventions compile, run, and fail
 | `src/tests/Application.UnitTests` | The service, against a TUnit.Mocks substitute |
 | `src/tests/Architecture.UnitTests` | Dependency-direction rules; a wrong `ProjectReference` fails the build |
 | `src/tests/SharedTestingInfra` | `TestBuilder`; referenced automatically by every test project |
+| `skills/` | Authored agent skills, installable with `npx skills add purview-dev/engineering-playbook` |
 | `templates/` | Ready-to-copy starter files for a repository adopting the playbook |
 | `src/Directory.Build.props` | `NamespacePrefix`, the SDK import, and `NamespaceRemoveSuffix` |
 | `.config/purview-build.json` | Pipeline configuration: solution, test discovery, filter |
@@ -63,6 +64,15 @@ demonstrate it.
   is published to.
 - **Fences always declare a language.** Mermaid is not enabled in `mkdocs.yml`, so raw Mermaid source goes in
   a ` ```text ` block.
+
+## Skills
+
+Authored skills live in `skills/<name>/SKILL.md` at the repository root — not in `.agents/skills/`, which
+is the gitignored mirror that packages write into. The root folder is the one the skills CLI can discover
+in a git clone. A skill states when it applies in its `description`, keeps the workflow in `SKILL.md`, and
+pushes detail into `references/`. See [Agent Skills Distribution](docs/wiki/Agent-Skills-Distribution.md).
+
+This repository ships no package, so its skills travel by the git route only.
 
 ## Code conventions
 
