@@ -176,6 +176,10 @@ thing when read.
 | Repository already has `AddOpenTelemetry` | Existing setup extended, not replaced. No duplicate registration. |
 | "Should I add a repository over EF Core?" | Only with a named reason other than testability — `Purview.Containers` gives a real database in tests. |
 | Project file already states the type and persistence | No questions asked at all. |
+| "Scaffold a modular monolith with GitHub and Azure DevOps integrations" | `Providers.GitHub` and `Providers.AzureDevOps`, independent of each other. Shared code goes to an abstraction or the unqualified project, never sibling-to-sibling. |
+| "Distributed app, SQL Server and PostgreSQL" | `Persistence.SqlServer` and `Persistence.PostgreSql`. An unqualified `Persistence` **only** if there is genuinely shared mapping code. GUID guidance differs per provider. |
+| "Add a second adapter for file storage" | Same project as the first if dependencies and lifecycle match; a separate `Adapters.*` project only if they diverge. |
+| Repository names a project `Infrastructure` | Flag the catch-all risk, but **do not propose a rename**. Fix wrong dependency directions; record a waiver for the name. |
 
 ## At your scale
 
