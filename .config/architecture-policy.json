@@ -1,7 +1,8 @@
 {
-  "$schema": "https://raw.githubusercontent.com/purview-dev/engineering-playbook/main/.config/architecture-policy.schema.json",
+  "$schema": "https://raw.githubusercontent.com/purview-dev/build-sdk/main/architecture-policy.schema.json",
   "version": 1,
   "description": "The authoritative dependency and naming policy. The architecture tests read this file, and a test asserts the wiki tables agree with it, so there is one definition of each rule rather than one in prose and one in code.",
+  "sourceRoots": ["src"],
   "conventions": {
     "qualifiedNameSeparator": ".",
     "dependencyArrowMeaning": "A -> B means A depends on B at compile time."

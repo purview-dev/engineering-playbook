@@ -17,7 +17,8 @@ it has one project carrying three responsibilities, which is usually correct. Th
 what each responsibility *is* so that you can tell when splitting one out would buy something.
 
 The authoritative definition is [`.config/architecture-policy.json`](https://github.com/purview-dev/engineering-playbook/blob/main/.config/architecture-policy.json),
-described by [`architecture-policy.schema.json`](https://github.com/purview-dev/engineering-playbook/blob/main/.config/architecture-policy.schema.json).
+described by the JSON Schema the SDK publishes at
+[`architecture-policy.schema.json`](https://github.com/purview-dev/build-sdk/blob/main/architecture-policy.schema.json).
 The tables on this page are checked against it — see [How it is enforced](#how-it-is-enforced).
 
 ## Why
@@ -306,37 +307,48 @@ flowchart TD
 
 | Rule | Enforced by |
 | -- | -- |
-| Every production project maps to a responsibility or a recorded waiver | `ProjectDependencyPolicyTests` |
-| Declared project references respect the dependency matrix | `ProjectDependencyPolicyTests` |
-| Sibling implementations stay independent | `ProjectDependencyPolicyTests` |
-| Nothing depends on Composition except hosts | `ProjectDependencyPolicyTests` |
-| Forbidden framework packages stay out of a responsibility | `ProjectDependencyPolicyTests` |
-| The project graph has no cycles | `ProjectDependencyPolicyTests` |
-| Catch-all project names are rejected | `ProjectDependencyPolicyTests` |
-| Production code does not reference a test project | `ProjectDependencyPolicyTests` |
-| Every waiver names a real project, a rule, and a substantive reason | `ProjectDependencyPolicyTests` |
+| Every production project maps to a responsibility or a recorded waiver | `ArchitectureTests` |
+| Declared project references respect the dependency matrix | `ArchitectureTests` |
+| Sibling implementations stay independent | `ArchitectureTests` |
+| Nothing depends on Composition except hosts | `ArchitectureTests` |
+| Forbidden framework packages stay out of a responsibility | `ArchitectureTests` |
+| The project graph has no cycles | `ArchitectureTests` |
+| Catch-all project names are rejected | `ArchitectureTests` |
+| Production code does not reference a test project | `ArchitectureTests` |
+| Every waiver names a real project, a rule, and a substantive reason | `ArchitectureTests` |
 | This page's tables match the policy file | `PolicyDocumentationTests` |
-| The policy matches its JSON Schema, and the schema can actually reject | `PolicySchemaTests` |
+| The policy matches its JSON Schema, and the schema can actually reject | `PurviewArchitectureTests`, `PolicySchemaTests` |
 | A responsibility is split only when it is justified | **Review** |
 
-The tests read `.config/architecture-policy.json`. Nothing on this page is a second source of truth —
-a consistency test fails if the tables drift from the policy.
+The rules themselves are not written here: they ship in **`Purview.Architecture.Testing`**, and
+`ArchitectureTests` derives from the package's `PurviewArchitectureTests` base class, so the matrix,
+naming, sibling-independence, composition, forbidden-package, cycle, test-reference and waiver rules
+are defined once and shared. The tests read `.config/architecture-policy.json`. Nothing on this page
+is a second source of truth — a consistency test fails if the tables drift from the policy.
 
 ### The policy format
 
-`.config/architecture-policy.json` is described by a JSON Schema (draft 2020-12) published beside it,
+`.config/architecture-policy.json` is described by a JSON Schema (draft 2020-12) that the SDK
+publishes at
+[`architecture-policy.schema.json`](https://github.com/purview-dev/build-sdk/blob/main/architecture-policy.schema.json),
 and the file points at it so an editor validates as you type:
 
 ```json
 {
-  "$schema": "https://raw.githubusercontent.com/purview-dev/engineering-playbook/main/.config/architecture-policy.schema.json",
-  "version": 1
+  "$schema": "https://raw.githubusercontent.com/purview-dev/build-sdk/main/architecture-policy.schema.json",
+  "version": 1,
+  "sourceRoots": ["src"]
 }
 ```
+
+The schema lives in the SDK's repository rather than in a copy beside the policy, because a second
+copy is a second source of truth and the two drift. It is also embedded in
+`Purview.Architecture.Testing`, so validation needs no network and cannot disagree with the reader.
 
 | Key | Purpose |
 | -- | -- |
 | `version` | Format version. Increment when a change would break a reader that understood the previous shape. |
+| `sourceRoots` | Repo-relative folders holding the projects; defaults to `["src"]`. An empty array scans the repository root. A wrong value finds no projects, which the graph-discovery rule reports rather than letting every other rule pass vacuously. |
 | `responsibilities[]` | `name`, `aliases`, `category`, `purpose`, `mayDependOn`, `mustNotDependOn`, `forbiddenPackagePrefixes`, `siblingIndependence`, and the split/combine guidance |
 | `discouragedProjectNames` | Category names rejected as project names, with the reason |
 | `rules` | Repository-wide switches not expressed per responsibility |
@@ -350,13 +362,10 @@ Two schema choices do real work:
 - **`minLength` on a waiver's `reason`.** A waiver with a token justification is a suppression
   wearing a reason's clothes.
 
-The schema is enforced, not decorative: `PolicySchemaTests` validates the policy against it, asserts
-the two files agree on the published `$id`, and — importantly — asserts the schema *rejects* a
-document missing a required field, a waiver with a token reason, and a misspelled key. A schema that
-cannot fail proves nothing.
-
-Validation uses `JsonSchema.Net`, the same library `Purview.Build` uses for `purview-build.json`, so
-the ecosystem has one JSON Schema implementation rather than two that disagree at the edges.
+The schema is enforced, not decorative: `PurviewArchitectureTests` validates the policy against the
+embedded schema on every run, and `PolicySchemaTests` asserts it *rejects* a document missing a
+required field, a waiver with a token reason, and a misspelled key. A schema that cannot fail proves
+nothing.
 
 ### Adopting this in another repository
 
@@ -370,6 +379,7 @@ validates it as you type:
 {
   "$schema": "https://raw.githubusercontent.com/purview-dev/build-sdk/main/architecture-policy.schema.json",
   "version": 1,
+  "sourceRoots": ["src"],
   "responsibilities": [ ... ]
 }
 ```
@@ -396,9 +406,10 @@ Two optional overrides:
 | `RepositoryRoot` | The policy does not sit above the test binary — the default probes upward for `.config/architecture-policy.json` |
 | `SkipRule(rule)` | A rule the repository has not adopted yet. Prefer a waiver: it is per project, carries a reason, and is itself checked |
 
-For bespoke rules, use the engine directly rather than the base class —
-`ArchitecturePolicyEvaluator.ForRepository()` returns typed `ArchitectureViolation` lists per rule,
-and takes an in-memory `ProjectNode` graph so a rule can be tested without a repository on disk.
+For bespoke rules, use the package's engine directly rather than the base class —
+`ArchitecturePolicyEvaluator` returns typed `ArchitectureViolation` lists per rule, and takes an
+in-memory `ProjectNode` graph so a rule can be tested without a repository on disk. The package's own
+skill, `purview-buildsdk-architecture-tests`, is authoritative on that API and on the rule ids.
 
 ### Waivers
 

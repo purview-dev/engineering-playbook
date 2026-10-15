@@ -16,6 +16,7 @@ already exists in this repository, with `Acme` standing in for your own namespac
 | [`AGENTS.md`](AGENTS.md) | `AGENTS.md` | All |
 | [`mkdocs.yml`](mkdocs.yml) | `mkdocs.yml` | All |
 | [`TestBuilder.cs`](TestBuilder.cs) | `src/tests/SharedTestingInfra/Builders/TestBuilder.cs` | Medium and up |
+| [`architecture-policy.json`](architecture-policy.json) | `.config/architecture-policy.json` | Medium and up |
 
 ## How to use them
 
@@ -23,7 +24,8 @@ already exists in this repository, with `Acme` standing in for your own namespac
 2. **Replace `Acme`.** It appears in `Directory.Build.props` (as `NamespacePrefix`), in the names in
    `AGENTS.md`, and in the paths in `purview-build.json`.
 3. **Pin the versions.** The SDK version in `global.json` and the package versions in
-   `Directory.Packages.props` are the ones this repository builds with today. Check them against the SDK's
+   `Directory.Packages.props` are the ones this repository builds with today, plus one illustrative
+   package family (`Purview.Containers`) you delete if you do not use it. Check them against the SDK's
    current release before you commit.
 4. **Read the comment in each file.** Every template explains the one thing about it that is easy to get
    wrong — the order of the `NamespacePrefix` and the import, the `NU1010` trap, why the workflow repeats the
@@ -62,8 +64,10 @@ Everything in Small, plus:
 
 - `TestBuilder.cs` in `src/tests/SharedTestingInfra/Builders/`.
 - One test project per layer, named `*.UnitTests`.
-- `src/tests/Architecture.UnitTests/` with the rules from
-  [Architecture as Tests](https://github.com/purview-dev/engineering-playbook/blob/main/docs/wiki/Architecture-As-Tests.md).
+- `architecture-policy.json` in `.config/`, and one test class deriving from `PurviewArchitectureTests`
+  (the `Purview.Architecture.Testing` package) so a wrong `ProjectReference` fails the build — see
+  [Project Responsibilities](https://github.com/purview-dev/engineering-playbook/blob/main/docs/wiki/Project-Responsibilities.md)
+  and [Architecture as Tests](https://github.com/purview-dev/engineering-playbook/blob/main/docs/wiki/Architecture-As-Tests.md).
 - A second CI job for any suite that needs a real resource.
 
 ### Large — several packages

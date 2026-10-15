@@ -28,12 +28,14 @@ implementation whose only job is to prove the conventions compile, run, and fail
 | `src/src/Infrastructure` | The in-memory adapter that implements the port |
 | `src/tests/Domain.UnitTests` | Value-object behaviour; the value-object exception to `TestBuilder` |
 | `src/tests/Application.UnitTests` | The service, against a TUnit.Mocks substitute |
-| `src/tests/Architecture.UnitTests` | Dependency-direction rules; a wrong `ProjectReference` fails the build |
+| `src/tests/Architecture.UnitTests` | Assembly dependency-direction rules and the architecture policy; a wrong `ProjectReference` fails the build |
+| `src/tests/Repository.UnitTests` | The repository itself: skill conformance and documentation checks |
 | `src/tests/SharedTestingInfra` | `TestBuilder`; referenced automatically by every test project |
 | `skills/` | Authored agent skills, installable with `npx skills add purview-dev/engineering-playbook` |
 | `templates/` | Ready-to-copy starter files for a repository adopting the playbook |
 | `src/Directory.Build.props` | `NamespacePrefix`, the SDK import, and `NamespaceRemoveSuffix` |
 | `.config/purview-build.json` | Pipeline configuration: solution, test discovery, filter |
+| `.config/architecture-policy.json` | The dependency and naming policy the architecture tests read |
 | `Justfile` | Supported local commands |
 | `package.json` | Authoritative version; the release reads it and nothing else |
 
@@ -54,7 +56,8 @@ demonstrate it.
 
 - **One page per concern**, in `docs/wiki/<Page-Name>.md`. Title case, hyphens between words.
 - **Four sections, in order:** the rule, why, how it is enforced, at your scale. A rule a build cannot check
-  is labelled a review obligation — never described as enforced.
+  is labelled a review obligation — never described as enforced. `Home.md` and `index.md` are navigation,
+  and `Engineering-Principles.md` is an index that links to the page stating each rule in full.
 - **A new page goes in `_Sidebar.md` and in the table in `Home.md`.** A page in neither does not exist.
 - **Link to the authority rather than paraphrasing it.** The SDK's own wiki is authoritative on the SDK's
   behaviour; a paraphrase here is a second source of truth that will drift.

@@ -1,6 +1,6 @@
+using System.Collections.Concurrent;
 using Purview.EngineeringPlaybook.Application;
 using Purview.EngineeringPlaybook.Domain;
-using System.Collections.Concurrent;
 
 namespace Purview.EngineeringPlaybook.Infrastructure;
 

@@ -1,12 +1,30 @@
 # Adopting This at Your Scale
 
+## The rule
+
 Every rule in this playbook came from a repository that needed it. That is the argument for the rule and
 also the reason not to take all of them: a rule adopted before the problem it prevents exists is pure cost.
 
-This page is the short version of that decision. Find the profile that matches, take what it lists, and
-leave the rest — with the knowledge that the rest is there when the repository grows into it.
+Find the profile that matches, take what it lists, and leave the rest — with the knowledge that the rest is
+there when the repository grows into it.
 
-## The three profiles
+## Why
+
+Structure is a cost paid now against a failure expected later. A boundary added in anticipation of a second
+caller that never arrives is maintained forever; a boundary added when the second caller appears is cheap.
+The same is true of a CI tier, a pack manifest or an agent skill: taken early it is ceremony, taken late it
+is a migration. Naming the smaller version explicitly is what lets a reader take the part that fits instead
+of cargo-culting the whole playbook.
+
+## How it is enforced
+
+This page is guidance rather than a rule, so nothing here is enforced by a build. The rules it chooses
+between are enforced as their own pages say; what this page adds is the decision about which of them to
+adopt, and that decision is a review obligation.
+
+## At your scale
+
+### The three profiles
 
 | | Small | Medium | Large |
 | -- | -- | -- | -- |
@@ -22,7 +40,7 @@ leave the rest — with the knowledge that the rest is there when the repository
 | **`AGENTS.md`** | Yes | Yes | Yes |
 | **Agent skills** | Install what you need with `npx skills add` | Plus one per repeated review comment | Plus your own, published from the repository that owns the convention |
 
-## Small — one project
+### Small — one project
 
 Adopt:
 
@@ -43,7 +61,7 @@ Skip:
 - Pack validation, consumer verification, release channels. All three need a published package to mean
   anything.
 
-## Medium — a few layers
+### Medium — a few layers
 
 Everything from Small, plus:
 
@@ -59,7 +77,7 @@ Everything from Small, plus:
 This is the profile the reference implementation in this repository is built to. It is the smallest shape
 where every mechanism in the playbook is visible.
 
-## Large — several packages
+### Large — several packages
 
 Everything from Medium, plus:
 
@@ -74,7 +92,7 @@ Everything from Medium, plus:
 - **Architecture rules promoted into the build.** At this size a rule that can be skipped is a rule that
   will be, so move it from a test into an analyzer or an MSBuild check that runs before compile.
 
-## What not to adopt early
+### What not to adopt early
 
 Four things that are more expensive than they look when taken out of order.
 
@@ -92,7 +110,7 @@ the wrong thing to discover while adding the first package. Turn on pack validat
 **Consumer verification before there is a consumer.** The script exists to keep a published contract honest.
 With no published contract it is a slow test that restores from nuget.org and proves nothing.
 
-## Migrating an existing repository
+### Migrating an existing repository
 
 The order matters, because each step makes the next one cheaper.
 

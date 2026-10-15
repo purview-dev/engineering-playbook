@@ -1,0 +1,70 @@
+{
+	// COPY TO: .config/architecture-policy.json
+	//
+	// The authoritative dependency and naming policy. The architecture tests read this file, and a test
+	// you add alongside it can assert your wiki agrees with it, so each rule is defined once rather
+	// than once in prose and once in code.
+	//
+	// Adopt it with Purview.Architecture.Testing: add the package and one derived test class.
+	//
+	//   [InheritsTests]
+	//   public sealed class ArchitectureTests : PurviewArchitectureTests;
+	//
+	// `[InheritsTests]` is required - TUnit does not walk base types during discovery, so without it
+	// the class compiles, the run is green, and nothing is enforced. See
+	// docs/wiki/Project-Responsibilities.md.
+	//
+	// Delete the responsibilities you do not have. A small application with `Core` and a host is a
+	// complete and correct architecture; the catalogue is not a list of projects to create.
+	"$schema": "https://raw.githubusercontent.com/purview-dev/build-sdk/main/architecture-policy.schema.json",
+	"version": 1,
+	// The folders holding your projects, relative to the repository root. An empty array scans the
+	// repository root, which suits a flat layout. Getting this wrong finds no projects - which the
+	// graph-discovery rule reports rather than letting every other rule pass vacuously.
+	"sourceRoots": ["src"],
+	"responsibilities": [
+		{
+			"name": "Core",
+			"aliases": ["Domain"],
+			"category": "domain",
+			"purpose": "The domain model: entities, value objects, invariants and domain rules.",
+			"mayDependOn": ["Shared"],
+			"mustNotDependOn": ["Application", "Abstractions", "Contracts", "Persistence", "Providers", "Adapters", "Composition"],
+			"forbiddenPackagePrefixes": ["Microsoft.EntityFrameworkCore", "Microsoft.AspNetCore", "Aspire.Hosting"],
+			"separateProjectWhen": "A domain model exists at all.",
+			"mayRemainCombinedWhen": "The application is a thin utility with no domain rules worth isolating."
+		},
+		{
+			"name": "Application",
+			"aliases": ["UseCases"],
+			"category": "application",
+			"purpose": "Coordinates use cases and workflows across domain and capability boundaries.",
+			"mayDependOn": ["Core", "Abstractions", "Contracts", "Shared"],
+			"mustNotDependOn": ["Persistence", "Providers", "Adapters", "Composition"],
+			"forbiddenPackagePrefixes": ["Microsoft.EntityFrameworkCore", "Npgsql", "Microsoft.Data.SqlClient", "Aspire.Hosting"],
+			"separateProjectWhen": "Workflows are reused by more than one host, or coordinate several capabilities.",
+			"mayRemainCombinedWhen": "It would only forward CRUD without adding behaviour."
+		},
+		{
+			"name": "Shared",
+			"aliases": [],
+			"category": "shared",
+			"purpose": "Small, broadly reusable, domain-independent utilities.",
+			"mayDependOn": [],
+			"mustNotDependOn": ["Core", "Abstractions", "Application", "Contracts", "Persistence", "Providers", "Adapters", "Composition"],
+			"separateProjectWhen": "A domain-independent primitive is used by two or more responsibilities.",
+			"mayRemainCombinedWhen": "Almost always. Shared is the easiest project to create and the hardest to keep coherent."
+		}
+	],
+	"discouragedProjectNames": {
+		"names": ["Infrastructure", "Services", "Managers", "Models", "Helpers", "Common", "Utils", "Utilities"],
+		"reason": "These name a category, not a responsibility, so nothing can be excluded from them and they accumulate. Infrastructure is an architectural category covering Persistence, Providers and Adapters - not a project."
+	},
+	"rules": {
+		"noCycles": true,
+		"noProductionToTestReferences": true,
+		"implementationsMustNotReferenceComposition": true,
+		"siblingImplementationsIndependent": true
+	},
+	"waivers": []
+}

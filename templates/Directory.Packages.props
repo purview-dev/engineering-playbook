@@ -23,8 +23,9 @@
 		Group with Label so the file reads as a short list of decisions rather than one long alphabetical
 		block. Delete the groups you do not need: the ones below are illustrative, not a required set.
 
-		Check these versions against the SDK's current release before you commit — they are the versions
-		this playbook builds with today, not a promise about tomorrow.
+		Check these versions against the SDK's current release before you commit. They are the versions
+		this playbook builds with today, plus one illustrative package family (Purview.Containers) that
+		you delete if no suite needs a container.
 	-->
 	<PropertyGroup>
 		<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
@@ -35,7 +36,12 @@
 		<MSExtensionVersion>10.10.0</MSExtensionVersion>
 	</PropertyGroup>
 	<PropertyGroup Label="Purview Versions">
-		<PurviewTelemetryVersion>5.0.3</PurviewTelemetryVersion>
+		<PurviewTelemetryVersion>5.0.4</PurviewTelemetryVersion>
+		<!--
+			The build-sdk's test-support packages ship together and track the SDK version pinned in
+			global.json, so they share one property: a bump cannot be applied to half the family.
+		-->
+		<PurviewBuildSdkTestingVersion>1.0.6</PurviewBuildSdkTestingVersion>
 	</PropertyGroup>
 	<PropertyGroup Label="Testing Versions">
 		<!--
@@ -44,7 +50,7 @@
 			packages below if no suite needs a container.
 		-->
 		<PurviewContainersVersion>1.0.0-prerelease.6</PurviewContainersVersion>
-		<TUnitVersion>1.72.4</TUnitVersion>
+		<TUnitVersion>1.75.0</TUnitVersion>
 	</PropertyGroup>
 
 	<!-- Packages -->
@@ -58,7 +64,7 @@
 	</ItemGroup>
 	<ItemGroup Label="Other">
 		<!-- Injected by the SDK and added to every assembly. No family, so no property. -->
-		<PackageVersion Include="Microsoft.SourceLink.GitHub" Version="10.0.401" />
+		<PackageVersion Include="Microsoft.SourceLink.GitHub" Version="10.0.402" />
 	</ItemGroup>
 	<ItemGroup Label="Testing">
 		<!--
@@ -70,6 +76,13 @@
 		<PackageVersion Include="TUnit.Core" Version="$(TUnitVersion)" />
 		<PackageVersion Include="TUnit.Mocks" Version="$(TUnitVersion)" />
 		<PackageVersion Include="Bogus" Version="35.6.5" />
+		<!--
+			The build-sdk's conformance rule sets, so the rules are defined once rather than reimplemented
+			here. Delete the one you do not adopt: Purview.Skills.Testing validates authored skills,
+			Purview.Architecture.Testing enforces the architecture policy.
+		-->
+		<PackageVersion Include="Purview.Skills.Testing" Version="$(PurviewBuildSdkTestingVersion)" />
+		<PackageVersion Include="Purview.Architecture.Testing" Version="$(PurviewBuildSdkTestingVersion)" />
 		<!-- Container-backed integration suites. One module per service; the umbrella brings both backends. -->
 		<PackageVersion Include="Purview.Containers" Version="$(PurviewContainersVersion)" />
 		<PackageVersion Include="Purview.Containers.MsSql" Version="$(PurviewContainersVersion)" />

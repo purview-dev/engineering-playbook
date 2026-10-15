@@ -1,5 +1,5 @@
 using System.Text.RegularExpressions;
-using Purview.EngineeringPlaybook.Architecture.Policy;
+using Purview.Architecture.Testing;
 
 namespace Purview.EngineeringPlaybook.Architecture;
 
@@ -163,31 +163,5 @@ public sealed partial class PolicyDocumentationTests
 			.That(undocumented)
 			.IsEmpty()
 			.Because($"these waivers are not explained on the page: {string.Join(", ", undocumented)}");
-	}
-
-	[Test]
-	public async Task Documentation_GivenItsFencedBlocks_AlwaysDeclaresALanguage(CancellationToken cancellationToken)
-	{
-		// Arrange
-		// AGENTS.md: Mermaid is not enabled in mkdocs.yml, so Mermaid source lives in a text fence.
-		// A bare fence renders as an untyped block and is the easiest convention to break by accident.
-		var lines = await File.ReadAllLinesAsync(DocumentationPath, cancellationToken);
-
-		// Act
-		List<string> offenders = [];
-		var inFence = false;
-		for (var index = 0; index < lines.Length; index++)
-		{
-			if (!lines[index].StartsWith("```", StringComparison.Ordinal))
-				continue;
-
-			if (!inFence && lines[index].Trim() == "```")
-				offenders.Add($"line {index + 1}: opening fence declares no language");
-
-			inFence = !inFence;
-		}
-
-		// Assert
-		await Assert.That(offenders).IsEmpty().Because(string.Join("; ", offenders));
 	}
 }

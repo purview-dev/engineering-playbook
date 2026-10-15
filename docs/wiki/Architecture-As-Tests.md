@@ -162,6 +162,13 @@ The rules are ordinary tests in a project named `*UnitTests`, so the pipeline ru
 request as part of the fast tier. No extra workflow, no extra step, no separate tool: an architecture
 violation is a failing test with the same status as any other.
 
+These four rules are hand-written here because they read **compiled assemblies**, which is what lets
+them catch a dependency that arrived indirectly rather than one that was declared. The broader
+**policy** rules — the dependency matrix, naming, sibling independence, the composition boundary,
+forbidden packages, cycles, test references and waivers — ship in `Purview.Architecture.Testing`, and
+are adopted with a policy file and one derived test class rather than with C#. See
+[Project Responsibilities](Project-Responsibilities.md).
+
 ## At your scale
 
 - **One project.** Nothing to assert. Skip it.

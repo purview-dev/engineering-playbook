@@ -1,9 +1,11 @@
 # Contributing
 
+## The rule
+
 This repository is documentation with a small reference implementation attached. The documentation is the
 product; the reference implementation exists to prove the documentation is not guesswork.
 
-## What belongs here
+### What belongs here
 
 A rule belongs in the playbook when all four of these are true:
 
@@ -18,6 +20,14 @@ A rule belongs in the playbook when all four of these are true:
 What does not belong: anything that names a product, a customer, or a repository that is not public. The
 playbook is a published artefact, and a rule that can only be justified by something private cannot be
 reviewed by the people it is published to.
+
+## Why
+
+The four criteria are the whole value of the playbook. A rule without a failure behind it is an opinion, and
+opinions accumulate until the useful rules are indistinguishable from the noise. A rule that only works at
+one size gets cargo-culted at another. A rule that restates the SDK's own documentation is a second source of
+truth that will drift. And a rule that claims enforcement it does not have is worse than no rule at all,
+because people rely on the guarantee and stop looking. Each criterion removes one of those failure modes.
 
 ## Adding a page
 
@@ -54,7 +64,11 @@ Changing a rule is a bigger change than adding one, because pages link to it and
   is not — a published package contract, a persistence layer, a second CI tier — say so on the page and point
   at the public repository that does demonstrate it.
 
-## Commit messages
+## How it is enforced
+
+Three mechanisms, and they are the ones a change to this repository actually passes through.
+
+### Commit messages
 
 Conventional Commits, enforced by a `commit-msg` hook. The allowed types are in `commitlint.config.mts`:
 
@@ -66,7 +80,7 @@ The header is limited to 100 characters, the subject must not be sentence case, 
 A documentation-only change is `docs:`; a change to the reference implementation is `feat:` or `fix:`; a
 change to the pipeline configuration is `ci:` or `build:`.
 
-## Validation before handing work back
+### Validation before handing work back
 
 ```text
 just lint-check     # CSharpier check
@@ -81,7 +95,7 @@ risk — an unstated gap is the one that gets discovered in production.
 For a documentation-only change, the checks that matter are the ones that catch a broken reference: the
 navigation in `_Sidebar.md`, the table in `Home.md`, and any relative link you added.
 
-## Review expectations
+### Review expectations
 
 A reviewer should be able to answer these from the pull request alone:
 
@@ -90,6 +104,14 @@ A reviewer should be able to answer these from the pull request alone:
 - What does a repository smaller than the one this came from do instead?
 - If the rule is the SDK's, why is it restated here rather than linked?
 - Does `src/` still demonstrate the conventions, or has it drifted?
+
+## At your scale
+
+This page is for changing the playbook itself. A repository that is only *borrowing* from the playbook does
+not need any of it: take the pages and templates that fit and leave the rest, as [Adopting This at Your
+Scale](Adopting-This-At-Your-Scale.md) describes. The smaller version of this process, for a
+documentation-only change, is: edit the page, keep `_Sidebar.md` and `Home.md` in step, and run the reference
+checks in [Validation before handing work back](#validation-before-handing-work-back).
 
 ## See also
 

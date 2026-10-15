@@ -10,8 +10,12 @@
 		<ProjectReference Include="../../src/Infrastructure/Infrastructure.csproj" />
 	</ItemGroup>
 
-	<!-- Validates the architecture policy against its JSON Schema. -->
+	<!--
+		The architecture conformance rule set, shipped by the build-sdk. `ArchitectureTests` derives from
+		`PurviewArchitectureTests`, so the dependency matrix, naming, sibling-independence, composition,
+		forbidden-package, cycle, test-reference and waiver rules are defined once rather than copied here.
+	-->
 	<ItemGroup>
-		<PackageReference Include="JsonSchema.Net" />
+		<PackageReference Include="Purview.Architecture.Testing" />
 	</ItemGroup>
 </Project>
