@@ -71,27 +71,23 @@ own wiki is a second source of truth, and it is the one that will drift.
 
 ## Publication and distribution
 
+**Diagram J — skill publication and distribution.**
+
 ```text
-┌──────────────────────────────────────────────────────────────┐
-│ Library repository                                           │
-│                                                              │
-│   skills/<name>/SKILL.md      ← the single authored copy      │
-│        │                                                     │
-│        ├──────────────┐                                      │
-│        ▼              ▼                                      │
-│   git (tracked)   IncludePurviewSkillsInPackage               │
-│        │              │                                      │
-└────────┼──────────────┼──────────────────────────────────────┘
-         │              ▼
-         │       .nupkg  .agents/skills/<name>/
-         │              │  + generated .gitignore
-         │              │  + nuspec <repository url commit />
-         │              ▼
-         │        NuGet feed
-         │              │
-         ▼              ▼
-   skills CLI      Purview.BuildSdk mirror
-   (clone + ref)   (restore graph)
+flowchart TD
+    A["skills/&lt;name&gt;/SKILL.md<br/>the single authored copy"]
+
+    A --> G["git: tracked at the repository root"]
+    A --> P["IncludePurviewSkillsInPackage"]
+
+    P --> N[".nupkg<br/>.agents/skills/&lt;name&gt;/<br/>+ generated .gitignore<br/>+ nuspec repository url and commit"]
+    N --> F["NuGet feed"]
+
+    G --> C["skills CLI<br/>clone at ref"]
+    F --> M["Purview.BuildSdk mirror<br/>reads the restore graph"]
+
+    C --> AD["Agent directories<br/>.claude/, .codex/, ..."]
+    M --> DA[".agents/skills/<br/>gitignored mirror"]
 ```
 
 The nuspec's `<repository>` element is written by SourceLink for every package built by the SDK. It
@@ -101,20 +97,17 @@ is what lets a consumer get from a restored package back to the exact source com
 
 No custom metadata file is introduced, because the package already carries both halves of the mapping.
 
+**Diagram K — package-to-skill discovery and Build SDK resolution.**
+
 ```text
-project.assets.json
-      │  every restored package: id, version, on-disk path
-      ▼
-<package root>/.agents/skills/*/SKILL.md ──► which skills this package ships
-      │
-<package root>/*.nuspec
-      └─ <repository url="…github.com/owner/repo" commit="…" />
-      │
-      ▼
-   owner/repo#<commit>  +  [skill names]
-      │
-      ├─ has GitHub URL and commit ──► PurviewSkillSource            (installable)
-      └─ missing either             ──► PurviewUnresolvableSkillSource (PRSKL0002)
+flowchart TD
+    A["project.assets.json<br/>every restored package: id, version, path"] --> B{"package has<br/>.agents/skills/ ?"}
+    B -- no --> X["Not a skill source"]
+    B -- yes --> C["Skill names = folders containing a SKILL.md"]
+    C --> D["Read the package nuspec"]
+    D --> E{"repository url is GitHub<br/>and commit present?"}
+    E -- yes --> F["PurviewSkillSource<br/>owner/repo#commit + skill names"]
+    E -- no --> G["PurviewUnresolvableSkillSource<br/>PRSKL0002, nothing installed"]
 ```
 
 A folder under `.agents/skills/` counts as a skill only when it contains a `SKILL.md`; a `references/`
@@ -124,22 +117,32 @@ or `scripts/` folder beside one is part of that skill, not another.
 
 The separation matters more than any single piece of it.
 
+**Diagram K (detail) — installer and Build SDK responsibilities.**
+
 ```text
-┌───────────────────┬──────────────────────────────────────────────┐
-│ Skill metadata    │ The package itself: .agents/skills/* and the  │
-│                   │ nuspec <repository> element. Nothing custom.  │
-├───────────────────┼──────────────────────────────────────────────┤
-│ Skill resolver    │ ResolvePurviewSkillSources. Reads the restore │
-│                   │ graph, emits source + ref + skill names.      │
-│                   │ Decides nothing about agents or paths.        │
-├───────────────────┼──────────────────────────────────────────────┤
-│ Skill installer   │ The skills CLI. Owns every agent-specific     │
-│                   │ destination, the symlink-or-copy decision and │
-│                   │ skills-lock.json.                             │
-├───────────────────┼──────────────────────────────────────────────┤
-│ Build SDK         │ Discovers packages, exposes explicit targets, │
-│                   │ invokes the installer. Never installs itself. │
-└───────────────────┴──────────────────────────────────────────────┘
+flowchart LR
+    subgraph Package["Skill metadata - the package itself"]
+        M1[".agents/skills/*"]
+        M2["nuspec repository element"]
+    end
+
+    subgraph SDK["Purview.BuildSdk"]
+        R["Skill resolver<br/>ResolvePurviewSkillSources<br/>decides nothing about agents"]
+        T["Explicit targets<br/>ListPurviewSkills<br/>InstallPurviewSkills"]
+        D["CLI detection<br/>DetectPurviewSkillsCli"]
+    end
+
+    subgraph CLI["Skill installer - npx skills"]
+        I1["Agent-specific destinations"]
+        I2["symlink or copy"]
+        I3["skills-lock.json"]
+    end
+
+    M1 --> R
+    M2 --> R
+    R --> T
+    D --> T
+    T -->|"invokes, never installs itself"| CLI
 ```
 
 The SDK does not maintain a copy of each skill per supported agent. Agent discovery paths differ, are
@@ -157,30 +160,25 @@ numerous, and change on their own schedule; the CLI tracks them, so the SDK does
 | Repeated installation is idempotent | The skills CLI skips a skill already installed from the same source and ref |
 | Root `skills/` reaches the package's `.agents/skills/` | `AgentPackFolderTests`, asserted against the built `.nupkg` |
 | A packaged skill does not show as a local modification | Generated per-skill `.gitignore`, asserted in the same test |
-| A skill's frontmatter is valid and its name unique | Review, plus the CLI's own parse on install — **not** a build check |
+| A skill's frontmatter is valid, its name matches its folder and is unique | `ValidatePurviewSkills`, which `IncludePurviewSkillsInPackage` depends on — so a malformed skill fails the pack (`PRSKL0005`) |
+| Every `references/...` link in a skill resolves | The same target |
+| The guidance in a skill is good, and an agent follows it | **Review** |
 
-The last row is a review obligation. The build does not validate skill frontmatter, and this page does
-not claim it does.
+The last row is a review obligation and stays one. A build can check that a skill is well formed; it
+cannot check that prose is correct or that an agent obeyed it. See
+[Agent Guidance Skills](Agent-Guidance-Skills.md) for the scenarios used to review that by hand.
 
 ## Version resolution
 
+**Diagram K (detail) — version resolution and compatibility diagnostics.**
+
 ```text
-       referenced package version (from project.assets.json)
-                        │
-                        ▼
-        nuspec <repository commit="..."> present?
-                 │                        │
-                yes                       no
-                 │                        │
-                 ▼                        ▼
-      owner/repo#<commit>          PRSKL0002 warning:
-      pinned, reproducible         not installed; the package's
-                 │                 own mirror still delivers it
-                 ▼
-      skills CLI records source + ref in skills-lock.json
-                 │
-                 ▼
-      npx skills experimental_install restores the same set
+flowchart TD
+    A["Referenced package version<br/>from project.assets.json"] --> B{"nuspec repository<br/>commit present?"}
+    B -- no --> W["PRSKL0002 warning<br/>nothing installed<br/>the package's own mirror still delivers it"]
+    B -- yes --> C["owner/repo#commit<br/>pinned and reproducible"]
+    C --> D["skills CLI records source + ref<br/>in skills-lock.json"]
+    D --> E["npx skills experimental_install<br/>restores the same set"]
 ```
 
 Pinning to a commit rather than a tag is deliberate: a tag can be moved, and a package can be built
@@ -262,6 +260,7 @@ Updating and removing are the CLI's, not the SDK's: `npx skills update`, `npx sk
 | `PRSKL0001` | No `project.assets.json`. Run `dotnet restore`; resolution never restores for you. |
 | `PRSKL0002` | The package's nuspec has no GitHub repository URL or no commit — usually SourceLink disabled at pack time. |
 | `PRSKL0003` | `PurviewSkillsToPack` names a skill folder that does not exist — usually a rename. |
+| `PRSKL0005` | A skill is malformed: no `SKILL.md`, no frontmatter, no `name`/`description`, a name that does not match its folder, or a broken `references/` link. |
 | `PRSKL0004` | Neither `skills` nor `npx` is on `PATH`. Install Node.js, or `npm install -g skills`. `ListPurviewSkills` still works. |
 | "No skills found" from the CLI | The source repository has no root `skills/` folder. The CLI does not discover skills in nested or dotted folders, even with `--full-depth`. |
 | Skills appear in `.agents/` but no agent sees them | `.agents/` is the mirror, not an agent directory. Run the install target. |

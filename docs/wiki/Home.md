@@ -31,12 +31,14 @@ at all, so the two are never blurred.
 | [Getting Started](Getting-Started.md) | The smallest repository that satisfies every rule, in the order you would build it. |
 | [Engineering Principles](Engineering-Principles.md) | The non-negotiable rules, and where the authoritative statement of each one lives. |
 | [Repository Shape](Repository-Shape.md) | Where a file goes, what it is called, and how a project's name becomes its namespace. |
+| [Project Responsibilities](Project-Responsibilities.md) | What each project is for, how it is named, and what it may depend on. |
 | [Architecture as Tests](Architecture-As-Tests.md) | How the build refuses a dependency that points the wrong way. |
 | [Verification Model](Verification-Model.md) | Which checks run, in which tier, for which change. |
 | [Contracts and Data Exchange](Contracts-And-Data-Exchange.md) | How value objects, schemas and results cross a boundary. |
 | [Testing and Test Data](Testing-And-Test-Data.md) | How tests are written, and where their data comes from. |
 | [Agent Enablement](Agent-Enablement.md) | How a repository is made legible to a coding agent. |
 | [Agent Skills Distribution](Agent-Skills-Distribution.md) | How a skill is published once and reaches both a package's consumers and an agent's own directories. |
+| [Agent Guidance Skills](Agent-Guidance-Skills.md) | The shared architecture, telemetry and persistence guidance, and the context an agent must establish first. |
 | [Documentation Convention](Documentation-Convention.md) | How the wiki is written, structured and published. |
 | [Worked Examples](Worked-Examples.md) | The reference implementation in this repository, walked end to end. |
 | [Adopting This at Your Scale](Adopting-This-At-Your-Scale.md) | Which parts apply to a small, medium or large repository. |
