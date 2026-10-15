@@ -67,12 +67,34 @@ demonstrate it.
 
 ## Skills
 
-Authored skills live in `skills/<name>/SKILL.md` at the repository root — not in `.agents/skills/`, which
-is the gitignored mirror that packages write into. The root folder is the one the skills CLI can discover
-in a git clone. A skill states when it applies in its `description`, keeps the workflow in `SKILL.md`, and
-pushes detail into `references/`. See [Agent Skills Distribution](docs/wiki/Agent-Skills-Distribution.md).
+Authored skills live in `skills/<name>/SKILL.md` at the repository root. `.agents/skills/` is the skills
+CLI's install location for skills from **other** repositories and is gitignored; this repository's own
+skills are never installed into it, because two copies drift apart. A skill states when it applies in its
+`description`, keeps the workflow in `SKILL.md`, and pushes detail into `references/`. See
+[Agent Skills Distribution](docs/wiki/Agent-Skills-Distribution.md).
 
-This repository ships no package, so its skills travel by the git route only.
+Nothing packs a skill into a NuGet package - `Purview.BuildSdk` 1.0.6 removed skill packaging and the
+build-time `.agents/` mirror outright. The skills CLI clones the git repository, and that is the only route.
+
+| Skill | Answers |
+| -- | -- |
+| `skills/purview-engineering-principles/` | the ten repository conventions, what each prevents, and whether a build or a reviewer enforces it |
+| `skills/purview-architecture/` | how many projects, which layers, where validation lives |
+| `skills/purview-architecture-testing/` | turning a boundary into a failing build |
+| `skills/purview-testing-conventions/` | TUnit, AAA, `TestBuilder`, substitutes, tiers |
+| `skills/purview-persistence/` | storage approach, EF Core abstraction, GUID key strategy |
+| `skills/purview-telemetry/` | logging, tracing, metrics, and when a project is "too small" for them |
+
+Every skill carries the `purview-` prefix: skills install into one flat directory per agent, shared with
+every skill a developer has installed from anywhere, so an unprefixed name collides and the loser is
+whichever installed second.
+
+`src/tests/Repository.UnitTests/SkillTests.cs` validates them on every test run through
+`Purview.Skills.Testing`. The `[InheritsTests]` attribute there is load-bearing - TUnit does not walk base
+types during discovery, so without it the run is green and nothing is checked.
+
+A relative link from one `SKILL.md` into another skill's folder is a rule violation: only a skill's own
+folder is installed with it. Name the other skill in prose instead.
 
 ## Code conventions
 

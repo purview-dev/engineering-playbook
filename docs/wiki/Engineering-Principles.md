@@ -137,7 +137,7 @@ the same guidance the build uses. Nothing important is discoverable only by read
 memory, no intuition about which of two plausible patterns is the intended one. The guidance that makes
 the repository obvious to an agent is the same guidance that makes it obvious to a new joiner.
 
-**How it is enforced.** Review, plus the SDK mirroring its own skills into `.agents/` so the agent-facing
+**How it is enforced.** Review, plus the SDK publishing its own skills so the agent-facing
 guidance tracks the SDK version rather than the repository's memory of it. See [Agent
 Enablement](Agent-Enablement.md).
 

@@ -349,8 +349,9 @@ Then `docs/wiki/index.md`, `docs/wiki/Home.md` and `docs/wiki/_Sidebar.md`, and 
 ## Step 11 — Make the repository legible to an agent
 
 Add `AGENTS.md` at the root: purpose, layout table, conventions, completion checklist, local commands.
-The SDK also mirrors a set of SDK skills into `.agents/` on build, so an agent gets the SDK's own
-guidance without you writing it. See [Agent Enablement](Agent-Enablement.md).
+Then install the SDK's own skills with `npx skills add purview-dev/build-sdk`, so an agent gets that
+guidance without you writing it. Installation is explicit - no build writes into an agent directory.
+See [Agent Enablement](Agent-Enablement.md).
 
 ## Step 12 — Add the local tools and the commands that run them
 

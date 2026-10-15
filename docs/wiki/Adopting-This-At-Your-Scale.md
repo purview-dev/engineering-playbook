@@ -20,7 +20,7 @@ leave the rest — with the knowledge that the rest is there when the repository
 | **Consumer verification** | No | No | Yes |
 | **Wiki** | `index`, `Home`, `_Sidebar`, one page | One page per public concern | One page per subsystem, plus a hub |
 | **`AGENTS.md`** | Yes | Yes | Yes |
-| **Agent skills** | The SDK's mirrored set | Plus one per repeated review comment | Plus your own packaged skills |
+| **Agent skills** | Install what you need with `npx skills add` | Plus one per repeated review comment | Plus your own, published from the repository that owns the convention |
 
 ## Small — one project
 

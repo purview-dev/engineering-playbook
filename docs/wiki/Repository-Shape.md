@@ -12,7 +12,8 @@ Repository/
 ├── .github/
 │   ├── workflows/                pr.yml, release.yml, any repository-specific workflow
 │   └── copilot-instructions.md   defers to AGENTS.md
-├── .agents/                      SDK-mirrored agent content (see Agent Enablement)
+├── skills/                       skills this repository publishes (see Agent Enablement)
+├── .agents/skills/               skills installed from elsewhere by the skills CLI; gitignored
 ├── .purview/                     SDK state; gitignored
 ├── docs/
 │   └── wiki/                     the wiki; docs_dir in mkdocs.yml

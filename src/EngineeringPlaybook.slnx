@@ -20,5 +20,6 @@
 		<Project Path="tests/Architecture.UnitTests/Architecture.UnitTests.csproj" />
 		<Project Path="tests/Domain.UnitTests/Domain.UnitTests.csproj" />
 		<Project Path="tests/SharedTestingInfra/SharedTestingInfra.csproj" />
+		<Project Path="tests/Repository.UnitTests/Repository.UnitTests.csproj" />
 	</Folder>
 </Solution>
