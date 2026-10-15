@@ -358,6 +358,48 @@ cannot fail proves nothing.
 Validation uses `JsonSchema.Net`, the same library `Purview.Build` uses for `purview-build.json`, so
 the ecosystem has one JSON Schema implementation rather than two that disagree at the edges.
 
+### Adopting this in another repository
+
+The rule engine ships as **`Purview.Architecture.Testing`**, so a repository does not copy the C#.
+Adoption is two files:
+
+**1. A policy** at `.config/architecture-policy.json`, pointing at the published schema so an editor
+validates it as you type:
+
+```json
+{
+  "$schema": "https://raw.githubusercontent.com/purview-dev/build-sdk/main/architecture-policy.schema.json",
+  "version": 1,
+  "responsibilities": [ ... ]
+}
+```
+
+**2. One test class:**
+
+```csharp
+[InheritsTests]
+public sealed class ArchitectureTests : PurviewArchitectureTests;
+```
+
+That is the whole adoption. The base class contributes the full rule set — schema validation,
+dependency matrix, sibling independence, composition boundary, forbidden packages, cycles, naming,
+test references and waiver integrity — each as a separate test, so a failure names the rule.
+
+> **`[InheritsTests]` is required.** TUnit does not walk base types during discovery. Without the
+> attribute the class compiles, the run is green, and **nothing is enforced**. TUnit's analyzer
+> reports `TUnit0030` when it is missing; treat that as an error, not a suggestion.
+
+Two optional overrides:
+
+| Override | Use when |
+| -- | -- |
+| `RepositoryRoot` | The policy does not sit above the test binary — the default probes upward for `.config/architecture-policy.json` |
+| `SkipRule(rule)` | A rule the repository has not adopted yet. Prefer a waiver: it is per project, carries a reason, and is itself checked |
+
+For bespoke rules, use the engine directly rather than the base class —
+`ArchitecturePolicyEvaluator.ForRepository()` returns typed `ArchitectureViolation` lists per rule,
+and takes an in-memory `ProjectNode` graph so a rule can be tested without a repository on disk.
+
 ### Waivers
 
 A repository that predates the policy will violate it, and suppressing that silently would make the
