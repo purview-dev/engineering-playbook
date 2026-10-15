@@ -50,10 +50,10 @@ public sealed class ConventionTests
 		var id = TestBuilder.ConventionId();
 
 		// Act
-		Action act = () => Convention.Create(id, title, VerificationTier.Unit, enforcedByBuild: true);
+		void Act() => Convention.Create(id, title, VerificationTier.Unit, enforcedByBuild: true);
 
 		// Assert
-		await Assert.That(act).Throws<ArgumentException>();
+		await Assert.That(Act).Throws<ArgumentException>();
 	}
 
 	[Test]
@@ -64,10 +64,10 @@ public sealed class ConventionTests
 		string title = new('a', Convention.MaxTitleLength + 1);
 
 		// Act
-		Action act = () => Convention.Create(id, title, VerificationTier.Unit, enforcedByBuild: true);
+		void Act() => Convention.Create(id, title, VerificationTier.Unit, enforcedByBuild: true);
 
 		// Assert
-		await Assert.That(act).Throws<ArgumentException>();
+		await Assert.That(Act).Throws<ArgumentException>();
 	}
 
 	[Test]
@@ -75,10 +75,10 @@ public sealed class ConventionTests
 	{
 		// Arrange
 		// Act
-		Action act = () => Convention.Create(null!, "Architecture is a test", VerificationTier.Unit, true);
+		static void Act() => Convention.Create(null!, "Architecture is a test", VerificationTier.Unit, true);
 
 		// Assert
-		await Assert.That(act).Throws<ArgumentNullException>();
+		await Assert.That(Act).Throws<ArgumentNullException>();
 	}
 
 	[Test]

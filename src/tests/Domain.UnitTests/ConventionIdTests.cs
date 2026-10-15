@@ -51,10 +51,10 @@ public sealed class ConventionIdTests
 	{
 		// Arrange
 		// Act
-		Action act = () => ConventionId.Create(value);
+		void Act() => ConventionId.Create(value);
 
 		// Assert
-		await Assert.That(act).Throws<ArgumentException>();
+		await Assert.That(Act).Throws<ArgumentException>();
 	}
 
 	[Test]
@@ -64,10 +64,10 @@ public sealed class ConventionIdTests
 		string slug = new('a', ConventionId.MaxLength + 1);
 
 		// Act
-		Action act = () => ConventionId.Create(slug);
+		void Act() => ConventionId.Create(slug);
 
 		// Assert
-		await Assert.That(act).Throws<ArgumentException>();
+		await Assert.That(Act).Throws<ArgumentException>();
 	}
 
 	[Test]
@@ -86,10 +86,10 @@ public sealed class ConventionIdTests
 	{
 		// Arrange
 		// Act
-		Action act = () => ConventionId.Hydrate(" ");
+		static void Act() => ConventionId.Hydrate(" ");
 
 		// Assert
-		await Assert.That(act).Throws<ArgumentException>();
+		await Assert.That(Act).Throws<ArgumentException>();
 	}
 
 	[Test]

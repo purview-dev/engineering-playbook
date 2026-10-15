@@ -48,7 +48,7 @@ public static class TestBuilder
 	/// </summary>
 	/// <param name="value">The slug to use; omitted generates a unique one.</param>
 	/// <returns>The identifier.</returns>
-	public static Domain.ConventionId ConventionId(string? value = null) =>
+	public static ConventionId ConventionId(string? value = null) =>
 		Domain.ConventionId.Create(value ?? $"{Slug()}-{Faker.Random.String2(6, LowercaseAlphabet)}");
 
 	/// <summary>
@@ -59,8 +59,8 @@ public static class TestBuilder
 	/// <param name="tier">The verification tier; omitted generates one.</param>
 	/// <param name="enforcedByBuild">Whether the build enforces it; omitted generates one.</param>
 	/// <returns>The convention.</returns>
-	public static Domain.Convention Convention(
-		Domain.ConventionId? id = null,
+	public static Convention Convention(
+		ConventionId? id = null,
 		string? title = null,
 		VerificationTier? tier = null,
 		bool? enforcedByBuild = null
@@ -77,7 +77,7 @@ public static class TestBuilder
 	/// </summary>
 	/// <param name="id">The identifier; omitted generates one.</param>
 	/// <returns>The convention.</returns>
-	public static Domain.Convention EnforcedConvention(Domain.ConventionId? id = null) =>
+	public static Convention EnforcedConvention(ConventionId? id = null) =>
 		Convention(id: id, tier: VerificationTier.Unit, enforcedByBuild: true);
 
 	/// <summary>
@@ -85,7 +85,7 @@ public static class TestBuilder
 	/// </summary>
 	/// <param name="count">How many to create; defaults to <see cref="DefaultCount"/>.</param>
 	/// <returns>The conventions.</returns>
-	public static IReadOnlyList<Domain.Convention> Conventions(int count = DefaultCount) =>
+	public static IReadOnlyList<Convention> Conventions(int count = DefaultCount) =>
 		[.. Enumerable.Range(0, count).Select(_ => Convention())];
 
 	/// <summary>

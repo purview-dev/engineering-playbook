@@ -107,8 +107,8 @@ public static class ProjectGraph
 	/// </remarks>
 	public static IReadOnlyList<string> FindCycles(IReadOnlyDictionary<string, ProjectNode> projects)
 	{
-		List<string> cycles = new();
-		Dictionary<string, int> state = new();
+		List<string> cycles = [];
+		Dictionary<string, int> state = [];
 
 		foreach (var project in projects.Keys)
 			Visit(project, []);

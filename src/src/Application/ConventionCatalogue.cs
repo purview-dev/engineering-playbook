@@ -9,17 +9,14 @@ namespace Purview.EngineeringPlaybook.Application;
 /// The class holds no infrastructure of its own: it takes the <see cref="IConventionRepository"/> port,
 /// which is what makes it testable without a database and what keeps the dependency direction one-way.
 /// </remarks>
-public sealed class ConventionCatalogue
+/// <remarks>
+/// Initialises the service.
+/// </remarks>
+/// <param name="repository">The persistence port.</param>
+/// <exception cref="ArgumentNullException"><paramref name="repository"/> is <see langword="null"/>.</exception>
+public sealed class ConventionCatalogue(IConventionRepository repository)
 {
-	readonly IConventionRepository _repository;
-
-	/// <summary>
-	/// Initialises the service.
-	/// </summary>
-	/// <param name="repository">The persistence port.</param>
-	/// <exception cref="ArgumentNullException"><paramref name="repository"/> is <see langword="null"/>.</exception>
-	public ConventionCatalogue(IConventionRepository repository) =>
-		_repository = repository ?? throw new ArgumentNullException(nameof(repository));
+	readonly IConventionRepository _repository = repository ?? throw new ArgumentNullException(nameof(repository));
 
 	/// <summary>
 	/// Registers a convention, rejecting an identifier that is already in use.

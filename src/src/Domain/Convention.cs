@@ -61,7 +61,8 @@ public sealed record Convention
 			);
 		}
 
-		return new Convention(id, normalised, tier, enforcedByBuild);
+		// The title is valid and normalised, so construct the convention.
+		return new(id, normalised, tier, enforcedByBuild);
 	}
 
 	/// <summary>

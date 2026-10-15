@@ -50,6 +50,7 @@ public sealed class ArchitecturePolicy
 		if (!File.Exists(path))
 			throw new FileNotFoundException($"The architecture policy was not found at '{path}'.", path);
 
+		// The policy is a single source of truth, so deserialising to null is a failure.
 		return JsonSerializer.Deserialize<ArchitecturePolicy>(File.ReadAllText(path), SerializerOptions)
 			?? throw new InvalidOperationException($"The architecture policy at '{path}' deserialised to null.");
 	}
