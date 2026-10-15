@@ -7,6 +7,7 @@
 - [Contracts and Data Exchange](Contracts-And-Data-Exchange.md)
 - [Testing and Test Data](Testing-And-Test-Data.md)
 - [Agent Enablement](Agent-Enablement.md)
+- [Agent Skills Distribution](Agent-Skills-Distribution.md)
 - [Documentation Convention](Documentation-Convention.md)
 - [Worked Examples](Worked-Examples.md)
 - [Adopting This at Your Scale](Adopting-This-At-Your-Scale.md)

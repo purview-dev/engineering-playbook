@@ -56,15 +56,23 @@ rule the humans have not written down, and a rule that only the wiki states is o
 ## The `.agents/` folder
 
 ```text
+skills/                 authored skills, tracked in git
+└── <skill-name>/
+    ├── SKILL.md        the skill itself
+    └── references/     optional deeper material the skill links to
+
 .agents/
 ├── .gitignore          generated; lists the mirrored files
 ├── agents/             sub-agent definitions
 ├── prompts/            reusable prompts
-└── skills/
+└── skills/             mirrored from packages; gitignored
     └── <skill-name>/
-        ├── SKILL.md    the skill itself
-        └── references/ optional deeper material the skill links to
 ```
+
+Note the split. A skill you **author** lives at the repository root in `skills/`, where it is tracked
+and where a cloning installer can find it. A skill you **receive** from a package arrives in
+`.agents/skills/`, where it is gitignored. The same folder cannot do both jobs, and
+[Agent Skills Distribution](Agent-Skills-Distribution.md) explains why.
 
 A **skill** is a self-contained instruction set for one kind of task. It opens with YAML frontmatter whose
 `description` is the trigger — it is what tells an agent that this skill applies:
@@ -132,10 +140,22 @@ appears in a status output.
 - **A repository with several task shapes.** Add a prompt per shape, and consider a sub-agent definition for
   the one that needs a different remit rather than more instructions.
 - **A repository that others copy from.** Ship your skills in a package so the guidance travels with the
-  code, in the same way the SDK does — the mirror mechanism is the pattern, not the SDK.
+  code, in the same way the SDK does — the mirror mechanism is the pattern, not the SDK. See
+  [Agent Skills Distribution](Agent-Skills-Distribution.md).
+
+## The gap the mirror does not close
+
+`.agents/` is a convention this playbook and the SDK share. It is **not** a directory any agent reads
+natively — Claude Code, Codex, Copilot and the rest each look somewhere else. Mirroring a skill into
+`.agents/` therefore makes it present, not active.
+
+Closing that gap is a separate, explicit step, delegated to a tool that tracks every agent's discovery
+paths so the SDK does not have to. That is the subject of
+[Agent Skills Distribution](Agent-Skills-Distribution.md).
 
 ## See also
 
+- [Agent Skills Distribution](Agent-Skills-Distribution.md)
 - [Documentation Convention](Documentation-Convention.md)
 - [Repository Shape](Repository-Shape.md)
 - [build-sdk: Agent Folder](https://github.com/purview-dev/build-sdk/blob/main/docs/wiki/Agent-Folder.md)

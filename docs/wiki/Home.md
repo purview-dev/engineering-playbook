@@ -36,6 +36,7 @@ at all, so the two are never blurred.
 | [Contracts and Data Exchange](Contracts-And-Data-Exchange.md) | How value objects, schemas and results cross a boundary. |
 | [Testing and Test Data](Testing-And-Test-Data.md) | How tests are written, and where their data comes from. |
 | [Agent Enablement](Agent-Enablement.md) | How a repository is made legible to a coding agent. |
+| [Agent Skills Distribution](Agent-Skills-Distribution.md) | How a skill is published once and reaches both a package's consumers and an agent's own directories. |
 | [Documentation Convention](Documentation-Convention.md) | How the wiki is written, structured and published. |
 | [Worked Examples](Worked-Examples.md) | The reference implementation in this repository, walked end to end. |
 | [Adopting This at Your Scale](Adopting-This-At-Your-Scale.md) | Which parts apply to a small, medium or large repository. |
