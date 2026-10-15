@@ -41,6 +41,15 @@
 	<ItemGroup Label="Microsoft Extensions">
 		<PackageVersion Include="Microsoft.Extensions.Telemetry.Abstractions" Version="$(MSExtensionVersion)" />
 	</ItemGroup>
+	<ItemGroup Label="Schema">
+		<!--
+			Validates .config/architecture-policy.json against its JSON Schema in a test. The schema is
+			only worth having if something checks the policy against it; otherwise it drifts silently and
+			becomes a second, wrong description of the format. Same library the Purview.Build tool uses
+			to validate purview-build.json, so the ecosystem has one JSON Schema implementation.
+		-->
+		<PackageVersion Include="JsonSchema.Net" Version="9.4.0" />
+	</ItemGroup>
 	<ItemGroup Label="Other">
 		<!-- Injected by the SDK and added to every assembly. -->
 		<PackageVersion Include="Microsoft.SourceLink.GitHub" Version="10.0.401" />

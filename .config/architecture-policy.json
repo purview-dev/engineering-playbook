@@ -1,0 +1,310 @@
+{
+  "$schema": "https://raw.githubusercontent.com/purview-dev/engineering-playbook/main/.config/architecture-policy.schema.json",
+  "version": 1,
+  "description": "The authoritative dependency and naming policy. The architecture tests read this file, and a test asserts the wiki tables agree with it, so there is one definition of each rule rather than one in prose and one in code.",
+  "conventions": {
+    "qualifiedNameSeparator": ".",
+    "dependencyArrowMeaning": "A -> B means A depends on B at compile time."
+  },
+  "responsibilities": [
+    {
+      "name": "Core",
+      "aliases": ["Domain"],
+      "category": "domain",
+      "purpose": "The fundamental domain model: entities, value objects, invariants, domain events and domain errors.",
+      "mayDependOn": ["Shared"],
+      "mustNotDependOn": [
+        "Application",
+        "Abstractions",
+        "Contracts",
+        "Persistence",
+        "Providers",
+        "Adapters",
+        "Composition",
+        "API",
+        "Worker",
+        "Migrator",
+        "AppHost",
+        "ServiceDefaults",
+        "WebApp"
+      ],
+      "forbiddenPackagePrefixes": [
+        "Microsoft.EntityFrameworkCore",
+        "Microsoft.AspNetCore",
+        "Npgsql",
+        "Microsoft.Data.SqlClient",
+        "Aspire.Hosting"
+      ],
+      "separateProjectWhen": "Always, when a domain model exists at all; it is the one responsibility that earns its own project early.",
+      "mayRemainCombinedWhen": "The application is a thin utility with no domain rules worth isolating."
+    },
+    {
+      "name": "Abstractions",
+      "aliases": [],
+      "category": "domain",
+      "purpose": "Stable contracts for capabilities needed across architectural boundaries.",
+      "mayDependOn": ["Core", "Shared"],
+      "mustNotDependOn": [
+        "Application",
+        "Persistence",
+        "Providers",
+        "Adapters",
+        "Composition",
+        "API",
+        "Worker",
+        "Migrator",
+        "AppHost",
+        "ServiceDefaults",
+        "WebApp"
+      ],
+      "forbiddenPackagePrefixes": ["Microsoft.EntityFrameworkCore", "Microsoft.AspNetCore", "Aspire.Hosting"],
+      "separateProjectWhen": "A contract has more than one implementation, or an implementation must not be referenced by its consumer.",
+      "mayRemainCombinedWhen": "An interface has a single implementation and no cross-boundary consumer; keep it beside that implementation."
+    },
+    {
+      "name": "Application",
+      "aliases": ["UseCases"],
+      "category": "application",
+      "purpose": "Coordinates use cases and workflows across domain and capability boundaries.",
+      "mayDependOn": ["Core", "Abstractions", "Contracts", "Shared"],
+      "mustNotDependOn": [
+        "Persistence",
+        "Providers",
+        "Adapters",
+        "Composition",
+        "API",
+        "Worker",
+        "Migrator",
+        "AppHost",
+        "ServiceDefaults",
+        "WebApp"
+      ],
+      "forbiddenPackagePrefixes": ["Microsoft.EntityFrameworkCore", "Npgsql", "Microsoft.Data.SqlClient", "Aspire.Hosting"],
+      "separateProjectWhen": "Workflows are reused by more than one host, or coordinate several capabilities.",
+      "mayRemainCombinedWhen": "It would only forward trivial CRUD to persistence without adding behaviour."
+    },
+    {
+      "name": "Contracts",
+      "aliases": [],
+      "category": "application",
+      "purpose": "Externally exposed contracts, particularly API request and response models.",
+      "mayDependOn": ["Core", "Shared"],
+      "mustNotDependOn": [
+        "Application",
+        "Persistence",
+        "Providers",
+        "Adapters",
+        "Composition",
+        "API",
+        "Worker",
+        "Migrator",
+        "AppHost",
+        "ServiceDefaults",
+        "WebApp"
+      ],
+      "forbiddenPackagePrefixes": ["Microsoft.EntityFrameworkCore", "Npgsql", "Microsoft.Data.SqlClient"],
+      "separateProjectWhen": "A client - a WebApp, an SDK or another service - must compile against the contract without taking the server.",
+      "mayRemainCombinedWhen": "The only consumer is the API host itself."
+    },
+    {
+      "name": "Persistence",
+      "aliases": [],
+      "category": "infrastructure",
+      "purpose": "Durable data access: DbContext, mappings, migrations and persistence-specific configuration.",
+      "mayDependOn": ["Core", "Abstractions", "Application", "Shared"],
+      "mustNotDependOn": ["Composition", "API", "Worker", "Migrator", "AppHost", "WebApp", "Providers", "Adapters"],
+      "forbiddenPackagePrefixes": ["Microsoft.AspNetCore.Mvc", "Aspire.Hosting"],
+      "separateProjectWhen": "Always, when persistence exists; it is what Core and Application must not reference.",
+      "mayRemainCombinedWhen": "A single-project utility where the storage is a file and there is no provider to isolate."
+    },
+    {
+      "name": "Providers",
+      "aliases": ["Integrations"],
+      "category": "infrastructure",
+      "purpose": "Integrations with named external platforms or services.",
+      "mayDependOn": ["Core", "Abstractions", "Application", "Shared"],
+      "mustNotDependOn": ["Composition", "API", "Worker", "Migrator", "AppHost", "WebApp", "Persistence", "Adapters"],
+      "forbiddenPackagePrefixes": ["Microsoft.EntityFrameworkCore", "Aspire.Hosting"],
+      "siblingIndependence": true,
+      "separateProjectWhen": "Two or more platforms are integrated and their SDKs or lifecycles differ.",
+      "mayRemainCombinedWhen": "One platform, or several small clients sharing a lifecycle and dependency set."
+    },
+    {
+      "name": "Adapters",
+      "aliases": [],
+      "category": "infrastructure",
+      "purpose": "Concrete implementations of application-defined technical capabilities.",
+      "mayDependOn": ["Core", "Abstractions", "Application", "Shared"],
+      "mustNotDependOn": ["Composition", "API", "Worker", "Migrator", "AppHost", "WebApp", "Persistence", "Providers"],
+      "forbiddenPackagePrefixes": ["Microsoft.EntityFrameworkCore", "Aspire.Hosting"],
+      "siblingIndependence": true,
+      "separateProjectWhen": "A capability has more than one technology behind it, or the technology drags in heavy dependencies.",
+      "mayRemainCombinedWhen": "One capability, one technology, small surface."
+    },
+    {
+      "name": "Composition",
+      "aliases": [],
+      "category": "composition",
+      "purpose": "Dependency injection registration and concrete implementation selection.",
+      "mayDependOn": [
+        "Core",
+        "Abstractions",
+        "Application",
+        "Contracts",
+        "Persistence",
+        "Providers",
+        "Adapters",
+        "Shared"
+      ],
+      "mustNotDependOn": ["API", "Worker", "Migrator", "AppHost", "WebApp"],
+      "forbiddenPackagePrefixes": [],
+      "separateProjectWhen": "More than one host composes the same implementations.",
+      "mayRemainCombinedWhen": "There is one host; compose in the host."
+    },
+    {
+      "name": "API",
+      "aliases": [],
+      "category": "host",
+      "purpose": "Executable HTTP application host.",
+      "mayDependOn": [
+        "Core",
+        "Abstractions",
+        "Application",
+        "Contracts",
+        "Composition",
+        "ServiceDefaults",
+        "Shared",
+        "Persistence",
+        "Providers",
+        "Adapters"
+      ],
+      "mustNotDependOn": ["Worker", "Migrator", "AppHost", "WebApp"],
+      "forbiddenPackagePrefixes": [],
+      "separateProjectWhen": "An HTTP surface exists.",
+      "mayRemainCombinedWhen": "Never combined with domain or persistence; it is the host."
+    },
+    {
+      "name": "Worker",
+      "aliases": [],
+      "category": "host",
+      "purpose": "Executable background-processing host.",
+      "mayDependOn": [
+        "Core",
+        "Abstractions",
+        "Application",
+        "Contracts",
+        "Composition",
+        "ServiceDefaults",
+        "Shared",
+        "Persistence",
+        "Providers",
+        "Adapters"
+      ],
+      "mustNotDependOn": ["API", "Migrator", "AppHost", "WebApp"],
+      "forbiddenPackagePrefixes": [],
+      "separateProjectWhen": "Background processing is deployed or scaled separately from the API.",
+      "mayRemainCombinedWhen": "A hosted service inside the API is sufficient and they scale together."
+    },
+    {
+      "name": "Migrator",
+      "aliases": [],
+      "category": "host",
+      "purpose": "Executable migration and controlled seeding host. Persistence owns migration definitions; Migrator owns their execution.",
+      "mayDependOn": ["Core", "Abstractions", "Persistence", "Composition", "ServiceDefaults", "Shared"],
+      "mustNotDependOn": ["API", "Worker", "AppHost", "WebApp"],
+      "forbiddenPackagePrefixes": [],
+      "separateProjectWhen": "Schema changes are applied by a deliberate deployment step rather than at API startup.",
+      "mayRemainCombinedWhen": "Development-only, where the host applies migrations on start."
+    },
+    {
+      "name": "AppHost",
+      "aliases": [],
+      "category": "host",
+      "purpose": "Aspire orchestration host. Orchestration is not a compile-time dependency between the services it orchestrates.",
+      "mayDependOn": ["API", "Worker", "Migrator", "WebApp", "Shared"],
+      "mustNotDependOn": ["Core", "Application", "Persistence", "Providers", "Adapters"],
+      "forbiddenPackagePrefixes": [],
+      "separateProjectWhen": "Aspire is used.",
+      "mayRemainCombinedWhen": "Never; it is its own host."
+    },
+    {
+      "name": "ServiceDefaults",
+      "aliases": [],
+      "category": "host",
+      "purpose": "Common host configuration: telemetry, health checks, resilience and service discovery defaults.",
+      "mayDependOn": ["Shared"],
+      "mustNotDependOn": [
+        "Core",
+        "Application",
+        "Persistence",
+        "Providers",
+        "Adapters",
+        "Composition",
+        "API",
+        "Worker",
+        "Migrator",
+        "AppHost",
+        "WebApp"
+      ],
+      "forbiddenPackagePrefixes": [],
+      "separateProjectWhen": "More than one host shares operational defaults.",
+      "mayRemainCombinedWhen": "There is one host."
+    },
+    {
+      "name": "WebApp",
+      "aliases": [],
+      "category": "host",
+      "purpose": "Frontend application.",
+      "mayDependOn": ["Contracts", "ServiceDefaults", "Shared"],
+      "mustNotDependOn": ["Core", "Application", "Persistence", "Providers", "Adapters", "Composition", "API", "Worker", "Migrator"],
+      "forbiddenPackagePrefixes": ["Microsoft.EntityFrameworkCore", "Npgsql", "Microsoft.Data.SqlClient"],
+      "separateProjectWhen": "A UI exists.",
+      "mayRemainCombinedWhen": "Server-rendered pages inside the API host."
+    },
+    {
+      "name": "Shared",
+      "aliases": [],
+      "category": "shared",
+      "purpose": "Small, broadly reusable, domain-independent utilities.",
+      "mayDependOn": [],
+      "mustNotDependOn": [
+        "Core",
+        "Abstractions",
+        "Application",
+        "Contracts",
+        "Persistence",
+        "Providers",
+        "Adapters",
+        "Composition",
+        "API",
+        "Worker",
+        "Migrator",
+        "AppHost",
+        "ServiceDefaults",
+        "WebApp"
+      ],
+      "forbiddenPackagePrefixes": [],
+      "separateProjectWhen": "A genuinely domain-independent primitive is used by two or more responsibilities.",
+      "mayRemainCombinedWhen": "Almost always. Shared is the easiest project to create and the hardest to keep coherent."
+    }
+  ],
+  "discouragedProjectNames": {
+    "names": ["Infrastructure", "Services", "Managers", "Models", "Helpers", "Common", "Utils", "Utilities"],
+    "reason": "These name a category, not a responsibility, so nothing can be excluded from them and they accumulate. Infrastructure is an architectural category covering Persistence, Providers and Adapters - not a project."
+  },
+  "rules": {
+    "noCycles": true,
+    "noProductionToTestReferences": true,
+    "implementationsMustNotReferenceComposition": true,
+    "siblingImplementationsIndependent": true
+  },
+  "waivers": [
+    {
+      "project": "Infrastructure",
+      "mapsTo": "Adapters",
+      "rules": ["naming", "discouragedName"],
+      "reason": "This repository's reference implementation has used 'Infrastructure' since before the responsibility catalogue existed, and it holds exactly one adapter - the in-memory IConventionRepository - so it is not the catch-all the discouraged-name rule is aimed at. The policy's own guidance is not to rename an established project merely to match canonical terminology, and the wiki, AGENTS.md and NamespaceRemoveSuffix all name it. It is classified as Adapters for every dependency rule, so the direction is still enforced.",
+      "reviewedOn": "2026-10-15"
+    }
+  ]
+}

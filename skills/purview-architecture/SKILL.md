@@ -66,7 +66,51 @@ do not add the layer.
 
 Full guidance and the per-pattern justification tests: `references/proportional-architecture.md`.
 
-## 3. DRY, applied where it pays
+## 3. Name what you do create
+
+A project name states a **responsibility**, optionally qualified by an implementation:
+
+```text
+<Responsibility>[.<Implementation>]
+```
+
+The responsibility decides the rules; the qualifier never changes them. Three rules people usually
+get wrong:
+
+- **Do not qualify a single implementation.** `Persistence` is correct even when it uses SQL Server.
+  Rename when a second provider arrives, not in anticipation.
+- **Do not create an empty parent.** `Persistence.SqlServer` + `Persistence.PostgreSql` with nothing
+  shared need no `Persistence` project.
+- **Multiple implementations do not require multiple assemblies.** Two small adapters with the same
+  dependencies belong in one project.
+
+Never use a *category* as a project name — `Infrastructure`, `Services`, `Managers`, `Models`,
+`Helpers`, `Common`. Nothing can be excluded from a category, so it grows without limit. And never
+rename an established project just to match canonical terminology; `Domain`, `UseCases` and
+`Integrations` are recognised aliases.
+
+Responsibility catalogue, dependency matrix and the naming decision tree:
+`references/project-responsibilities.md`.
+
+## 4. Check the direction
+
+`A → B` means **A depends on B at compile time** — not a runtime call, a DI registration, an HTTP
+request or an Aspire orchestration edge. Confusing those is the most common source of a wrong answer
+about whether a dependency is allowed.
+
+The rules that matter most:
+
+- Core depends on nothing but `Shared`.
+- Application never references a concrete `Persistence`, `Providers` or `Adapters` project.
+- Composition references implementations; **nothing references Composition** except a host.
+- Sibling implementations (`Providers.GitHub`, `Providers.AzureDevOps`) stay independent.
+- Persistence owns migration *definitions*; `Migrator` owns their *execution*. Production API startup
+  does not apply schema migrations.
+
+When a boundary is worth having, make it fail the build rather than the review — see
+`purview-architecture-testing`.
+
+## 5. DRY, applied where it pays
 
 Reuse the Purview libraries when they remove a real source of truth, not for coverage:
 
@@ -82,7 +126,7 @@ Duplication that matters: validation repeated per entry point, a domain rule res
 configuration bound in two places, two types that both claim to be the truth. Duplication that does
 not: two similar-looking methods that answer to different owners.
 
-## 4. Telemetry is not an advanced topic
+## 6. Telemetry is not an advanced topic
 
 Recommend instrumentation from the first commit, at every project size. A small application gets
 small telemetry — it does not get none. See `purview-telemetry`.
