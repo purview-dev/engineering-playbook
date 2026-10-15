@@ -16,7 +16,8 @@ application that combines Core, Application and Persistence in one assembly has 
 it has one project carrying three responsibilities, which is usually correct. The catalogue tells you
 what each responsibility *is* so that you can tell when splitting one out would buy something.
 
-The authoritative definition is [`.config/architecture-policy.json`](https://github.com/purview-dev/engineering-playbook/blob/main/.config/architecture-policy.json).
+The authoritative definition is [`.config/architecture-policy.json`](https://github.com/purview-dev/engineering-playbook/blob/main/.config/architecture-policy.json),
+described by [`architecture-policy.schema.json`](https://github.com/purview-dev/engineering-playbook/blob/main/.config/architecture-policy.schema.json).
 The tables on this page are checked against it — see [How it is enforced](#how-it-is-enforced).
 
 ## Why
@@ -315,10 +316,47 @@ flowchart TD
 | Production code does not reference a test project | `ProjectDependencyPolicyTests` |
 | Every waiver names a real project, a rule, and a substantive reason | `ProjectDependencyPolicyTests` |
 | This page's tables match the policy file | `PolicyDocumentationTests` |
+| The policy matches its JSON Schema, and the schema can actually reject | `PolicySchemaTests` |
 | A responsibility is split only when it is justified | **Review** |
 
 The tests read `.config/architecture-policy.json`. Nothing on this page is a second source of truth —
 a consistency test fails if the tables drift from the policy.
+
+### The policy format
+
+`.config/architecture-policy.json` is described by a JSON Schema (draft 2020-12) published beside it,
+and the file points at it so an editor validates as you type:
+
+```json
+{
+  "$schema": "https://raw.githubusercontent.com/purview-dev/engineering-playbook/main/.config/architecture-policy.schema.json",
+  "version": 1
+}
+```
+
+| Key | Purpose |
+| -- | -- |
+| `version` | Format version. Increment when a change would break a reader that understood the previous shape. |
+| `responsibilities[]` | `name`, `aliases`, `category`, `purpose`, `mayDependOn`, `mustNotDependOn`, `forbiddenPackagePrefixes`, `siblingIndependence`, and the split/combine guidance |
+| `discouragedProjectNames` | Category names rejected as project names, with the reason |
+| `rules` | Repository-wide switches not expressed per responsibility |
+| `waivers[]` | Deliberate departures — see below |
+
+Two schema choices do real work:
+
+- **`additionalProperties: false` everywhere.** A misspelled key is the most dangerous mistake in a
+  policy file, because it reads as an *absent* rule rather than an error. `mustNotDependOnn` must
+  fail, not silently disable a boundary.
+- **`minLength` on a waiver's `reason`.** A waiver with a token justification is a suppression
+  wearing a reason's clothes.
+
+The schema is enforced, not decorative: `PolicySchemaTests` validates the policy against it, asserts
+the two files agree on the published `$id`, and — importantly — asserts the schema *rejects* a
+document missing a required field, a waiver with a token reason, and a misspelled key. A schema that
+cannot fail proves nothing.
+
+Validation uses `JsonSchema.Net`, the same library `Purview.Build` uses for `purview-build.json`, so
+the ecosystem has one JSON Schema implementation rather than two that disagree at the edges.
 
 ### Waivers
 

@@ -31,7 +31,7 @@ public sealed class ArchitecturePolicy
 	[JsonPropertyName("rules")]
 	public PolicyRules Rules { get; init; } = new();
 
-	[JsonPropertyName("exceptions")]
+	[JsonPropertyName("waivers")]
 	public IReadOnlyList<PolicyWaiver> Waivers { get; init; } = [];
 
 	/// <summary>Finds the documented waiver for a project, if one exists.</summary>

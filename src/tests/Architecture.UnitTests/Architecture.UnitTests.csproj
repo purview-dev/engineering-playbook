@@ -9,4 +9,9 @@
 		<ProjectReference Include="../../src/Domain/Domain.csproj" />
 		<ProjectReference Include="../../src/Infrastructure/Infrastructure.csproj" />
 	</ItemGroup>
+
+	<!-- Validates the architecture policy against its JSON Schema. -->
+	<ItemGroup>
+		<PackageReference Include="JsonSchema.Net" />
+	</ItemGroup>
 </Project>
