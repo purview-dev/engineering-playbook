@@ -37,10 +37,10 @@ public sealed class ConventionCatalogueTests
 		var catalogue = CreateCatalogue(repository.Object);
 
 		// Act
-		Func<Task> act = () => catalogue.RegisterAsync(TestBuilder.EnforcedConvention(), cancellationToken);
+		Task Act() => catalogue.RegisterAsync(TestBuilder.EnforcedConvention(), cancellationToken);
 
 		// Assert
-		await Assert.That(act).Throws<InvalidOperationException>();
+		await Assert.That(Act).Throws<InvalidOperationException>();
 	}
 
 	[Test]
@@ -69,10 +69,10 @@ public sealed class ConventionCatalogueTests
 		var catalogue = CreateCatalogue();
 
 		// Act
-		Func<Task> act = () => catalogue.RegisterAsync(null!, cancellationToken);
+		Task Act() => catalogue.RegisterAsync(null!, cancellationToken);
 
 		// Assert
-		await Assert.That(act).Throws<ArgumentNullException>();
+		await Assert.That(Act).Throws<ArgumentNullException>();
 	}
 
 	[Test]
@@ -123,10 +123,10 @@ public sealed class ConventionCatalogueTests
 	{
 		// Arrange
 		// Act
-		Action act = () => _ = new ConventionCatalogue(null!);
+		static void Act() => _ = new ConventionCatalogue(null!);
 
 		// Assert
-		await Assert.That(act).Throws<ArgumentNullException>();
+		await Assert.That(Act).Throws<ArgumentNullException>();
 	}
 
 	/// <summary>Creates the repository substitute.</summary>

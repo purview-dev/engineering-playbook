@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<!--
+		The inferred target of this project is `Repository`, which does not exist, so the SDK adds no
+		automatic ProjectReference. That is deliberate: these tests assert something about the
+		repository itself - its skills/ folder - and reference no layer.
+	-->
+	<ItemGroup>
+		<!-- The Agent Skills conformance rule set, shipped by Purview.BuildSdk. The rules live in the
+		     package so they are defined once rather than reimplemented here. -->
+		<PackageReference Include="Purview.Skills.Testing" />
+	</ItemGroup>
+</Project>

@@ -1,15 +1,25 @@
 # Getting Started
 
-This page builds the smallest repository that satisfies every rule in the playbook, in the order you
-would actually create the files. Each step says what it buys you, so you can stop when you have taken
-what you need — [Adopting This at Your Scale](Adopting-This-At-Your-Scale.md) is the short version of
-that decision.
+## The rule
 
-The finished result is a repository whose defaults come from one MSBuild SDK, whose test projects are
-wired by their filenames, whose architecture is asserted by a test, and whose documentation is a wiki
-the build already knows how to find.
+Build the smallest repository that satisfies every rule in the playbook, in the order you would
+actually create the files. Each step says what it buys you, so you can stop when you have taken what
+you need. The finished result is a repository whose defaults come from one MSBuild SDK, whose test
+projects are wired by their filenames, whose architecture is asserted by a test, and whose
+documentation is a wiki the build already knows how to find.
 
-## Step 1 — Pin the SDK in `global.json`
+## Why
+
+A convention adopted by copying somebody else's finished repository is a convention you have not read.
+Building the repository in the order the rules depend on each other means every file has a reason by
+the time you write it, and the build tells you immediately when a step is wrong. The order is not
+arbitrary: the SDK import must come before anything that derives from it, the package versions must
+exist before the first project restores, and the solution must exist before the pipeline can be pointed
+at it.
+
+## The steps
+
+### Step 1 — Pin the SDK in `global.json`
 
 There are **two** versions in play here, and the file pins both:
 
@@ -21,7 +31,7 @@ There are **two** versions in play here, and the file pins both:
 		"allowPrerelease": false
 	},
 	"msbuild-sdks": {
-		"Purview.BuildSdk": "1.0.4"
+		"Purview.BuildSdk": "1.0.6"
 	},
 	"test": {
 		"runner": "Microsoft.Testing.Platform"
@@ -43,10 +53,13 @@ latest-wins, and the build that passes locally is not necessarily the build CI r
 `global.json`
 bootstrapping](https://github.com/purview-dev/build-sdk/blob/main/docs/wiki/Repository-Bootstrap.md#globaljson-bootstrapping).
 
-## Step 2 — Declare the versions the SDK injects, in `Directory.Packages.props`
+### Step 2 — Declare the versions the SDK injects, in `Directory.Packages.props`
 
 Central Package Management is on by default, so every `PackageReference` the SDK adds has to have a
-matching `PackageVersion` or restore fails with `NU1010`:
+matching `PackageVersion` or restore fails with `NU1010`. The versions below are the ones this
+repository builds with today — check them against the SDK's current release before you commit, as
+[`templates/README.md`](https://github.com/purview-dev/engineering-playbook/blob/main/templates/README.md)
+says.
 
 ```xml
 <Project>
@@ -59,10 +72,10 @@ matching `PackageVersion` or restore fails with `NU1010`:
 		<MSExtensionVersion>10.10.0</MSExtensionVersion>
 	</PropertyGroup>
 	<PropertyGroup Label="Purview Versions">
-		<PurviewTelemetryVersion>5.0.1</PurviewTelemetryVersion>
+		<PurviewTelemetryVersion>5.0.4</PurviewTelemetryVersion>
 	</PropertyGroup>
 	<PropertyGroup Label="Testing Versions">
-		<TUnitVersion>1.72.4</TUnitVersion>
+		<TUnitVersion>1.75.0</TUnitVersion>
 	</PropertyGroup>
 
 	<!-- Packages -->
@@ -73,7 +86,7 @@ matching `PackageVersion` or restore fails with `NU1010`:
 		<PackageVersion Include="Microsoft.Extensions.Telemetry.Abstractions" Version="$(MSExtensionVersion)" />
 	</ItemGroup>
 	<ItemGroup Label="Other">
-		<PackageVersion Include="Microsoft.SourceLink.GitHub" Version="10.0.401" />
+		<PackageVersion Include="Microsoft.SourceLink.GitHub" Version="10.0.402" />
 	</ItemGroup>
 	<ItemGroup Label="Testing">
 		<PackageVersion Include="TUnit" Version="$(TUnitVersion)" />
@@ -114,7 +127,7 @@ Two rules keep it from becoming indirection for its own sake:
 This is a convention, not something the build checks: nothing fails if you inline every version. It is on
 the reviewer, and it is cheap to keep because the file is read far more often than it is written.
 
-## Step 3 — Import the SDK, and name the namespace prefix
+### Step 3 — Import the SDK, and name the namespace prefix
 
 `src/Directory.Build.props`:
 
@@ -146,7 +159,7 @@ declaring any of them. See [Repository Shape](Repository-Shape.md).
 > repositories put it at `src/`, which keeps the root for repository-level configuration only. The SDK's
 > own repository-root discovery still resolves correctly from there, because it asks `git`.
 
-## Step 4 — Add the solution
+### Step 4 — Add the solution
 
 `src/Acme.slnx`:
 
@@ -174,7 +187,7 @@ declaring any of them. See [Repository Shape](Repository-Shape.md).
 The `Solution Items` folder is the list of files a reader of the solution needs and that a build would
 otherwise not surface. `.slnx` is the XML solution format; `.gitattributes` pins it to LF.
 
-## Step 5 — Create a project with a two-line project file
+### Step 5 — Create a project with a two-line project file
 
 `src/src/Domain/Domain.csproj`:
 
@@ -220,7 +233,7 @@ Exchange](Contracts-And-Data-Exchange.md).
 > </ItemGroup>
 > ```
 
-## Step 6 — Add a test project with an even shorter project file
+### Step 6 — Add a test project with an even shorter project file
 
 `src/tests/Domain.UnitTests/Domain.UnitTests.csproj`:
 
@@ -252,7 +265,7 @@ public sealed class CustomerIdTests
 }
 ```
 
-## Step 7 — Add the shared testing project
+### Step 7 — Add the shared testing project
 
 `src/tests/SharedTestingInfra/SharedTestingInfra.csproj`:
 
@@ -268,7 +281,7 @@ The name is one of a recognised set, so the SDK treats it as a shared testing pr
 packages but not the runner, stays a library, and is referenced automatically by the test projects
 beside it. This is where `TestBuilder` lives — see [Testing and Test Data](Testing-And-Test-Data.md).
 
-## Step 8 — Point the shared pipeline at the solution
+### Step 8 — Point the shared pipeline at the solution
 
 `.config/purview-build.json`:
 
@@ -279,7 +292,9 @@ beside it. This is where `TestBuilder` lives — see [Testing and Test Data](Tes
 		"Solution": "src/Acme.slnx",
 		"TestRoot": "src/tests",
 		"TestPatterns": "*Tests.csproj",
-		"TestFilter": "/*/*/*/*[Category=Unit]"
+		"TestFilter": "/*/*/*/*[Category=Unit]",
+		"RunPack": false,
+		"ValidatePack": false
 	},
 	"Release": {
 		"Mode": "None"
@@ -290,6 +305,10 @@ beside it. This is where `TestBuilder` lives — see [Testing and Test Data](Tes
 Paths are anchored to the **repository root**, not to the configuration file, so moving the file into
 `.config/` does not change what it points at.
 
+`RunPack` and `ValidatePack` are off because this repository ships no package. The shared workflow
+defaults both to `true`, so leaving them unset would give a green local build and a failing pipeline.
+See [Verification Model](Verification-Model.md).
+
 `TestPatterns` is left at its default, `*Tests.csproj`, on purpose. Discovery and tiering are two
 mechanisms, and only one of them should carry the tier: `TestPatterns` chooses which project files are
 discovered, `TestFilter` chooses which discovered tests run. Leave discovery wide and the day you add
@@ -297,7 +316,7 @@ discovered, `TestFilter` chooses which discovered tests run. Leave discovery wid
 edit. Narrow `TestPatterns` and you have to remember both. See [Verification
 Model](Verification-Model.md).
 
-## Step 9 — Add the caller workflow
+### Step 9 — Add the caller workflow
 
 `.github/workflows/pr.yml`:
 
@@ -318,14 +337,18 @@ jobs:
     name: Build and test
     uses: purview-dev/build/.github/workflows/purview-build.yml@main
     with:
+      run-pack: false
+      validate-pack: false
       test-filter: "/*/*/*/*[Category=Unit]"
     secrets: inherit
 ```
 
-The workflow is a caller; the pipeline itself lives in one shared repository. See [Verification
-Model](Verification-Model.md) and [Release Flow](Release-Flow.md).
+The two pack switches repeat `Build:RunPack` and `Build:ValidatePack` from the configuration, so the
+workflow and the JSON agree about what a green build means. The workflow is a caller; the pipeline
+itself lives in one shared repository. See [Verification Model](Verification-Model.md) and
+[Release Flow](Release-Flow.md).
 
-## Step 10 — Add the wiki
+### Step 10 — Add the wiki
 
 `mkdocs.yml`:
 
@@ -346,13 +369,14 @@ Then `docs/wiki/index.md`, `docs/wiki/Home.md` and `docs/wiki/_Sidebar.md`, and 
 `_Sidebar.md` is the navigation list, so a new page that is not in it is a page nobody finds. See
 [Documentation Convention](Documentation-Convention.md).
 
-## Step 11 — Make the repository legible to an agent
+### Step 11 — Make the repository legible to an agent
 
 Add `AGENTS.md` at the root: purpose, layout table, conventions, completion checklist, local commands.
-The SDK also mirrors a set of SDK skills into `.agents/` on build, so an agent gets the SDK's own
-guidance without you writing it. See [Agent Enablement](Agent-Enablement.md).
+Then install the SDK's own skills with `npx skills add purview-dev/build-sdk`, so an agent gets that
+guidance without you writing it. Installation is explicit - no build writes into an agent directory.
+See [Agent Enablement](Agent-Enablement.md).
 
-## Step 12 — Add the local tools and the commands that run them
+### Step 12 — Add the local tools and the commands that run them
 
 Step 13 runs `just`, and `just lint-check` runs CSharpier. Neither exists yet, so create both now.
 
@@ -370,7 +394,7 @@ installed globally per machine:
 			"rollForward": true
 		},
 		"purview.build": {
-			"version": "0.5.2",
+			"version": "0.5.3",
 			"commands": ["purview-build"],
 			"rollForward": false
 		}
@@ -420,7 +444,7 @@ pipeline-pr *args:
 There is deliberately no `Justfile` in `templates/`: the recipes are the list of things *your* repository
 actually does, and a copied list of someone else's is noise. The five above are the floor, not the shape.
 
-## Step 13 — Prove it
+### Step 13 — Prove it
 
 ```text
 just build          # dotnet build (Debug)
@@ -430,10 +454,10 @@ just pipeline-pr    # restore, build, lint, test through the shared Purview.Buil
 ```
 
 Then break a rule on purpose — add a `ProjectReference` from the domain to the layer above it, or rename
-a file so it no longer matches its folder — and confirm the build refuses. A convention you have not
-watched fail is a convention you are guessing about.
+a project file so it no longer matches its folder — and confirm the build refuses. A convention you have
+not watched fail is a convention you are guessing about.
 
-## Step 14 — Or copy the templates
+### Step 14 — Or copy the templates
 
 Most of the files in steps 1–12 have a copy-paste version in
 [`templates/`](https://github.com/purview-dev/engineering-playbook/tree/main/templates), with `Acme` standing
@@ -445,7 +469,10 @@ Four things in the steps above are deliberately **not** templated, because a cop
 on arrival: the solution file (its paths depend on your project list), the two `.csproj` files (they are
 empty by design), and the `Justfile` (see step 12). `templates/README.md` says which, and why.
 
-## What you have now
+## How it is enforced
+
+Step 13 proved it by breaking a rule on purpose. The table below is the same statement for the whole
+repository: which concern lives where, and what refuses a change that breaks it.
 
 | Concern | Where it lives | Enforced by |
 | -- | -- | -- |
@@ -455,9 +482,15 @@ empty by design), and the `Justfile` (see step 12). `templates/README.md` says w
 | Code style | Bootstrapped `.editorconfig` | The build, with the style policy validated |
 | Test wiring | The `.csproj` filename | The build |
 | Test data | `TestBuilder` in `SharedTestingInfra` | Review |
-| Architecture | Dependency-direction tests | The build |
+| Architecture | Dependency-direction tests + `.config/architecture-policy.json` | The build |
 | Verification tiers | `TestFilter` in `purview-build.json` | The pipeline |
-| Documentation | `docs/wiki` + `_Sidebar.md` | Review |
+| Documentation | `docs/wiki` + `_Sidebar.md` | The build (`DocumentationTests`) for navigation and fences; review for the rest |
+
+## At your scale
+
+This page is the floor, not the whole playbook. [Adopting This at Your Scale](Adopting-This-At-Your-Scale.md)
+decides which parts to take for a small, medium or large repository, and [Worked
+Examples](Worked-Examples.md) walks the reference implementation that results from taking all of them.
 
 ## See also
 

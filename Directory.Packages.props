@@ -23,10 +23,15 @@
 		<MSExtensionVersion>10.10.0</MSExtensionVersion>
 	</PropertyGroup>
 	<PropertyGroup Label="Purview Versions">
-		<PurviewTelemetryVersion>5.0.3</PurviewTelemetryVersion>
+		<PurviewTelemetryVersion>5.0.4</PurviewTelemetryVersion>
+		<!--
+			The build-sdk's test-support packages ship together and track the SDK version pinned in
+			global.json, so they share one property: a bump cannot be applied to half the family.
+		-->
+		<PurviewBuildSdkTestingVersion>1.0.6</PurviewBuildSdkTestingVersion>
 	</PropertyGroup>
 	<PropertyGroup Label="Testing Versions">
-		<TUnitVersion>1.72.4</TUnitVersion>
+		<TUnitVersion>1.75.0</TUnitVersion>
 	</PropertyGroup>
 
 	<!-- Packages -->
@@ -41,18 +46,9 @@
 	<ItemGroup Label="Microsoft Extensions">
 		<PackageVersion Include="Microsoft.Extensions.Telemetry.Abstractions" Version="$(MSExtensionVersion)" />
 	</ItemGroup>
-	<ItemGroup Label="Schema">
-		<!--
-			Validates .config/architecture-policy.json against its JSON Schema in a test. The schema is
-			only worth having if something checks the policy against it; otherwise it drifts silently and
-			becomes a second, wrong description of the format. Same library the Purview.Build tool uses
-			to validate purview-build.json, so the ecosystem has one JSON Schema implementation.
-		-->
-		<PackageVersion Include="JsonSchema.Net" Version="9.4.0" />
-	</ItemGroup>
 	<ItemGroup Label="Other">
 		<!-- Injected by the SDK and added to every assembly. -->
-		<PackageVersion Include="Microsoft.SourceLink.GitHub" Version="10.0.401" />
+		<PackageVersion Include="Microsoft.SourceLink.GitHub" Version="10.0.402" />
 	</ItemGroup>
 	<ItemGroup Label="Testing">
 		<!-- The test packages the SDK wires into test and shared-testing projects. -->
@@ -60,5 +56,12 @@
 		<PackageVersion Include="TUnit.Core" Version="$(TUnitVersion)" />
 		<PackageVersion Include="TUnit.Mocks" Version="$(TUnitVersion)" />
 		<PackageVersion Include="Bogus" Version="35.6.5" />
+		<!--
+			The conformance rule sets, shipped by the build-sdk so the rules are defined once rather than
+			reimplemented in every repository. Purview.Skills.Testing validates authored skills;
+			Purview.Architecture.Testing enforces the architecture policy. They move together with the SDK.
+		-->
+		<PackageVersion Include="Purview.Skills.Testing" Version="$(PurviewBuildSdkTestingVersion)" />
+		<PackageVersion Include="Purview.Architecture.Testing" Version="$(PurviewBuildSdkTestingVersion)" />
 	</ItemGroup>
 </Project>

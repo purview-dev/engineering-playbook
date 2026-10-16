@@ -11,7 +11,7 @@ scaled so that a repository adopting them can take the part that fits.
 
 ## How to read a page
 
-Every page follows the same shape:
+Every content page follows the same shape:
 
 | Section | Answers |
 | -- | -- |
@@ -23,6 +23,10 @@ Every page follows the same shape:
 Rules a build can enforce are labelled as such. Rules only a reviewer can enforce are labelled as
 review obligations. A convention that claims to be enforced when it is not is worse than no convention
 at all, so the two are never blurred.
+
+This page and [`index.md`](index.md) are navigation rather than rules, and
+[Engineering Principles](Engineering-Principles.md) is an index that links to the page stating each
+rule in full.
 
 ## The playbook
 

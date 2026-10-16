@@ -36,6 +36,7 @@ public sealed class InMemoryConventionRepository : IConventionRepository
 			throw new InvalidOperationException($"Convention '{convention.Id}' is already registered.");
 		}
 
+		// The repository is in-memory, so there's no actual async work to do. The method is async to satisfy the interface contract.
 		return Task.CompletedTask;
 	}
 

@@ -2,12 +2,15 @@
 
 ## The rule
 
-Three skills carry the guidance that is not specific to any one Purview library, and they are the
-only place that guidance is written:
+The skills this repository publishes carry the guidance that is not specific to any one Purview
+library, and they are the only place that guidance is written:
 
 | Skill | Answers |
 | -- | -- |
+| `purview-engineering-principles` | What are the ten repository conventions, what does each prevent, and is it enforced by a build or by a reviewer? |
 | `purview-architecture` | How much structure does this project actually need, and what do I need to know before saying? |
+| `purview-architecture-testing` | How does a boundary become a failing build rather than a review comment? |
+| `purview-testing-conventions` | How are tests written and fed — framework, structure, naming, and `TestBuilder`? |
 | `purview-telemetry` | What instrumentation does a project of this size get? (Answer: always some.) |
 | `purview-persistence` | How is data stored, and — only when it applies — how are GUID keys generated? |
 

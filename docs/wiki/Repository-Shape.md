@@ -8,11 +8,12 @@ where something lives without being told.
 
 ```text
 Repository/
-├── .config/                      dotnet-tools.json, lefthook.yml, purview-build.json
+├── .config/                      dotnet-tools.json, lefthook.yml, purview-build.json, architecture-policy.json
 ├── .github/
 │   ├── workflows/                pr.yml, release.yml, any repository-specific workflow
 │   └── copilot-instructions.md   defers to AGENTS.md
-├── .agents/                      SDK-mirrored agent content (see Agent Enablement)
+├── skills/                       skills this repository publishes (see Agent Enablement)
+├── .agents/skills/               skills installed from elsewhere by the skills CLI; gitignored
 ├── .purview/                     SDK state; gitignored
 ├── docs/
 │   └── wiki/                     the wiki; docs_dir in mkdocs.yml
@@ -49,6 +50,7 @@ knowing before you follow it expecting a finished repository:
 | -- | -- |
 | `.editorconfig` | Written by the SDK on the first build |
 | `.gitignore`, `.gitattributes` | The SDK's own `templates/` folder, so they stay in step with it |
+| `.config/architecture-policy.json` | Optional; adopted when the repository wants its architecture policy enforced — see [Project Responsibilities](Project-Responsibilities.md) |
 | `commitlint.config.mts`, `nuget.config`, `LICENSE.md`, `package.json` | Repository-level choices; not covered by Getting Started |
 | Everything else | Getting Started steps 1–12, or [`templates/`](https://github.com/purview-dev/engineering-playbook/tree/main/templates) |
 

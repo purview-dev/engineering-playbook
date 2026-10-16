@@ -1,12 +1,22 @@
 # Worked Examples
 
+## The rule
+
 `src/` in this repository is a deliberately small layered repository that is built, linted and tested by the
 same pipeline every Purview repository uses. It exists so that the rules in this playbook are not just prose:
 the dependency-direction rules fail the build when they are broken, and the test-data conventions are shown
 in the form they are meant to be copied.
 
-It is small on purpose. There is one aggregate, one port, one adapter and three test projects — enough to
+It is small on purpose. There is one aggregate, one port, one adapter and four test projects — enough to
 show every mechanism, and little enough that you can read all of it in ten minutes.
+
+## Why
+
+A rule you have not watched fail is a rule you are guessing about. Prose can be read and agreed with; a
+reference implementation can be built, run, and broken on purpose to see the failure. It is also the one
+place this playbook can prove that its own conventions compile and pass — the pipeline that runs here is the
+pipeline every Purview repository uses, so a convention that cannot survive its own reference implementation
+is a convention that will not survive contact with a real one.
 
 ## The shape
 
@@ -29,7 +39,8 @@ src/
     ├── SharedTestingInfra/          TestBuilder
     ├── Domain.UnitTests/            value-object behaviour, direct construction
     ├── Application.UnitTests/       the service, against a TUnit.Mocks substitute
-    └── Architecture.UnitTests/      the dependency-direction rules
+    ├── Architecture.UnitTests/      the dependency-direction rules, and the architecture policy
+    └── Repository.UnitTests/        the repository itself: its skills and its wiki
 ```
 
 ## The one architectural decision
@@ -174,7 +185,7 @@ interface is explicitly `public` because `public` is not the default there.
 
 ## The tests
 
-Three projects, each demonstrating a different thing.
+Four projects, each demonstrating a different thing.
 
 **`Domain.UnitTests`** is the value-object exception to the "build everything through `TestBuilder`" rule. A
 test that proves what `Create` rejects has to name the rejected input itself:
@@ -227,9 +238,19 @@ public async Task RegisterAsync_GivenAnAlreadyRegisteredConvention_DoesNotStoreI
 }
 ```
 
-**`Architecture.UnitTests`** is the rules from [Architecture as Tests](Architecture-As-Tests.md), running
-against the three assemblies above. It is the reason the `Application` project file carries a comment
-explaining that a reference to `Infrastructure` would fail the build.
+**`Architecture.UnitTests`** runs two kinds of rule. `DependencyDirectionTests` is the four rules from
+[Architecture as Tests](Architecture-As-Tests.md), reading the compiled assemblies; it is the reason the
+`Application` project file carries a comment explaining that a reference to `Infrastructure` would fail
+the build. `ArchitectureTests` derives from `PurviewArchitectureTests` and enforces the policy in
+`.config/architecture-policy.json`, so the dependency matrix, naming, sibling-independence, composition,
+forbidden-package, cycle, test-reference and waiver rules come from `Purview.Architecture.Testing`
+rather than from C# written here. `PolicyDocumentationTests` keeps the wiki's tables in step with that
+policy.
+
+**`Repository.UnitTests`** turns the repository itself into the subject. `SkillTests` derives from the
+skill-conformance rule set the SDK ships, and `DocumentationTests` asserts that every wiki page is in
+the navigation and that every fence declares a language. A convention that has to hold across the whole
+repository, and that a reviewer would otherwise have to remember, belongs in a test here.
 
 ## The test data builder
 
@@ -253,7 +274,10 @@ public static Domain.Convention Convention(
 An omitted argument is generated; a supplied argument is used exactly. A test therefore reads as a list of
 the values it actually cares about, and everything else is realistic without the test saying so.
 
-## Running it
+## How it is enforced
+
+The reference implementation is built, linted and tested by the same pipeline every Purview repository
+uses, so a broken convention fails here first.
 
 ```text
 just build          # dotnet build (Debug)
@@ -270,23 +294,23 @@ Build succeeded.
     0 Error(s)
 
 Test run summary: Passed!
-  total: 37
+  total: 71
   failed: 0
-  succeeded: 37
+  succeeded: 71
 ```
 
 The zero-warning result is worth noticing, because it took work: the telemetry source generator's public
 types, the SDK's `var` preference, and the flat-factory constraint all surfaced as build diagnostics rather
 than as documentation. Each is written down on the page where it belongs.
 
-## Break it on purpose
+### Break it on purpose
 
 The fastest way to understand a rule is to watch it fail. Three edits, each of which should fail the build:
 
 1. **Add `<ProjectReference Include="../Infrastructure/Infrastructure.csproj" />` to
    `Application.csproj`.** `Application_GivenItsReferences_DependsOnTheDomainAndNotOnInfrastructure` fails.
-2. **Rename `src/src/Domain/Convention.cs` to `ConventionAggregate.cs`.** `PurviewProjectFileNameMismatch`
-   fails, because the filename no longer matches its directory.
+2. **Rename `src/src/Domain/Domain.csproj` to `DomainAggregate.csproj`.** `PurviewProjectFileNameMismatch`
+   fails, because the project filename no longer matches its directory.
 3. **Move a `Convention` type into a namespace outside the repository's prefix, such as
    `Acme.Elsewhere`.** The namespace-identity rule fails and names the type.
 
@@ -301,6 +325,13 @@ The fastest way to understand a rule is to watch it fail. Three edits, each of w
   [results](https://github.com/purview-dev/results) already implements it and a second implementation here
   would be a worse copy.
 - **No integration tier.** Every test is deterministic, so the pipeline needs no second job.
+
+## At your scale
+
+This is the **Medium** profile: a few layers, a shared testing project, and architecture tests. A small
+repository takes the SDK import, `Directory.Packages.props`, `AGENTS.md` and `TestBuilder` and stops there;
+a large one adds pack validation, consumer verification and a release gate. [Adopting This at Your
+Scale](Adopting-This-At-Your-Scale.md) is the page that decides.
 
 ## See also
 

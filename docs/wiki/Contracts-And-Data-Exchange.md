@@ -1,6 +1,6 @@
 # Contracts and Data Exchange
 
-## The rules
+## The rule
 
 | Rule | Statement |
 | -- | -- |

@@ -70,7 +70,7 @@ Three of those lines are load-bearing:
 
 ## How to write a page
 
-Every page in this playbook uses the same four sections, in this order:
+Every content page uses the same four sections, in this order:
 
 | Section | Answers |
 | -- | -- |
@@ -78,6 +78,11 @@ Every page in this playbook uses the same four sections, in this order:
 | **Why** | The failure the rule prevents. |
 | **How it is enforced** | The mechanism that makes it true — or an explicit statement that it is a review obligation. |
 | **At your scale** | What to do when the repository is smaller or larger than the one the rule came from. |
+
+Three pages are deliberately not content pages. `Home.md` is the hub and `index.md` is the landing
+page, so both are navigation rather than rules. `Engineering-Principles.md` is an index: it states each
+of the ten rules in one line and links to the page that states it in full, so a rule is never written
+twice.
 
 The shape is not decoration. It forces three questions that a page written as prose usually skips: *is this
 actually a rule, or an opinion?*; *what breaks if we drop it?*; and *is it enforced, or are we asking a
@@ -120,13 +125,15 @@ and it is the fastest way for a reader to decide whether the rule applies to the
 | Rule | Enforced by |
 | -- | -- |
 | The site configuration is present and points at `docs/wiki` | Review |
-| A page is in `_Sidebar.md` | The aggregating portal — an unlisted page is not published in the navigation |
+| Every content page is in `_Sidebar.md` and the `Home.md` table, and their links resolve | `DocumentationTests` |
 | Pages follow the four-section shape | Review |
-| Fences declare a language | Review |
+| Fences declare a language | `DocumentationTests` |
 | `README.md` and `AGENTS.md` point in rather than duplicate | Review |
 
-The navigation is the only part a tool can check, and it is the part that matters most: a page nobody can
-reach is a page that does not exist.
+The navigation and the fences are the two conventions a machine can check, and they are the two that
+break silently: a page nobody can reach is a page that does not exist, and a bare fence renders as an
+untyped block. Both are enforced by `DocumentationTests` in `src/tests/Repository.UnitTests`. The rest
+is a review obligation, and this page says so rather than implying otherwise.
 
 ## At your scale
 

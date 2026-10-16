@@ -80,7 +80,8 @@ public sealed record ConventionId
 			throw new ArgumentException("A hydrated convention identifier cannot be empty.", nameof(value));
 		}
 
-		return new ConventionId(value);
+		// The value is already known to be valid, so we don't need to validate it again.
+		return new(value);
 	}
 
 	/// <inheritdoc />
