@@ -1,13 +1,4 @@
 {
-	"sdk": {
-		// The SDK bootstrap writes `msbuild-sdks` and `test` only — it never writes an `sdk` block.
-		// Without `version` + `rollForward`, a machine with several .NET SDKs installed resolves
-		// latest-wins, so pin both by hand. These are two different versions: `sdk.version` is the
-		// .NET SDK, `msbuild-sdks` is Purview.BuildSdk.
-		"version": "10.0.401",
-		"rollForward": "disable",
-		"allowPrerelease": false
-	},
 	"msbuild-sdks": {
 		"Purview.BuildSdk": "1.0.6"
 	},

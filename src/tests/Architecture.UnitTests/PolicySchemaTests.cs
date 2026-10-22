@@ -53,7 +53,7 @@ public sealed class PolicySchemaTests
 	}
 
 	[Test]
-	public async Task Schema_GivenAWaiverWithNoReason_RejectsIt()
+	public async Task Schema_GivenAWaiverWithATokenReason_RejectsIt()
 	{
 		// The minLength on 'reason' is the rule that stops a waiver becoming a silent suppression.
 		await AssertRejectedAsync(
@@ -94,6 +94,30 @@ public sealed class PolicySchemaTests
 						"mustNotDependOnn": ["Application"]
 					}
 				]
+			}
+			"""
+		);
+	}
+
+	[Test]
+	public async Task Schema_GivenTheRemovedRulesObject_RejectsIt()
+	{
+		// Version 2 removed 'rules': its flags were deserialised but never consulted, so accepting the
+		// block again would restore a switch that looks enforced and is not.
+		await AssertRejectedAsync(
+			"""
+			{
+				"version": 2,
+				"responsibilities": [
+					{
+						"name": "Core",
+						"category": "domain",
+						"purpose": "The fundamental domain model and its rules.",
+						"mayDependOn": [],
+						"mustNotDependOn": []
+					}
+				],
+				"rules": { "noCycles": true }
 			}
 			"""
 		);
