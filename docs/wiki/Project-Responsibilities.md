@@ -17,8 +17,8 @@ it has one project carrying three responsibilities, which is usually correct. Th
 what each responsibility *is* so that you can tell when splitting one out would buy something.
 
 The authoritative definition is [`.config/architecture-policy.json`](https://github.com/purview-dev/engineering-playbook/blob/main/.config/architecture-policy.json),
-described by the JSON Schema the SDK publishes at
-[`architecture-policy.schema.json`](https://github.com/purview-dev/build-sdk/blob/main/architecture-policy.schema.json).
+described by the JSON Schema published at
+[`architecture-policy.schema.json`](https://github.com/purview-dev/architests/blob/main/architecture-policy.schema.json).
 The tables on this page are checked against it — see [How it is enforced](#how-it-is-enforced).
 
 ## Why
@@ -328,30 +328,30 @@ is a second source of truth — a consistency test fails if the tables drift fro
 
 ### The policy format
 
-`.config/architecture-policy.json` is described by a JSON Schema (draft 2020-12) that the SDK
-publishes at
-[`architecture-policy.schema.json`](https://github.com/purview-dev/build-sdk/blob/main/architecture-policy.schema.json),
+`.config/architecture-policy.json` is described by a JSON Schema (draft 2020-12) that the architecture
+test project publishes at
+[`architecture-policy.schema.json`](https://github.com/purview-dev/architests/blob/main/architecture-policy.schema.json),
 and the file points at it so an editor validates as you type:
 
 ```json
 {
-  "$schema": "https://raw.githubusercontent.com/purview-dev/build-sdk/main/architecture-policy.schema.json",
-  "version": 1,
+  "$schema": "https://raw.githubusercontent.com/purview-dev/architests/main/architecture-policy.schema.json",
+  "version": 2,
   "sourceRoots": ["src"]
 }
 ```
 
-The schema lives in the SDK's repository rather than in a copy beside the policy, because a second
-copy is a second source of truth and the two drift. It is also embedded in
+The schema lives in the architecture test repository rather than in a copy beside the policy, because a
+second copy is a second source of truth and the two drift. It is also embedded in
 `Purview.Architecture.Testing`, so validation needs no network and cannot disagree with the reader.
 
 | Key | Purpose |
 | -- | -- |
-| `version` | Format version. Increment when a change would break a reader that understood the previous shape. |
+| `version` | Format version. Increment when a change would break a reader that understood the previous shape. Version 2 removed the `rules` object; its flags were never consulted, so a version-1 policy deletes the block. |
 | `sourceRoots` | Repo-relative folders holding the projects; defaults to `["src"]`. An empty array scans the repository root. A wrong value finds no projects, which the graph-discovery rule reports rather than letting every other rule pass vacuously. |
-| `responsibilities[]` | `name`, `aliases`, `category`, `purpose`, `mayDependOn`, `mustNotDependOn`, `forbiddenPackagePrefixes`, `siblingIndependence`, and the split/combine guidance |
+| `responsibilities[]` | `name`, `aliases`, `category`, `purpose`, `mayDependOn`, `mustNotDependOn`, `forbiddenPackagePrefixes`, `forbiddenFrameworkReferences`, `siblingIndependence`, and the split/combine guidance |
 | `discouragedProjectNames` | Category names rejected as project names, with the reason |
-| `rules` | Repository-wide switches not expressed per responsibility |
+| `assemblyRules` | The optional type-level check: reads compiled assemblies and applies the same matrix to the types they reference. Off by default because it needs a build. |
 | `waivers[]` | Deliberate departures — see below |
 
 Two schema choices do real work:
@@ -364,8 +364,8 @@ Two schema choices do real work:
 
 The schema is enforced, not decorative: `PurviewArchitectureTests` validates the policy against the
 embedded schema on every run, and `PolicySchemaTests` asserts it *rejects* a document missing a
-required field, a waiver with a token reason, and a misspelled key. A schema that cannot fail proves
-nothing.
+required field, a waiver with a token reason, a misspelled key, and the `rules` block version 2 removed.
+A schema that cannot fail proves nothing.
 
 ### Adopting this in another repository
 
@@ -377,8 +377,8 @@ validates it as you type:
 
 ```json
 {
-  "$schema": "https://raw.githubusercontent.com/purview-dev/build-sdk/main/architecture-policy.schema.json",
-  "version": 1,
+  "$schema": "https://raw.githubusercontent.com/purview-dev/architests/main/architecture-policy.schema.json",
+  "version": 2,
   "sourceRoots": ["src"],
   "responsibilities": [ ... ]
 }
