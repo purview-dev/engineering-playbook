@@ -58,7 +58,7 @@ HTTP request or an Aspire orchestration edge.
 | `AppHost` | host | — | API, Worker, Migrator, WebApp, Bff, Shared |
 | `ServiceDefaults` | host | — | Shared |
 | `WebApp` | host | — | Contracts, ServiceDefaults, Shared |
-| `Bff` | host | — | Contracts, ServiceDefaults, Shared |
+| `Bff` | host | — | Contracts, ServiceDefaults, Shared, WebApp |
 | `Shared` | shared | — | *(nothing)* |
 
 ### When each one earns its own project
@@ -143,8 +143,8 @@ flowchart RL
     Worker --> Composition
     Migrator --> Persistence
     WebApp --> Contracts
-    Bff -->|"only when it combines responses"| Contracts
-    WebApp -.->|"HTTP via the cookie, not a reference"| Bff
+    Bff -->|"serves the WebAssembly client"| WebApp
+    Bff -->|"only when it prerenders or combines"| Contracts
 
     AppHost -.->|"orchestrates, not a reference"| API
     AppHost -.->|"orchestrates, not a reference"| Worker

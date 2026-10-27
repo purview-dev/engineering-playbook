@@ -128,10 +128,12 @@ The rules that do not bend:
   your own API's document when that client is in the same solution.
 - **Never hand-maintain a parallel set of models**, and **the server always validates** — a shared
   validator is for user experience, not trust.
-- **Contracts is browser-safe** when a WebAssembly client references it, and an architecture test,
-  not a reviewer, says so.
-- **A BFF is earned by keeping tokens out of the browser.** It forwards with the user's token, and a
-  BFF that only forwards does not reference Contracts.
+- **Contracts is browser-safe** when a WebAssembly client references it: the architecture policy,
+  the trim and AOT analyzers and the browser platform analyzer check it, not a reviewer.
+- **A BFF is earned by keeping tokens out of the browser.** It holds the tokens, gives the browser an
+  `HttpOnly` cookie, forwards with the user's token, and requires an anti-forgery header on every
+  forwarded call. In Blazor it is the host that serves the WebAssembly client, and a BFF that only
+  forwards does not reference Contracts.
 
 Full procedure, version-skew rules, BFF guidance and worked examples: `references/contract-strategy.md`.
 

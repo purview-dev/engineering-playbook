@@ -26,7 +26,7 @@ Do not restate either here or in another skill; link to them.
 | `AppHost` | — | Aspire orchestration | The hosts it orchestrates |
 | `ServiceDefaults` | — | Telemetry, health, resilience, discovery defaults | Shared |
 | `WebApp` | — | Frontend, including a Blazor WebAssembly client that references Contracts | Contracts, ServiceDefaults, Shared |
-| `Bff` | — | Sign-in and token custody for a browser or mobile client; forwards with the user's token | Contracts (only when it combines responses), ServiceDefaults, Shared |
+| `Bff` | — | Sign-in and token custody for a browser or mobile client; forwards with the user's token. In Blazor, the host that serves the WebAssembly client | WebApp, Contracts (only when it prerenders or combines responses), ServiceDefaults, Shared |
 | `Shared` | — | Small domain-independent primitives | *nothing* |
 
 **None of these is mandatory.** A small application with `Core` and one host has a complete and

@@ -37,6 +37,7 @@
         "Microsoft.Data.SqlClient",
         "Aspire.Hosting"
       ],
+      "forbiddenFrameworkReferences": ["Microsoft.AspNetCore.App"],
       "separateProjectWhen": "Always, when a domain model exists at all; it is the one responsibility that earns its own project early.",
       "mayRemainCombinedWhen": "The application is a thin utility with no domain rules worth isolating."
     },
@@ -107,8 +108,16 @@
         "WebApp",
         "Bff"
       ],
-      "forbiddenPackagePrefixes": ["Microsoft.EntityFrameworkCore", "Npgsql", "Microsoft.Data.SqlClient"],
-      "separateProjectWhen": "A client - a WebApp, an SDK or another service - must compile against the contract without taking the server.",
+      "forbiddenPackagePrefixes": [
+        "Microsoft.EntityFrameworkCore",
+        "Npgsql",
+        "Microsoft.Data.SqlClient",
+        "Microsoft.AspNetCore",
+        "Purview.ZodSharp.AspNetCore",
+        "Purview.Results.ZodSharp.AspNetCore"
+      ],
+      "forbiddenFrameworkReferences": ["Microsoft.AspNetCore.App"],
+      "separateProjectWhen": "A client - a WebApp, an SDK or another service - must compile against the contract without taking the server. A Blazor WebAssembly client downloads it, so it must stay browser-safe.",
       "mayRemainCombinedWhen": "The only consumer is the API host itself."
     },
     {
@@ -283,21 +292,10 @@
       "aliases": [],
       "category": "host",
       "purpose": "Backend-for-Frontend: signs the user in, holds the tokens, gives the client a cookie, and forwards calls with the user's access token rather than its own identity.",
-      "mayDependOn": ["Contracts", "ServiceDefaults", "Shared"],
-      "mustNotDependOn": [
-        "Core",
-        "Application",
-        "Persistence",
-        "Providers",
-        "Adapters",
-        "Composition",
-        "API",
-        "Worker",
-        "Migrator",
-        "WebApp"
-      ],
+      "mayDependOn": ["Contracts", "ServiceDefaults", "Shared", "WebApp"],
+      "mustNotDependOn": ["Core", "Application", "Persistence", "Providers", "Adapters", "Composition", "API", "Worker", "Migrator"],
       "forbiddenPackagePrefixes": ["Microsoft.EntityFrameworkCore", "Npgsql", "Microsoft.Data.SqlClient"],
-      "separateProjectWhen": "Tokens must be kept out of the browser, or several API calls must be combined into one response. One per client kind, not one per screen.",
+      "separateProjectWhen": "Tokens must be kept out of the browser, or several API calls must be combined into one response. In a Blazor solution it is the host that serves the WebAssembly client, so it references WebApp. One per client kind, not one per screen.",
       "mayRemainCombinedWhen": "Never combined with the API; a BFF that only forwards calls the client could safely make itself is not earned."
     },
     {
