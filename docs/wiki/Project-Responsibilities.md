@@ -55,9 +55,10 @@ HTTP request or an Aspire orchestration edge.
 | `API` | host | — | Core, Abstractions, Application, Contracts, Composition, ServiceDefaults, Shared, Persistence, Providers, Adapters |
 | `Worker` | host | — | Core, Abstractions, Application, Contracts, Composition, ServiceDefaults, Shared, Persistence, Providers, Adapters |
 | `Migrator` | host | — | Core, Abstractions, Persistence, Composition, ServiceDefaults, Shared |
-| `AppHost` | host | — | API, Worker, Migrator, WebApp, Shared |
+| `AppHost` | host | — | API, Worker, Migrator, WebApp, Bff, Shared |
 | `ServiceDefaults` | host | — | Shared |
 | `WebApp` | host | — | Contracts, ServiceDefaults, Shared |
+| `Bff` | host | — | Contracts, ServiceDefaults, Shared |
 | `Shared` | shared | — | *(nothing)* |
 
 ### When each one earns its own project
@@ -74,6 +75,7 @@ HTTP request or an Aspire orchestration edge.
 | `Composition` | More than one host composes the same implementations | One host — compose in the host |
 | `Migrator` | Schema changes are applied by a deliberate deployment step | Development-only, migrate on startup |
 | `ServiceDefaults` | More than one host shares operational defaults | One host |
+| `Bff` | Tokens must be kept out of the browser, or several API calls must become one response — one per client kind | It would only forward calls the client could safely make itself |
 | `Shared` | A domain-independent primitive is used by two or more responsibilities | Almost always — it is the easiest project to create and the hardest to keep coherent |
 
 ### Diagram A — the responsibility catalogue
@@ -105,6 +107,7 @@ flowchart TB
         AppHost["AppHost"]
         ServiceDefaults["ServiceDefaults"]
         WebApp["WebApp"]
+        Bff["Bff"]
     end
     subgraph shared["Shared"]
         Shared["Shared"]
@@ -140,6 +143,8 @@ flowchart RL
     Worker --> Composition
     Migrator --> Persistence
     WebApp --> Contracts
+    Bff -->|"only when it combines responses"| Contracts
+    WebApp -.->|"HTTP via the cookie, not a reference"| Bff
 
     AppHost -.->|"orchestrates, not a reference"| API
     AppHost -.->|"orchestrates, not a reference"| Worker

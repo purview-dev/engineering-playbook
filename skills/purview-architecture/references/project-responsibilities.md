@@ -15,7 +15,7 @@ Do not restate either here or in another skill; link to them.
 | `Core` | `Domain` | Entities, value objects, invariants, domain events and errors | Shared |
 | `Abstractions` | — | Cross-boundary capability contracts | Core, Shared |
 | `Application` | `UseCases` | Use cases, workflows, orchestration | Core, Abstractions, Contracts, Shared |
-| `Contracts` | — | Externally exposed request/response types | Core, Shared |
+| `Contracts` | — | Externally exposed request/response types; browser-safe when a WebAssembly client references it | Core, Shared |
 | `Persistence` | — | DbContext, mappings, migration *definitions* | Core, Abstractions, Application, Shared |
 | `Providers` | `Integrations` | Integration with a *named external platform* | Core, Abstractions, Application, Shared |
 | `Adapters` | — | An *application-defined capability* via one technology | Core, Abstractions, Application, Shared |
@@ -25,7 +25,8 @@ Do not restate either here or in another skill; link to them.
 | `Migrator` | — | *Executes* migrations and controlled seeding | Persistence, Composition, ServiceDefaults |
 | `AppHost` | — | Aspire orchestration | The hosts it orchestrates |
 | `ServiceDefaults` | — | Telemetry, health, resilience, discovery defaults | Shared |
-| `WebApp` | — | Frontend | Contracts, ServiceDefaults, Shared |
+| `WebApp` | — | Frontend, including a Blazor WebAssembly client that references Contracts | Contracts, ServiceDefaults, Shared |
+| `Bff` | — | Sign-in and token custody for a browser or mobile client; forwards with the user's token | Contracts (only when it combines responses), ServiceDefaults, Shared |
 | `Shared` | — | Small domain-independent primitives | *nothing* |
 
 **None of these is mandatory.** A small application with `Core` and one host has a complete and
@@ -39,7 +40,8 @@ buys something — it is not a list of projects to create.
 | `Core` | A domain model exists | The app is a thin utility |
 | `Abstractions` | Two implementations, or the consumer must not see the implementation | One implementation — keep the interface beside it |
 | `Application` | Workflows are reused by more than one host | It would only forward CRUD |
-| `Contracts` | A client compiles against it without taking the server | The API host is the only consumer |
+| `Contracts` | The contract strategy is Contracts or Hybrid — see `contract-strategy.md` | The API host is the only consumer, which is the OpenAPI strategy |
+| `Bff` | Tokens must be kept out of the browser, or several API calls must become one response | It would only forward calls that the client could make with a token it already holds safely |
 | `Persistence` | Persistence exists at all | A single-project utility writing a file |
 | `Providers` | Two platforms with different SDKs or lifecycles | One platform |
 | `Adapters` | One capability, several technologies | One capability, one technology |
