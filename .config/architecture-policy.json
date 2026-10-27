@@ -27,8 +27,7 @@
         "Migrator",
         "AppHost",
         "ServiceDefaults",
-        "WebApp",
-        "Bff"
+        "WebApp"
       ],
       "forbiddenPackagePrefixes": [
         "Microsoft.EntityFrameworkCore",
@@ -37,7 +36,6 @@
         "Microsoft.Data.SqlClient",
         "Aspire.Hosting"
       ],
-      "forbiddenFrameworkReferences": ["Microsoft.AspNetCore.App"],
       "separateProjectWhen": "Always, when a domain model exists at all; it is the one responsibility that earns its own project early.",
       "mayRemainCombinedWhen": "The application is a thin utility with no domain rules worth isolating."
     },
@@ -58,8 +56,7 @@
         "Migrator",
         "AppHost",
         "ServiceDefaults",
-        "WebApp",
-        "Bff"
+        "WebApp"
       ],
       "forbiddenPackagePrefixes": ["Microsoft.EntityFrameworkCore", "Microsoft.AspNetCore", "Aspire.Hosting"],
       "separateProjectWhen": "A contract has more than one implementation, or an implementation must not be referenced by its consumer.",
@@ -81,8 +78,7 @@
         "Migrator",
         "AppHost",
         "ServiceDefaults",
-        "WebApp",
-        "Bff"
+        "WebApp"
       ],
       "forbiddenPackagePrefixes": ["Microsoft.EntityFrameworkCore", "Npgsql", "Microsoft.Data.SqlClient", "Aspire.Hosting"],
       "separateProjectWhen": "Workflows are reused by more than one host, or coordinate several capabilities.",
@@ -105,19 +101,10 @@
         "Migrator",
         "AppHost",
         "ServiceDefaults",
-        "WebApp",
-        "Bff"
+        "WebApp"
       ],
-      "forbiddenPackagePrefixes": [
-        "Microsoft.EntityFrameworkCore",
-        "Npgsql",
-        "Microsoft.Data.SqlClient",
-        "Microsoft.AspNetCore",
-        "Purview.ZodSharp.AspNetCore",
-        "Purview.Results.ZodSharp.AspNetCore"
-      ],
-      "forbiddenFrameworkReferences": ["Microsoft.AspNetCore.App"],
-      "separateProjectWhen": "A client - a WebApp, an SDK or another service - must compile against the contract without taking the server. A Blazor WebAssembly client downloads it, so it must stay browser-safe.",
+      "forbiddenPackagePrefixes": ["Microsoft.EntityFrameworkCore", "Npgsql", "Microsoft.Data.SqlClient"],
+      "separateProjectWhen": "A client - a WebApp, an SDK or another service - must compile against the contract without taking the server.",
       "mayRemainCombinedWhen": "The only consumer is the API host itself."
     },
     {
@@ -126,7 +113,7 @@
       "category": "infrastructure",
       "purpose": "Durable data access: DbContext, mappings, migrations and persistence-specific configuration.",
       "mayDependOn": ["Core", "Abstractions", "Application", "Shared"],
-      "mustNotDependOn": ["Composition", "API", "Worker", "Migrator", "AppHost", "WebApp", "Bff", "Providers", "Adapters"],
+      "mustNotDependOn": ["Composition", "API", "Worker", "Migrator", "AppHost", "WebApp", "Providers", "Adapters"],
       "forbiddenPackagePrefixes": ["Microsoft.AspNetCore.Mvc", "Aspire.Hosting"],
       "separateProjectWhen": "Always, when persistence exists; it is what Core and Application must not reference.",
       "mayRemainCombinedWhen": "A single-project utility where the storage is a file and there is no provider to isolate."
@@ -137,7 +124,7 @@
       "category": "infrastructure",
       "purpose": "Integrations with named external platforms or services.",
       "mayDependOn": ["Core", "Abstractions", "Application", "Shared"],
-      "mustNotDependOn": ["Composition", "API", "Worker", "Migrator", "AppHost", "WebApp", "Bff", "Persistence", "Adapters"],
+      "mustNotDependOn": ["Composition", "API", "Worker", "Migrator", "AppHost", "WebApp", "Persistence", "Adapters"],
       "forbiddenPackagePrefixes": ["Microsoft.EntityFrameworkCore", "Aspire.Hosting"],
       "siblingIndependence": true,
       "separateProjectWhen": "Two or more platforms are integrated and their SDKs or lifecycles differ.",
@@ -149,7 +136,7 @@
       "category": "infrastructure",
       "purpose": "Concrete implementations of application-defined technical capabilities.",
       "mayDependOn": ["Core", "Abstractions", "Application", "Shared"],
-      "mustNotDependOn": ["Composition", "API", "Worker", "Migrator", "AppHost", "WebApp", "Bff", "Persistence", "Providers"],
+      "mustNotDependOn": ["Composition", "API", "Worker", "Migrator", "AppHost", "WebApp", "Persistence", "Providers"],
       "forbiddenPackagePrefixes": ["Microsoft.EntityFrameworkCore", "Aspire.Hosting"],
       "siblingIndependence": true,
       "separateProjectWhen": "A capability has more than one technology behind it, or the technology drags in heavy dependencies.",
@@ -170,7 +157,7 @@
         "Adapters",
         "Shared"
       ],
-      "mustNotDependOn": ["API", "Worker", "Migrator", "AppHost", "WebApp", "Bff"],
+      "mustNotDependOn": ["API", "Worker", "Migrator", "AppHost", "WebApp"],
       "forbiddenPackagePrefixes": [],
       "separateProjectWhen": "More than one host composes the same implementations.",
       "mayRemainCombinedWhen": "There is one host; compose in the host."
@@ -192,7 +179,7 @@
         "Providers",
         "Adapters"
       ],
-      "mustNotDependOn": ["Worker", "Migrator", "AppHost", "WebApp", "Bff"],
+      "mustNotDependOn": ["Worker", "Migrator", "AppHost", "WebApp"],
       "forbiddenPackagePrefixes": [],
       "separateProjectWhen": "An HTTP surface exists.",
       "mayRemainCombinedWhen": "Never combined with domain or persistence; it is the host."
@@ -214,7 +201,7 @@
         "Providers",
         "Adapters"
       ],
-      "mustNotDependOn": ["API", "Migrator", "AppHost", "WebApp", "Bff"],
+      "mustNotDependOn": ["API", "Migrator", "AppHost", "WebApp"],
       "forbiddenPackagePrefixes": [],
       "separateProjectWhen": "Background processing is deployed or scaled separately from the API.",
       "mayRemainCombinedWhen": "A hosted service inside the API is sufficient and they scale together."
@@ -225,7 +212,7 @@
       "category": "host",
       "purpose": "Executable migration and controlled seeding host. Persistence owns migration definitions; Migrator owns their execution.",
       "mayDependOn": ["Core", "Abstractions", "Persistence", "Composition", "ServiceDefaults", "Shared"],
-      "mustNotDependOn": ["API", "Worker", "AppHost", "WebApp", "Bff"],
+      "mustNotDependOn": ["API", "Worker", "AppHost", "WebApp"],
       "forbiddenPackagePrefixes": [],
       "separateProjectWhen": "Schema changes are applied by a deliberate deployment step rather than at API startup.",
       "mayRemainCombinedWhen": "Development-only, where the host applies migrations on start."
@@ -235,7 +222,7 @@
       "aliases": [],
       "category": "host",
       "purpose": "Aspire orchestration host. Orchestration is not a compile-time dependency between the services it orchestrates.",
-      "mayDependOn": ["API", "Worker", "Migrator", "WebApp", "Bff", "Shared"],
+      "mayDependOn": ["API", "Worker", "Migrator", "WebApp", "Shared"],
       "mustNotDependOn": ["Core", "Application", "Persistence", "Providers", "Adapters"],
       "forbiddenPackagePrefixes": [],
       "separateProjectWhen": "Aspire is used.",
@@ -258,8 +245,7 @@
         "Worker",
         "Migrator",
         "AppHost",
-        "WebApp",
-        "Bff"
+        "WebApp"
       ],
       "forbiddenPackagePrefixes": [],
       "separateProjectWhen": "More than one host shares operational defaults.",
@@ -271,32 +257,10 @@
       "category": "host",
       "purpose": "Frontend application.",
       "mayDependOn": ["Contracts", "ServiceDefaults", "Shared"],
-      "mustNotDependOn": [
-        "Core",
-        "Application",
-        "Persistence",
-        "Providers",
-        "Adapters",
-        "Composition",
-        "API",
-        "Worker",
-        "Migrator",
-        "Bff"
-      ],
+      "mustNotDependOn": ["Core", "Application", "Persistence", "Providers", "Adapters", "Composition", "API", "Worker", "Migrator"],
       "forbiddenPackagePrefixes": ["Microsoft.EntityFrameworkCore", "Npgsql", "Microsoft.Data.SqlClient"],
       "separateProjectWhen": "A UI exists.",
       "mayRemainCombinedWhen": "Server-rendered pages inside the API host."
-    },
-    {
-      "name": "Bff",
-      "aliases": [],
-      "category": "host",
-      "purpose": "Backend-for-Frontend: signs the user in, holds the tokens, gives the client a cookie, and forwards calls with the user's access token rather than its own identity.",
-      "mayDependOn": ["Contracts", "ServiceDefaults", "Shared", "WebApp"],
-      "mustNotDependOn": ["Core", "Application", "Persistence", "Providers", "Adapters", "Composition", "API", "Worker", "Migrator"],
-      "forbiddenPackagePrefixes": ["Microsoft.EntityFrameworkCore", "Npgsql", "Microsoft.Data.SqlClient"],
-      "separateProjectWhen": "Tokens must be kept out of the browser, or several API calls must be combined into one response. In a Blazor solution it is the host that serves the WebAssembly client, so it references WebApp. One per client kind, not one per screen.",
-      "mayRemainCombinedWhen": "Never combined with the API; a BFF that only forwards calls the client could safely make itself is not earned."
     },
     {
       "name": "Shared",
@@ -318,8 +282,7 @@
         "Migrator",
         "AppHost",
         "ServiceDefaults",
-        "WebApp",
-        "Bff"
+        "WebApp"
       ],
       "forbiddenPackagePrefixes": [],
       "separateProjectWhen": "A genuinely domain-independent primitive is used by two or more responsibilities.",

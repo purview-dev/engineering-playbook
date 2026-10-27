@@ -122,16 +122,18 @@ step 3, because the .NET client still has value objects and rules to lose.
   trim, and no reflection-dependent behaviour. The same applies transitively to the domain library,
   because the client downloads it too. Make the build enforce it, not a reviewer — three mechanisms,
   each catching what the others cannot:
-  - **The architecture policy** forbids `Microsoft.AspNetCore` packages and the
-    `Microsoft.AspNetCore.App` framework reference in `Contracts` and `Core`. See
-    `purview-architecture-testing`.
+  - **Your repository's architecture policy** forbids `Microsoft.AspNetCore` packages
+    (`forbiddenPackagePrefixes`) and the `Microsoft.AspNetCore.App` framework reference
+    (`forbiddenFrameworkReferences`) in `Contracts` and `Core`. The playbook's own policy forbids the
+    packages in `Core` only; the rest arrives with the Build SDK's planned Blazor support, so add it
+    yourself until then. See `purview-architecture-testing`.
   - **`<IsAotCompatible>true</IsAotCompatible>`** on both projects turns on the trim and AOT analyzers,
     so reflection a trimmed client would break on is a warning at build time. `Purview.ValueObjects`
     and `Purview.ZodSharp` already set it.
   - **`<SupportedPlatform Include="browser" />`** makes the platform-compatibility analyzer (`CA1416`)
     flag an API that is unsupported in the browser, such as starting a process.
 
-  The policy fails a test run. The two analyzers produce warnings, and the SDK does not turn on
+  The policy rules fail a test run. The two analyzers produce warnings, and the SDK does not turn on
   `TreatWarningsAsErrors` for an ordinary project — set it on `Contracts` and `Core`, or the "clean
   build has no warnings" rule is the only thing standing behind them. No analyzer proves the absence of
   every kind of I/O; what they miss is a review obligation, and the client's own tests running in the
@@ -212,9 +214,11 @@ close it:
 - **One BFF per client kind, not one per screen.** Web and mobile may each get one when their sign-in
   or response needs differ.
 
-The policy names it `Bff`; its dependency row is in `project-responsibilities.md`. The policy allows
-`Bff → Contracts` because it cannot express "only when it prerenders or combines"; that condition is a
-review obligation.
+**None of this is enforced yet.** The architecture policy has no BFF responsibility; Blazor and BFF
+support is planned for a future Build SDK release. Until then every rule in this section is a review
+obligation, and a repository that adds a BFF project records it in its own policy — see
+`project-responsibilities.md`. Even once it is in the policy, "Contracts only when it prerenders or
+combines" stays a review obligation, because a dependency matrix cannot express a condition.
 
 ## Worked examples
 
