@@ -24,8 +24,9 @@
 		block. Delete the groups you do not need: the ones below are illustrative, not a required set.
 
 		Check these versions against the SDK's current release before you commit. They are the versions
-		this playbook builds with today, plus one illustrative package family (Purview.Containers) that
-		you delete if no suite needs a container.
+		this playbook builds with today, plus two illustrative package families — Purview.Containers, which
+		you delete if no suite needs a container, and BDTest, which you delete if no suite is
+		acceptance-based.
 	-->
 	<PropertyGroup>
 		<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
@@ -51,6 +52,12 @@
 		-->
 		<PurviewContainersVersion>1.0.0-prerelease.6</PurviewContainersVersion>
 		<TUnitVersion>1.75.0</TUnitVersion>
+		<!--
+			BDTest ships its adapter, core and reporting packages together, so they share one property.
+			The TUnit adapter is pinned against TUnitVersion above; bump the two together. Delete this
+			line and the BDTest packages below if no suite is acceptance-based.
+		-->
+		<BDTestVersion>3.0.0</BDTestVersion>
 	</PropertyGroup>
 
 	<!-- Packages -->
@@ -87,5 +94,11 @@
 		<PackageVersion Include="Purview.Containers" Version="$(PurviewContainersVersion)" />
 		<PackageVersion Include="Purview.Containers.MsSql" Version="$(PurviewContainersVersion)" />
 		<PackageVersion Include="Purview.Containers.PostgreSql" Version="$(PurviewContainersVersion)" />
+		<!--
+			Acceptance suites. BDTest.TUnit is an adapter over TUnit rather than a second runner, so the
+			one-framework rule still holds; BDTest.Reporting produces the single-file HTML report.
+		-->
+		<PackageVersion Include="BDTest.TUnit" Version="$(BDTestVersion)" />
+		<PackageVersion Include="BDTest.Reporting" Version="$(BDTestVersion)" />
 	</ItemGroup>
 </Project>
