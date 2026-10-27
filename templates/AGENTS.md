@@ -54,17 +54,35 @@ This repository contains `Acme.<Product>`, <one sentence on what it is and who u
 - **Test data comes from `TestBuilder`.** Never construct a domain type inline in a test. Override only the
   value the test is proving. The exception is a test proving a type's own `Create`/`Hydrate` behaviour,
   which must name the rejected input itself.
+- **Acceptance tests use BDTest over TUnit** (`BDTest.TUnit`), never Gherkin, SpecFlow or Reqnroll — the
+  adapter keeps TUnit as the one runner, and a code-only scenario has no feature file to drift from its
+  steps. They live in `<Target>.AcceptanceTests`, where Given/When/Then replaces the AAA comments, and the
+  chain must end in `.BDTestAsync()` — a chain that stops at `.Then(...)` passes without running a step.
 - **Containers come from `Purview.Containers`, not `Testcontainers` directly.** One API over Microsoft WSL
   Containers (no Docker installation on Windows) or Docker, with typed modules for SQL Server, PostgreSQL,
   Redis, MySQL, RabbitMQ, Azurite and NATS. It is experimental and prerelease, so pin the version you adopt.
-  Put the suite in its own `*.IntegrationTests` project so the tier comes from the name, and make it skip
-  itself when no backend is reachable — a missing runtime must be a skip, never a pass.
+  Put the suite in its own `*.IntegrationTests` project so the tier comes from the name. Locally, probe
+  with `ContainerBackends.ProbeAllAsync()` and skip when nothing is usable — a missing runtime must be a
+  skip, never a pass. In CI, pin the backend with `PURVIEW_CONTAINERS_BACKEND` so an unavailable runtime
+  fails the job instead of skipping every test and reporting green.
 - **Package versions are central, and a family's version is a property.** All versions live in
   `Directory.Packages.props`. A version shared by a family — `TUnit`/`TUnit.Core`/`TUnit.Mocks`, an EF Core
   provider against EF Core, any `Purview.*` product released as a set — is declared once in a labelled
   `PropertyGroup` and referenced as `Version="$(TUnitVersion)"`, so a bump cannot be applied to half the
   family. A package with no family keeps its literal version inline.
-- **Pass a `CancellationToken`** wherever a downstream method accepts one.
+- **In a test, prefer the async overload wherever the API offers one** — `File.ReadAllTextAsync`, not
+  `File.ReadAllText` — **and that reaches through test helpers.** A helper calling such an API is converted
+  to `async Task`, gains the `Async` suffix and a trailing `CancellationToken`; a property that hides IO
+  becomes a method, because a property cannot be `async`. `VSTHRD103` fails the build for a sync call
+  inside a `Task`-returning method, but a sync helper is not `Task`-returning, so the analyzer cannot see
+  it — that is the case a reviewer has to catch. Exempt only when no async overload exists
+  (`File.Exists`, `File.Delete`, `Directory.EnumerateFiles`) or a base type fixes the signature; say which.
+  `Task.Run`, `Task.FromResult` and `.GetAwaiter().GetResult()` are not conversions.
+- **Pass a `CancellationToken`** wherever a downstream method accepts one. In a test that means: if any
+  method in the call chain accepts one, the test method's **last parameter** is a `CancellationToken` —
+  TUnit supplies it, and with `[Arguments]` the data binds to the leading parameters — and it is forwarded
+  to every call that accepts one. Never `CancellationToken.None`, never `default`, never a token the test
+  creates. One hop that drops it makes the whole chain uncancellable.
 - **The build is the authority.** A convention the build checks is checked by the build; a convention only a
   reviewer can check is stated as a review obligation and never described as enforced.
 - **A clean build has no warnings.** Fix it, or suppress it where it occurs with a stated justification.

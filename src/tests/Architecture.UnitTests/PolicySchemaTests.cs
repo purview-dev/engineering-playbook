@@ -46,14 +46,14 @@ public sealed class PolicySchemaTests
 	}
 
 	[Test]
-	public async Task Schema_GivenADocumentMissingARequiredField_RejectsIt()
+	public async Task Schema_GivenADocumentMissingARequiredField_RejectsIt(CancellationToken cancellationToken)
 	{
 		// The schema must be able to fail, or "the policy validates" says nothing.
-		await AssertRejectedAsync("""{ "version": 1 }""");
+		await AssertRejectedAsync("""{ "version": 1 }""", cancellationToken);
 	}
 
 	[Test]
-	public async Task Schema_GivenAWaiverWithATokenReason_RejectsIt()
+	public async Task Schema_GivenAWaiverWithATokenReason_RejectsIt(CancellationToken cancellationToken)
 	{
 		// The minLength on 'reason' is the rule that stops a waiver becoming a silent suppression.
 		await AssertRejectedAsync(
@@ -71,12 +71,13 @@ public sealed class PolicySchemaTests
 				],
 				"waivers": [ { "project": "Infrastructure", "rules": ["naming"], "reason": "because" } ]
 			}
-			"""
+			""",
+			cancellationToken
 		);
 	}
 
 	[Test]
-	public async Task Schema_GivenAnUnknownResponsibilityField_RejectsIt()
+	public async Task Schema_GivenAnUnknownResponsibilityField_RejectsIt(CancellationToken cancellationToken)
 	{
 		// additionalProperties:false is what catches a typo'd key, which would otherwise be read as an
 		// absent rule - the most dangerous kind of mistake in a policy file.
@@ -95,12 +96,13 @@ public sealed class PolicySchemaTests
 					}
 				]
 			}
-			"""
+			""",
+			cancellationToken
 		);
 	}
 
 	[Test]
-	public async Task Schema_GivenTheRemovedRulesObject_RejectsIt()
+	public async Task Schema_GivenTheRemovedRulesObject_RejectsIt(CancellationToken cancellationToken)
 	{
 		// Version 2 removed 'rules': its flags were deserialised but never consulted, so accepting the
 		// block again would restore a switch that looks enforced and is not.
@@ -119,19 +121,21 @@ public sealed class PolicySchemaTests
 				],
 				"rules": { "noCycles": true }
 			}
-			"""
+			""",
+			cancellationToken
 		);
 	}
 
 	/// <summary>Writes a candidate policy, validates it, and asserts the schema rejected it.</summary>
 	/// <param name="json">The malformed policy.</param>
+	/// <param name="cancellationToken">Cancels the write.</param>
 	/// <returns>A task that completes when the assertion has run.</returns>
-	static async Task AssertRejectedAsync(string json)
+	static async Task AssertRejectedAsync(string json, CancellationToken cancellationToken)
 	{
 		var path = Path.Combine(Path.GetTempPath(), $"architecture-policy-{Guid.NewGuid():N}.json");
 		try
 		{
-			await File.WriteAllTextAsync(path, json);
+			await File.WriteAllTextAsync(path, json, cancellationToken);
 
 			var failures = PolicySchemaValidator.Validate(path);
 

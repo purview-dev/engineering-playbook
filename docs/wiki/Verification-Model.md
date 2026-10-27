@@ -14,8 +14,13 @@ add: the SDK reads the test project's name suffix and emits an assembly-level ca
 | `<Target>.UnitTests` | `Unit` | Yes |
 | `Architecture.UnitTests` | `Unit` | Yes |
 | `<Target>.ContractTests` | `Contract` | Usually |
+| `<Target>.AcceptanceTests` | `Acceptance` | No — its own job |
 | `<Target>.IntegrationTests` | `Integration` | Only when the resource is available |
 | `<Target>.E2ETests` | `E2E` | No |
+
+The category is a pattern match rather than a lookup — the SDK takes the word before `Tests` — so
+`Acceptance` needs nothing added to the pipeline to be recognised. `Acceptance` is also in the SDK's
+`TestType` list, which is what generates the `InternalsVisibleTo` back to the target project.
 
 `Architecture.UnitTests` is named that way **deliberately**, and the obvious alternative is a trap. The
 SDK takes the category from the word before `Tests`, so `Architecture.ArchitectureTests` would get
@@ -106,6 +111,13 @@ projects, including an integration suite, because the whole point of that reposi
 end to end.
 
 Either way the rule holds: **the fast tier is always on, and the slow tier is explicit.**
+
+A BDTest acceptance suite is a slow tier of this kind, with one addition: the job that runs it publishes the
+`BDTest.Reporting` HTML report as a build artifact, because the report is the reason the suite is written
+in that shape at all. A container-backed suite adds a different one: pin the backend with
+`PURVIEW_CONTAINERS_BACKEND` in the job, so a runner without that runtime fails the job rather than
+skipping every test and reporting green. Both are covered in [Testing and Test
+Data](Testing-And-Test-Data.md).
 
 ## The configuration file
 

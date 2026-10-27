@@ -19,7 +19,16 @@ public sealed partial class PolicyDocumentationTests
 	static string DocumentationPath =>
 		Path.Combine(ArchitecturePolicy.RepositoryRoot(), "docs", "wiki", "Project-Responsibilities.md");
 
-	static string Documentation => File.ReadAllText(DocumentationPath);
+	/// <summary>Reads the responsibilities page.</summary>
+	/// <param name="cancellationToken">Cancels the read.</param>
+	/// <returns>The page's text.</returns>
+	/// <remarks>
+	/// A method rather than a property, because a property cannot be <c>async</c> and a synchronous one
+	/// would hide <c>File.ReadAllText</c> from <c>VSTHRD103</c> - the analyzer only sees a synchronous
+	/// call when it sits inside a <c>Task</c>-returning method. See <c>docs/wiki/Testing-And-Test-Data.md</c>.
+	/// </remarks>
+	static async Task<string> ReadDocumentationAsync(CancellationToken cancellationToken) =>
+		await File.ReadAllTextAsync(DocumentationPath, cancellationToken);
 
 	[GeneratedRegex(
 		@"^\| `(?<name>[A-Za-z]+)` \| (?<category>[a-z]+) \| (?<aliases>[^|]+) \| (?<depends>[^|]+) \|$",
@@ -28,11 +37,11 @@ public sealed partial class PolicyDocumentationTests
 	private static partial Regex CatalogueRowPattern();
 
 	[Test]
-	public async Task Documentation_GivenTheCatalogueTable_ListsEveryResponsibility()
+	public async Task Documentation_GivenTheCatalogueTable_ListsEveryResponsibility(CancellationToken cancellationToken)
 	{
 		// Arrange
 		var documented = CatalogueRowPattern()
-			.Matches(Documentation)
+			.Matches(await ReadDocumentationAsync(cancellationToken))
 			.Select(match => match.Groups["name"].Value)
 			.ToArray();
 
@@ -49,16 +58,19 @@ public sealed partial class PolicyDocumentationTests
 	}
 
 	[Test]
-	public async Task Documentation_GivenTheCatalogueTable_DoesNotInventResponsibilities()
+	public async Task Documentation_GivenTheCatalogueTable_DoesNotInventResponsibilities(
+		CancellationToken cancellationToken
+	)
 	{
 		// Arrange
 		var known = Policy.Responsibilities.Select(responsibility => responsibility.Name).ToArray();
+		var text = await ReadDocumentationAsync(cancellationToken);
 
 		// Act
 		IReadOnlyList<string> invented =
 		[
 			.. CatalogueRowPattern()
-				.Matches(Documentation)
+				.Matches(text)
 				.Select(match => match.Groups["name"].Value)
 				.Where(name => !known.Contains(name, StringComparer.Ordinal))
 				.Distinct(StringComparer.Ordinal),
@@ -74,11 +86,16 @@ public sealed partial class PolicyDocumentationTests
 	}
 
 	[Test]
-	public async Task Documentation_GivenTheCatalogueTable_MatchesThePolicyDependencies()
+	public async Task Documentation_GivenTheCatalogueTable_MatchesThePolicyDependencies(
+		CancellationToken cancellationToken
+	)
 	{
+		// Arrange
+		var text = await ReadDocumentationAsync(cancellationToken);
+
 		// Act
 		List<string> mismatches = [];
-		foreach (Match row in CatalogueRowPattern().Matches(Documentation))
+		foreach (Match row in CatalogueRowPattern().Matches(text))
 		{
 			var name = row.Groups["name"].Value;
 			var responsibility = Policy.Responsibilities.FirstOrDefault(candidate =>
@@ -123,10 +140,10 @@ public sealed partial class PolicyDocumentationTests
 	}
 
 	[Test]
-	public async Task Documentation_GivenTheDiscouragedNames_ListsEveryOne()
+	public async Task Documentation_GivenTheDiscouragedNames_ListsEveryOne(CancellationToken cancellationToken)
 	{
 		// Arrange
-		var text = Documentation;
+		var text = await ReadDocumentationAsync(cancellationToken);
 
 		// Act
 		IReadOnlyList<string> missing =
@@ -144,10 +161,10 @@ public sealed partial class PolicyDocumentationTests
 	}
 
 	[Test]
-	public async Task Documentation_GivenEveryWaiver_ExplainsIt()
+	public async Task Documentation_GivenEveryWaiver_ExplainsIt(CancellationToken cancellationToken)
 	{
 		// Arrange
-		var text = Documentation;
+		var text = await ReadDocumentationAsync(cancellationToken);
 
 		// Act
 		// A waiver that nobody wrote down is indistinguishable from a rule that was never enforced.
