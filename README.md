@@ -19,6 +19,8 @@ coding agents are enabled to work in a codebase without hand-holding.
 | [Architecture as tests](docs/wiki/Architecture-As-Tests.md) | How does the build refuse a dependency that points the wrong way? |
 | [Verification model](docs/wiki/Verification-Model.md) | Which checks run, in which tier, for which change? |
 | [Contracts and data exchange](docs/wiki/Contracts-And-Data-Exchange.md) | How do value objects, schemas and results cross a boundary? |
+| [Well-known identifiers](docs/wiki/Well-Known-Identifiers.md) | How is an identity derived so every process and restart agrees? |
+| [GUID key strategy](docs/wiki/Guid-Key-Strategy.md) | How is a sequential GUID key chosen and applied per store? |
 | [Testing and test data](docs/wiki/Testing-And-Test-Data.md) | How are tests written, and where does their data come from? |
 | [Agent enablement](docs/wiki/Agent-Enablement.md) | How is a repository made legible to a coding agent? |
 | [Agent skills distribution](docs/wiki/Agent-Skills-Distribution.md) | How is a skill published once and reach an agent? |
@@ -45,6 +47,7 @@ coding agents are enabled to work in a codebase without hand-holding.
 | `docs/wiki` | The playbook. Aggregated by the purview-dev website. |
 | `templates/` | Ready-to-copy starter files for a repository adopting the playbook. |
 | `src/` | The reference implementation: a layered repository whose architecture rules are tests. |
+| `samples/` | Runnable samples for conventions that `src/` cannot host; run with `just samples`. |
 | `mkdocs.yml` | Wiki site configuration (`docs_dir: docs/wiki`). |
 | `.config/purview-build.json` | Pipeline configuration for the shared Purview build workflow. |
 | `Justfile` | Supported local workflow commands. |
@@ -56,6 +59,7 @@ coding agents are enabled to work in a codebase without hand-holding.
 just build              # dotnet build (Debug)
 just test               # run the unit tests
 just lint-check         # CSharpier check
+just samples            # build and run the standalone persistence sample
 just pipeline-pr        # restore, build, lint, test through the shared Purview.Build tool
 just scrub              # reset bin/obj, forced restore, build-server shutdown
 ```

@@ -6,6 +6,8 @@
 - [Architecture as Tests](Architecture-As-Tests.md)
 - [Verification Model](Verification-Model.md)
 - [Contracts and Data Exchange](Contracts-And-Data-Exchange.md)
+- [Well-Known Identifiers](Well-Known-Identifiers.md)
+- [GUID Key Strategy](Guid-Key-Strategy.md)
 - [Testing and Test Data](Testing-And-Test-Data.md)
 - [Agent Enablement](Agent-Enablement.md)
 - [Agent Skills Distribution](Agent-Skills-Distribution.md)

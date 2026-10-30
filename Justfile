@@ -54,6 +54,18 @@ build *args:
     echo "Building {{ BLUE }}{{ solution_file }}{{ NORMAL }} with {{ YELLOW }}{{ build_configuration }}{{ NORMAL }}..."
     dotnet build "{{ solution_file }}" --configuration "{{ build_configuration }}" {{ args }}
 
+# Builds the standalone persistence sample
+[group('Samples')]
+samples-build *args:
+    echo "Building {{ BLUE }}samples/Acme.Persistence{{ NORMAL }}..."
+    dotnet build samples/Acme.Persistence/Acme.Persistence.csproj {{ args }}
+
+# Runs the standalone persistence sample (builds it first)
+[group('Samples')]
+samples *args:
+    echo "Running {{ BLUE }}samples/Acme.Persistence{{ NORMAL }}..."
+    dotnet run --project samples/Acme.Persistence/Acme.Persistence.csproj -- {{ args }}
+
 # Restore NuGet packages for the solution
 [group('Build and Test')]
 restore *args:

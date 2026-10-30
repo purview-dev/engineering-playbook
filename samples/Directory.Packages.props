@@ -1,0 +1,31 @@
+<Project>
+	<!--
+		The sample is deliberately outside `src/`, so it does not import the Purview.BuildSdk and does
+		not take part in the canonical solution build. It still uses Central Package Management, which
+		this file scopes to the samples tree so the repository's own package list stays about the
+		playbook rather than about the sample.
+	-->
+	<PropertyGroup>
+		<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+	</PropertyGroup>
+
+	<ItemGroup Label="Entity Framework Core">
+		<PackageVersion Include="Microsoft.EntityFrameworkCore" Version="10.0.14" />
+		<PackageVersion Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.14" />
+		<PackageVersion Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.14" />
+		<PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.3" />
+	</ItemGroup>
+
+	<ItemGroup Label="Identifier generation">
+		<PackageVersion Include="FastGuid" Version="1.4.3" />
+	</ItemGroup>
+
+	<ItemGroup Label="Transitive override">
+		<!--
+			Microsoft.Data.SqlClient (through the EF Core SQL Server provider) resolves
+			System.Security.Cryptography.Pkcs 9.0.11, which carries two published advisories. Pin the
+			patched 10.x package until the SQL client ships a fixed dependency.
+		-->
+		<PackageVersion Include="System.Security.Cryptography.Pkcs" Version="10.0.14" />
+	</ItemGroup>
+</Project>

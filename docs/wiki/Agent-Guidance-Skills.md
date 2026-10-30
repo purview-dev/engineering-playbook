@@ -12,7 +12,7 @@ library, and they are the only place that guidance is written:
 | `purview-architecture-testing` | How does a boundary become a failing build rather than a review comment? |
 | `purview-testing-conventions` | How are tests written and fed — framework, structure, naming, and `TestBuilder`? |
 | `purview-telemetry` | What instrumentation does a project of this size get? (Answer: always some.) |
-| `purview-persistence` | How is data stored, and — only when it applies — how are GUID keys generated? |
+| `purview-persistence` | How is data stored, how are identifiers derived when they are known in advance, and — only when it applies — how are GUID keys generated? |
 
 Two obligations fall out of that, and both are enforced only by review:
 
@@ -115,7 +115,10 @@ flowchart TD
     A["Persistence confirmed?"] -- no --> Z["Out of scope - ask nothing"]
     A -- yes --> B{"GUIDs used as<br/>primary keys?"}
     B -- no --> Z
-    B -- yes --> C{"Identifier needed<br/>before SaveChanges?"}
+    B -- yes --> Q{"Identifier value<br/>predetermined before storage?"}
+
+    Q -- yes --> R["Derive it - UUIDv5 over an<br/>installation-scoped namespace<br/>ValueGeneratedNever"]
+    Q -- no --> C{"Identifier needed<br/>before SaveChanges?"}
 
     C -- yes --> D["Application must generate it"]
     C -- no --> E["Database may generate it"]
@@ -123,7 +126,7 @@ flowchart TD
     D --> F{"Provider?"}
     E --> G{"Provider?"}
 
-    F -- "SQL Server" --> H["EF Core SequentialGuidValueGenerator"]
+    F -- "SQL Server" --> H["EF Core SequentialGuidValueGenerator<br/>or a store-ordered FastGuid strategy"]
     F -- "PostgreSQL" --> I["Guid.CreateVersion7 on .NET 9+<br/>ValueGeneratedNever"]
 
     G -- "SQL Server" --> J["NEWSEQUENTIALID()"]
@@ -136,6 +139,7 @@ flowchart TD
     J --> N
     L --> N
     M --> N
+    R --> S["A derived identity is not a secret<br/>and is never regenerated"]
     N -- yes --> O["Random v4 - ordered keys leak creation time"]
     N -- no --> P["Keep the ordered choice"]
 ```
@@ -143,11 +147,23 @@ flowchart TD
 **The two providers do not share an answer.** SQL Server compares `uniqueidentifier` with the last
 six bytes most significant, so a byte-ordered UUIDv7 is effectively random to its clustered index.
 PostgreSQL compares `uuid` in byte order, so UUIDv7 is genuinely sequential there. A strategy carried
-across without re-deriving it is the failure this diagram exists to prevent.
+across without re-deriving it is the failure this diagram exists to prevent. When one context type
+serves both providers, the strategy is carried as data on the context options, not chosen from
+`Database.ProviderName` at model-build time.
 
-There is no Purview GUID generation package. Prefer a framework or database capability; a custom
-generator is a correctness risk — endianness, clock regression, counter rollover and thread safety
-are all live hazards, and the failure shows up as duplicate keys in production.
+**A derived identity is the third case, and it must be excluded from the sequential convention.** When
+the value is known before the row exists — a system tenant, a seeded reference row, an installation's
+service principal — derive it with UUIDv5 in an installation-scoped namespace and configure
+`ValueGeneratedNever()`. The full rule, catalogue and tests are on [Well-Known
+Identifiers](Well-Known-Identifiers.md); the convention that must skip it is on [GUID Key
+Strategy](Guid-Key-Strategy.md).
+
+No **NuGet** package provides this guidance. The sequential-GUID pattern — a strategy witness, an
+options extension and a model-finalising convention — is repository-local: copy it, do not depend on a
+package that claims to own it. Introduce it only for a measured requirement: a second provider, or an
+identifier needed before `SaveChanges`. A hand-written generator is a correctness risk — endianness,
+clock regression, counter rollover and thread safety are all live hazards, and the failure shows up as
+duplicate keys in production.
 
 ## How it is enforced
 
@@ -174,8 +190,11 @@ thing when read.
 | "Add a command to this CLI" (no persistence) | No new projects, no repository, no DI indirection. Telemetry recommended. **No GUID question asked.** |
 | "Build a small HTTP API" | Single project. Structured logging and an `ActivitySource` from the first commit. Console or one OTLP endpoint — no collector, no dashboards. |
 | "Add telemetry to this reusable library" | `ILogger<T>` / `ActivitySource` / `Meter`, names published for the host. **No `AddOpenTelemetry`, no exporter, no backend requirement.** |
-| "Use GUID keys on SQL Server, high write volume" | `NEWSEQUENTIALID()`, or `SequentialGuidValueGenerator` if the value is needed before insert. **Not** UUIDv7. |
-| "Use GUID keys on PostgreSQL, high write volume" | `Guid.CreateVersion7()` with `ValueGeneratedNever()`. `uuidv7()` only if the server is 18+. |
+| "Use GUID keys on SQL Server, high write volume" | `NEWSEQUENTIALID()`, EF Core's `SequentialGuidValueGenerator` if the value is needed before insert, or a store-ordered `FastGuid` strategy when both providers must share one model. **Not** UUIDv7. |
+| "Use GUID keys on PostgreSQL, high write volume" | `Guid.CreateVersion7()` with `ValueGeneratedNever()`, or `FastGuid.NewPostgreSqlGuid()` in the shared strategy. `uuidv7()` only if the server is 18+. |
+| "Seed a system tenant every replica must agree on" | UUIDv5 over the installation namespace with `ValueGeneratedNever()`, a read-or-insert bootstrap, and a test that the migration literal matches the derivation. |
+| "Random GUID keys, no seeding" | No UUIDv5 and no strategy abstraction. `Guid.NewGuid()` is the answer. |
+| "SQL Server and PostgreSQL behind one context type" | One strategy carried as context-options data, chosen per provider. Different service providers, different models. Never one byte-ordered generator for both. |
 | Repository already has `AddOpenTelemetry` | Existing setup extended, not replaced. No duplicate registration. |
 | "Should I add a repository over EF Core?" | Only with a named reason other than testability — `Purview.Containers` gives a real database in tests. |
 | Project file already states the type and persistence | No questions asked at all. |

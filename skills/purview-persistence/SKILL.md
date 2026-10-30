@@ -2,13 +2,13 @@
 name: purview-persistence
 description: >-
   Use when a .NET project actually persists data and you are choosing a storage approach, deciding
-  whether to abstract EF Core, or selecting a GUID primary-key strategy. Gives provider-specific
-  guidance — SQL Server and PostgreSQL differ and must not be treated alike — and stays silent for
-  projects that do not persist anything.
+  whether to abstract EF Core, deriving a well-known identifier, or selecting a GUID primary-key
+  strategy. Gives provider-specific guidance — SQL Server and PostgreSQL differ and must not be
+  treated alike — and stays silent for projects that do not persist anything.
 license: MIT
 metadata:
   author: Purview-Dev
-  version: "1.0"
+  version: "1.1"
 ---
 
 # Purview persistence
@@ -40,7 +40,23 @@ development and integration tests — including `MsSql`, `PostgreSql`, `MySql`, 
 `RabbitMq`, `Azurite` and an Azure Key Vault emulator. Prefer a real container over an in-memory
 provider: the in-memory provider does not enforce the constraints that break you in production.
 
-## 3. GUID keys — only if GUIDs are keys
+## 3. Identifiers — derived or generated
+
+Two decisions live here, and they are independent. Ask them in this order.
+
+### The deterministic-identifier gate
+
+Derive an identifier only when its **value must be known before storage** — a system tenant, a seeded
+reference row, an installation's service principal, or an ingested object whose provider key is stable
+and never recycled. Then derive it with UUIDv5 over an installation-scoped namespace and configure
+`ValueGeneratedNever()`, so the sequential convention below leaves it alone. A project with random keys
+and no seeding has no use for UUIDv5. An outbox row that merely needs an id before `SaveChanges` takes
+the generated strategy below, not a derived one.
+
+The full rule, catalogue, naming rules, migration caveat and tests are in
+`references/well-known-identifiers.md`.
+
+### The generated-key decision
 
 Resolve these before recommending anything; most are answered by the repository:
 
@@ -72,9 +88,11 @@ Use the framework or database capability when it is sufficient — `Guid.CreateV
 generator is a maintenance obligation and a correctness risk; introduce one only against a measured
 requirement.
 
-**There is no Purview GUID generation package.** Do not reference one, and do not create one without
-first establishing a concrete, measured need that the built-in options cannot meet. If such a
-capability is added later, this skill is where the guidance for recommending it belongs.
+**No NuGet package provides this guidance.** The sequential-GUID pattern — a strategy witness, an
+options extension, a value generator with value-converter support, and a model-finalising convention —
+is repository-local: copy it, do not depend on a package that claims to own it. Introduce it only for
+a measured requirement: a second provider, or an identifier needed before `SaveChanges`. Until the
+second provider exists, a built-in capability is the answer.
 
 ## 4. Value objects as keys
 
@@ -96,7 +114,10 @@ independent.
 ## Checks before you answer
 
 - Have you confirmed persistence is actually required?
+- If you are deriving an identifier, is its value genuinely known before storage, and is it keyed
+  `ValueGeneratedNever()`?
 - If you are recommending a GUID strategy, do you know the provider *and* its version?
+- If you are proposing the strategy/convention, is there a second provider or a pre-save identifier?
 - Are you proposing an abstraction you can justify by something other than testability?
 - Have you preferred a built-in capability over a custom generator?
 

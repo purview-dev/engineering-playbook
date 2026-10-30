@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net10.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<RootNamespace>Acme.Persistence</RootNamespace>
+		<AssemblyName>Acme.Persistence</AssemblyName>
+		<!--
+			The sample sits outside `src/` and does not import the Purview.BuildSdk. The repository's
+			analyzer policy (CA1062 on every override, CA1515 for public sample types, CA1308 for the
+			deliberately lowercased name) is designed for the reference implementation, not for a
+			copy-paste sample, so the .NET analyzers are off here and CSharpier still enforces format.
+		-->
+		<EnableNETAnalyzers>false</EnableNETAnalyzers>
+		<AnalysisLevel>none</AnalysisLevel>
+		<RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>
+		<RunAnalyzersDuringLiveAnalysis>false</RunAnalyzersDuringLiveAnalysis>
+		<!--
+			The sample is a console application, not a library: it runs the bootstrap twice, writes an
+			order, and asserts the model coverage so a reader can watch the conventions work.
+		-->
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="FastGuid" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
+		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
+		<PackageReference Include="System.Security.Cryptography.Pkcs" />
+	</ItemGroup>
+</Project>

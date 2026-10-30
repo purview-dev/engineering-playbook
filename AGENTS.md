@@ -33,6 +33,7 @@ implementation whose only job is to prove the conventions compile, run, and fail
 | `src/tests/SharedTestingInfra` | `TestBuilder`; referenced automatically by every test project |
 | `skills/` | Authored agent skills, installable with `npx skills add purview-dev/engineering-playbook` |
 | `templates/` | Ready-to-copy starter files for a repository adopting the playbook |
+| `samples/Acme.Persistence` | Standalone, runnable EF Core sample for the identifier conventions; run with `just samples` |
 | `src/Directory.Build.props` | `NamespacePrefix`, the SDK import, and `NamespaceRemoveSuffix` |
 | `.config/purview-build.json` | Pipeline configuration: solution, test discovery, filter |
 | `.config/architecture-policy.json` | The dependency and naming policy the architecture tests read |
@@ -128,6 +129,7 @@ just build              # dotnet build (Debug)
 just test               # dotnet test
 just lint-check         # CSharpier check
 just lint-fix           # CSharpier format
+just samples            # build and run the standalone persistence sample
 just pipeline-pr        # restore, build, lint, test through the shared Purview.Build tool
 just scrub              # reset bin/obj, forced restore, build-server shutdown
 ```

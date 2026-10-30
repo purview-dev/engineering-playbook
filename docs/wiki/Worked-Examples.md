@@ -320,6 +320,10 @@ The fastest way to understand a rule is to watch it fail. Three edits, each of w
   consumer-verification script. Those mechanisms are documented, and
   [containers](https://github.com/purview-dev/containers) is the reference for them.
 - **No persistence.** The adapter is in-memory. There is no migration, no schema, no connection string.
+- **No persistence-specific identifier code in `src/`.** [Well-Known Identifiers](Well-Known-Identifiers.md)
+  and [GUID Key Strategy](Guid-Key-Strategy.md) are implemented in full by the standalone sample at
+  `samples/Acme.Persistence`. `just samples` builds and runs it; it sits outside the canonical `src/`
+  solution because the reference implementation here is in-memory by design.
 - **No web layer.** The result-to-response mapping in [Contracts and Data
   Exchange](Contracts-And-Data-Exchange.md) is described, not implemented, because
   [results](https://github.com/purview-dev/results) already implements it and a second implementation here
