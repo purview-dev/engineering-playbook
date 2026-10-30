@@ -466,10 +466,13 @@ Three rules make such a suite safe to own:
   than a stability guarantee. The `Purview.Containers` packages are a family, so their version is a single
   property in `Directory.Packages.props` and a bump cannot be applied to half of them.
 
-**`src/` does not demonstrate this either**, and for the stated reason: this repository ships no persistence
-and its pipeline runs the `[Category=Unit]` tier only.
-[containers](https://github.com/purview-dev/containers) is the repository to read instead — its
-`integration-docker` job is the second-job pattern in use.
+**`src/` does not demonstrate this either**, and for the stated reason: the reference implementation ships
+no persistence and its pipeline runs the `[Category=Unit]` tier only. `samples/Acme.Persistence` shows the
+EF Core side — a real provider when given a connection string, in-memory only for the runnable default —
+but it is a console self-check rather than a test project, and `just samples` is its check.
+[containers](https://github.com/purview-dev/containers) is the repository to read for the second-job
+pattern in use, and [EF Core Integration](EF-Core-Integration.md) states the rules a container-backed suite
+should prove.
 
 ## How it is enforced
 
@@ -510,6 +513,7 @@ and its pipeline runs the `[Category=Unit]` tier only.
 
 - [Verification Model](Verification-Model.md)
 - [Architecture as Tests](Architecture-As-Tests.md)
+- [EF Core Integration](EF-Core-Integration.md)
 - [Worked Examples](Worked-Examples.md)
 - [BDTest](https://bdtest.tomlonghurst.dev/)
 - [Purview.Containers](https://purview.dev/docs/containers/)

@@ -91,7 +91,9 @@ so a value object is never a black box that has to be unwrapped through a helper
 
 The same generator covers the storage boundary: reference `Microsoft.EntityFrameworkCore` and it emits the
 value converters, comparers and complex-type mapping, plus a `ConfigureValueObjects` extension — so queries
-use the value object type directly instead of `.Value`.
+use the value object type directly instead of `.Value`. That is the mapping EF Core should configure once,
+and it is why a value-object key also needs a converter-aware value generator when the application owns the
+value. See [EF Core Integration](EF-Core-Integration.md).
 
 ## Rule 4 in practice
 
@@ -185,6 +187,8 @@ a hope.
 ## See also
 
 - [Worked Examples](Worked-Examples.md)
+- [EF Core Integration](EF-Core-Integration.md) — value converters and value-object keys in the model
+- [Well-Known Identifiers](Well-Known-Identifiers.md) — value objects that carry a derived identity
 - [Testing and Test Data](Testing-And-Test-Data.md)
 - [value-objects](https://github.com/purview-dev/value-objects)
 - [results](https://github.com/purview-dev/results)

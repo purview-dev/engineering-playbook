@@ -62,7 +62,7 @@ Never use `NEWSEQUENTIALID()` output as a secret.
 
 | Provider | Needs value before insert | Locality matters | Recommendation |
 | -- | -- | -- | -- |
-| SQL Server | No | Yes | `NEWSEQUENTIALID()` (EF Core's default for `Guid` keys) |
+| SQL Server | No | Yes | `NEWSEQUENTIALID()` as a store default, or EF Core's client-side `SequentialGuidValueGenerator` |
 | SQL Server | Yes | Yes | EF Core `SequentialGuidValueGenerator`, or a store-ordered `FastGuid` strategy when both providers share a model |
 | SQL Server | Either | No | `Guid.NewGuid()` |
 | PostgreSQL | Yes | Yes | `Guid.CreateVersion7()` with `ValueGeneratedNever()` |
@@ -85,7 +85,7 @@ In order of preference:
 1. A framework capability — `Guid.CreateVersion7()`, EF Core's value generators.
 2. A database capability — `NEWSEQUENTIALID()`, `uuidv7()`, `gen_random_uuid()`.
 3. A reviewed, tested implementation of a published standard, when neither of the above is available
-   on your target versions.
+   on your target versions — `FastGuid` is the one the sample uses for store-ordered values.
 4. A bespoke generator — only against a measured requirement the first three cannot meet.
 
 A hand-written sequential GUID generator is easy to get subtly wrong — endianness, clock regression,

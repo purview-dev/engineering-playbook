@@ -294,9 +294,10 @@ Build succeeded.
     0 Error(s)
 
 Test run summary: Passed!
-  total: 71
+  total: 75
   failed: 0
-  succeeded: 71
+  succeeded: 74
+  skipped: 1
 ```
 
 The zero-warning result is worth noticing, because it took work: the telemetry source generator's public
@@ -319,11 +320,13 @@ The fastest way to understand a rule is to watch it fail. Three edits, each of w
 - **No package.** It ships no NuGet package, so there is no pack metadata, no pack validation manifest and no
   consumer-verification script. Those mechanisms are documented, and
   [containers](https://github.com/purview-dev/containers) is the reference for them.
-- **No persistence.** The adapter is in-memory. There is no migration, no schema, no connection string.
-- **No persistence-specific identifier code in `src/`.** [Well-Known Identifiers](Well-Known-Identifiers.md)
-  and [GUID Key Strategy](Guid-Key-Strategy.md) are implemented in full by the standalone sample at
-  `samples/Acme.Persistence`. `just samples` builds and runs it; it sits outside the canonical `src/`
-  solution because the reference implementation here is in-memory by design.
+- **No persistence in `src/`.** The adapter is in-memory. There is no migration, no schema and no
+  connection string in the canonical solution.
+- **No persistence-specific identifier code in `src/`.** [Well-Known Identifiers](Well-Known-Identifiers.md),
+  [GUID Key Strategy](Guid-Key-Strategy.md) and [EF Core Integration](EF-Core-Integration.md) are
+  implemented by the standalone sample at `samples/Acme.Persistence`. `just samples` builds and runs it;
+  it sits outside the canonical `src/` solution because the reference implementation here is in-memory by
+  design.
 - **No web layer.** The result-to-response mapping in [Contracts and Data
   Exchange](Contracts-And-Data-Exchange.md) is described, not implemented, because
   [results](https://github.com/purview-dev/results) already implements it and a second implementation here
@@ -343,3 +346,4 @@ Scale](Adopting-This-At-Your-Scale.md) is the page that decides.
 - [Architecture as Tests](Architecture-As-Tests.md)
 - [Testing and Test Data](Testing-And-Test-Data.md)
 - [Contracts and Data Exchange](Contracts-And-Data-Exchange.md)
+- [EF Core Integration](EF-Core-Integration.md)

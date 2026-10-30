@@ -81,8 +81,8 @@ Every content page uses the same four sections, in this order:
 
 Three pages are deliberately not content pages. `Home.md` is the hub and `index.md` is the landing
 page, so both are navigation rather than rules. `Engineering-Principles.md` is an index: it states each
-of the ten rules in one line and links to the page that states it in full, so a rule is never written
-twice.
+of the ten universal rules in one line, plus the conditional persistence rules, and links to the page
+that states it in full, so a rule is never written twice.
 
 The shape is not decoration. It forces three questions that a page written as prose usually skips: *is this
 actually a rule, or an opinion?*; *what breaks if we drop it?*; and *is it enforced, or are we asking a

@@ -82,11 +82,11 @@ build-time `.agents/` mirror outright. The skills CLI clones the git repository,
 
 | Skill | Answers |
 | -- | -- |
-| `skills/purview-engineering-principles/` | the ten repository conventions, what each prevents, and whether a build or a reviewer enforces it |
+| `skills/purview-engineering-principles/` | the ten universal conventions, the conditional persistence rules, and whether a build or a reviewer enforces each |
 | `skills/purview-architecture/` | how many projects, which layers, where validation lives |
 | `skills/purview-architecture-testing/` | turning a boundary into a failing build |
 | `skills/purview-testing-conventions/` | TUnit, AAA, `TestBuilder`, substitutes, tiers |
-| `skills/purview-persistence/` | storage approach, EF Core abstraction, GUID key strategy |
+| `skills/purview-persistence/` | storage approach, EF Core integration, well-known identifiers, GUID key strategy |
 | `skills/purview-telemetry/` | logging, tracing, metrics, and when a project is "too small" for them |
 
 Every skill carries the `purview-` prefix: skills install into one flat directory per agent, shared with
@@ -121,6 +121,23 @@ folder is installed with it. Name the other skill in prose instead.
   referenced as `Version="$(TUnitVersion)"`, so a bump cannot be applied to half the family. A package with
   no family, like `Bogus`, keeps its literal version inline.
 - **A clean build has no warnings.**
+
+## Persistence conventions
+
+These apply only when the repository persists data; a stateless CLI or a pure library takes none of them.
+
+- **A value known before storage is derived, not generated.** Use UUIDv5 over an installation-scoped
+  namespace and key it `ValueGeneratedNever()`, so a sequential convention never overwrites it. See
+  [Well-Known Identifiers](docs/wiki/Well-Known-Identifiers.md).
+- **Every other GUID key uses one strategy per store.** SQL Server and PostgreSQL order GUIDs
+  differently, so the strategy is carried as context-options data and applied by a model-finalising
+  convention. See [GUID Key Strategy](docs/wiki/Guid-Key-Strategy.md).
+- **EF Core is the boundary.** Use `DbContext` directly rather than a repository added for testability;
+  map value objects once; keep design-time and runtime options in step; apply migrations deliberately.
+  See [EF Core Integration](docs/wiki/EF-Core-Integration.md).
+- **The runnable evidence is the sample.** `samples/Acme.Persistence` is outside `src/` and outside the
+  canonical solution; `just samples` builds, runs and self-checks it. Run it when you change the sample
+  or an identifier convention.
 
 ## Local commands
 

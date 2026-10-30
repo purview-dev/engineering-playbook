@@ -7,12 +7,12 @@ library, and they are the only place that guidance is written:
 
 | Skill | Answers |
 | -- | -- |
-| `purview-engineering-principles` | What are the ten repository conventions, what does each prevent, and is it enforced by a build or by a reviewer? |
+| `purview-engineering-principles` | What are the ten universal conventions and the conditional persistence rules, what does each prevent, and is it enforced by a build or by a reviewer? |
 | `purview-architecture` | How much structure does this project actually need, and what do I need to know before saying? |
 | `purview-architecture-testing` | How does a boundary become a failing build rather than a review comment? |
 | `purview-testing-conventions` | How are tests written and fed — framework, structure, naming, and `TestBuilder`? |
 | `purview-telemetry` | What instrumentation does a project of this size get? (Answer: always some.) |
-| `purview-persistence` | How is data stored, how are identifiers derived when they are known in advance, and — only when it applies — how are GUID keys generated? |
+| `purview-persistence` | How is data stored with EF Core, how are identifiers derived when they are known in advance, and — only when it applies — how are GUID keys generated? |
 
 Two obligations fall out of that, and both are enforced only by review:
 
@@ -103,10 +103,11 @@ The library branch is the one most often got wrong: a library that calls `AddOpe
 every consumer that already configured a provider, and wins or loses silently depending on
 initialisation order.
 
-## Persistence and GUID keys
+## Persistence, EF Core and GUID keys
 
-This guidance activates only when persistence is real and GUIDs are keys. For a stateless CLI or a
-pure library, the correct output is silence.
+This guidance activates only when persistence is real. For a stateless CLI or a pure library, the
+correct output is silence. The EF Core integration rules are in [EF Core
+Integration](EF-Core-Integration.md); the decision diagram below is the identifier-specific branch.
 
 **Diagram N — persistence-specific GUID strategy selection.**
 
@@ -114,7 +115,7 @@ pure library, the correct output is silence.
 flowchart TD
     A["Persistence confirmed?"] -- no --> Z["Out of scope - ask nothing"]
     A -- yes --> B{"GUIDs used as<br/>primary keys?"}
-    B -- no --> Z
+    B -- no --> Z2["No identifier decision<br/>EF Core rules may still apply"]
     B -- yes --> Q{"Identifier value<br/>predetermined before storage?"}
 
     Q -- yes --> R["Derive it - UUIDv5 over an<br/>installation-scoped namespace<br/>ValueGeneratedNever"]
@@ -158,12 +159,27 @@ service principal — derive it with UUIDv5 in an installation-scoped namespace 
 Identifiers](Well-Known-Identifiers.md); the convention that must skip it is on [GUID Key
 Strategy](Guid-Key-Strategy.md).
 
-No **NuGet** package provides this guidance. The sequential-GUID pattern — a strategy witness, an
-options extension and a model-finalising convention — is repository-local: copy it, do not depend on a
-package that claims to own it. Introduce it only for a measured requirement: a second provider, or an
-identifier needed before `SaveChanges`. A hand-written generator is a correctness risk — endianness,
-clock regression, counter rollover and thread safety are all live hazards, and the failure shows up as
-duplicate keys in production.
+No **NuGet** package provides the *strategy/convention pattern*. A reviewed generator such as
+`FastGuid` supplies a store-ordered implementation, but the witness, options extension, value generator
+and model-finalising convention are repository-local: copy them, do not depend on a package that claims
+to own the wiring. A hand-written generator is a correctness risk — endianness, clock regression, counter
+rollover and thread safety are all live hazards, and the failure shows up as duplicate keys in production.
+
+### EF Core integration
+
+The persistence skill also covers the non-identifier half of the same decision, because an agent that is
+already choosing a store is the agent that will otherwise invent a repository over `DbContext`. The full
+rule is on [EF Core Integration](EF-Core-Integration.md); the four points worth keeping in mind are:
+
+- **`DbContext` is the boundary.** No `IRepository<T>` or unit-of-work wrapper added for testability;
+  `Purview.Containers` gives a real database in tests.
+- **The provider is chosen where the context is registered.** The choice is carried as context-options
+  data, never read from `Database.ProviderName` while the model is being built.
+- **Value objects are mapped once.** A converter per property is the version that gets forgotten, and a
+  value-object key needs a converter-aware generator.
+- **Design time must match runtime.** The design-time factory and the application registration make the
+  same provider, strategy and `ReplaceService` choices, or the next migration describes a model nobody
+  runs.
 
 ## How it is enforced
 
@@ -173,7 +189,7 @@ duplicate keys in production.
 | A skill is reachable without loading every skill | The `description` frontmatter is the activation trigger |
 | Context is established before a recommendation | **Review** |
 | Telemetry is recommended at every project size | **Review** |
-| GUID guidance stays silent without persistence | **Review** |
+| Persistence, EF Core and GUID guidance stay silent without persistence | **Review** |
 
 The last three are review obligations and this page does not pretend otherwise. A build can check
 that a skill is well-formed; it cannot check that an agent followed prose. See
@@ -187,14 +203,16 @@ thing when read.
 
 | Scenario | Expected |
 | -- | -- |
-| "Add a command to this CLI" (no persistence) | No new projects, no repository, no DI indirection. Telemetry recommended. **No GUID question asked.** |
+| "Add a command to this CLI" (no persistence) | No new projects, no repository, no DI indirection. Telemetry recommended. **No EF Core or GUID question asked.** |
 | "Build a small HTTP API" | Single project. Structured logging and an `ActivitySource` from the first commit. Console or one OTLP endpoint — no collector, no dashboards. |
 | "Add telemetry to this reusable library" | `ILogger<T>` / `ActivitySource` / `Meter`, names published for the host. **No `AddOpenTelemetry`, no exporter, no backend requirement.** |
-| "Use GUID keys on SQL Server, high write volume" | `NEWSEQUENTIALID()`, EF Core's `SequentialGuidValueGenerator` if the value is needed before insert, or a store-ordered `FastGuid` strategy when both providers must share one model. **Not** UUIDv7. |
+| "Use GUID keys on SQL Server, high write volume" | `NEWSEQUENTIALID()` as a store default, EF Core's client-side `SequentialGuidValueGenerator` (the provider's default) when the value is needed before insert, or a store-ordered `FastGuid` strategy when both providers must share one model. **Not** UUIDv7. |
 | "Use GUID keys on PostgreSQL, high write volume" | `Guid.CreateVersion7()` with `ValueGeneratedNever()`, or `FastGuid.NewPostgreSqlGuid()` in the shared strategy. `uuidv7()` only if the server is 18+. |
 | "Seed a system tenant every replica must agree on" | UUIDv5 over the installation namespace with `ValueGeneratedNever()`, a read-or-insert bootstrap, and a test that the migration literal matches the derivation. |
 | "Random GUID keys, no seeding" | No UUIDv5 and no strategy abstraction. `Guid.NewGuid()` is the answer. |
 | "SQL Server and PostgreSQL behind one context type" | One strategy carried as context-options data, chosen per provider. Different service providers, different models. Never one byte-ordered generator for both. |
+| "Add EF Core to an existing layered repository" | A `Persistence` project holding `DbContext`, mappings and migration definitions; the provider chosen in `Composition` or the host; value objects converted once; no repository wrapper; a real-container integration suite. |
+| "The migration is empty but the runtime model changed" | Design-time options do not match runtime: compare both models, and call the same options extension and `ReplaceService` from both paths. |
 | Repository already has `AddOpenTelemetry` | Existing setup extended, not replaced. No duplicate registration. |
 | "Should I add a repository over EF Core?" | Only with a named reason other than testability — `Purview.Containers` gives a real database in tests. |
 | Project file already states the type and persistence | No questions asked at all. |

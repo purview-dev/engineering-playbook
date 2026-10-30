@@ -4,8 +4,8 @@ description: >-
   Use when setting up, reviewing or rationalising a .NET repository against the Purview engineering
   conventions - convention over configuration, derived identity, architecture as tests, warnings as
   errors, proving consumer-facing claims, documentation ownership, test data builders, agent
-  legibility, and tiering verification by risk. Each rule names the failure it prevents and whether a
-  build or a reviewer enforces it.
+  legibility, tiering verification by risk, and the conditional persistence rules. Each rule names the
+  failure it prevents and whether a build or a reviewer enforces it.
 metadata:
   product: Purview engineering playbook
   repository: purview-dev/engineering-playbook
@@ -163,6 +163,13 @@ Three questions catch most of it:
 2. **Is this rule enforced, or merely stated?** If stated, say so where it is stated.
 3. **Could an agent — or a new joiner — find this without being told?** If not, it goes in
    `AGENTS.md` or the wiki.
+
+## The conditional persistence rules
+
+Three further rules apply only when a repository actually stores data: a value known before storage is
+derived with UUIDv5, every other GUID key uses one strategy per store, and EF Core is the persistence
+boundary. They are not part of the ten because a stateless CLI or a pure library must not inherit them.
+`purview-persistence` owns them and stays silent when persistence is not real.
 
 ## Related skills
 

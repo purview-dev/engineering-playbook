@@ -156,6 +156,13 @@ Three things are visible in that snippet, and all three are deliberate: the repo
 caller; the pack switches match `.config/purview-build.json`; and the filter is the same string as the one
 in the configuration, so the two cannot drift apart silently.
 
+The repository also owns a runnable sample, `samples/Acme.Persistence`, that the pipeline does **not**
+build. It sits outside `src/`, has no analyzers and is not in the canonical solution; `just samples` is
+its verification, and it fails with a non-zero exit code when its identifier or model checks are untrue.
+That is a deliberate fourth tier — a sample, not a test — and the page says so rather than counting it in
+the fast job. [EF Core Integration](EF-Core-Integration.md) lists the checks the sample and an adopting
+repository's integration suite should cover.
+
 ## How it is enforced
 
 | Rule | Enforced by |
@@ -164,6 +171,7 @@ in the configuration, so the two cannot drift apart silently.
 | The tier is derived from the project name | The build (SDK category emission) |
 | The repository's configuration is valid | The pipeline, which validates the JSON against the schema |
 | The slow tier is run before a release | Review — and, where it matters, a release gate |
+| The runnable sample still passes its own checks | **Review** — `just samples`, deliberately outside the pipeline |
 
 ## At your scale
 
@@ -173,6 +181,8 @@ in the configuration, so the two cannot drift apart silently.
   and never a pass.
 - **A package.** Turn on `run-pack` and `validate-pack`, and treat pack validation as the gate that stops a
   package shipping without the assets it documents.
+- **A convention whose evidence is a sample.** Keep the sample outside the solution and give it a single
+  command that fails loudly, as `just samples` does. Do not call it a test unless the pipeline runs it.
 - **Several repositories.** Keep the pipeline shared and let each repository own only its caller workflow
   and its configuration. That is the arrangement that makes a fix in one place a fix everywhere.
 

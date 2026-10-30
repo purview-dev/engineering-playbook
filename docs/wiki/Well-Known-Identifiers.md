@@ -269,7 +269,9 @@ change the constant and hope.
 ## How it is enforced
 
 The wiki cannot enforce this. A suite attached to the adopting repository does, and these are the
-checks to write. They are tests in that repository, not in this one.
+checks to write. They are tests in that repository, not in this one. `samples/Acme.Persistence` runs the
+RFC vectors and catalogue-uniqueness subset through `just samples`; the bootstrap and explicit-keying
+checks are the adopting repository's.
 
 | Check | Shape |
 | -- | -- |
@@ -309,5 +311,6 @@ is why the helper above exists rather than a package reference.
 ## See also
 
 - [GUID Key Strategy](Guid-Key-Strategy.md) — the sequential keys every other table uses
+- [EF Core Integration](EF-Core-Integration.md) — mapping the key and the bootstrap in the model
 - [Contracts and Data Exchange](Contracts-And-Data-Exchange.md) — value objects that carry an identifier
 - [Worked Examples](Worked-Examples.md) — why `src/` has no persistence

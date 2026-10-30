@@ -36,10 +36,12 @@ each property.
 ## The samples
 
 The complete implementation is `samples/Acme.Persistence` at the repository root; `just samples` builds
-and runs it with all three strategies. The page shows the parts that carry the decision, and the sample
-is the copyable whole. It lives outside `src/` because the reference implementation there is in-memory
-by design, and adding EF Core, a persistence project and a database would contradict [Worked
-Examples](Worked-Examples.md).
+and runs it, and `--provider` selects SQL Server, PostgreSQL or the UUIDv7 fallback. The page shows the
+parts that carry the decision, and the sample is the copyable whole. It lives outside `src/` because the
+reference implementation there is in-memory by design, and adding EF Core, a persistence project and a
+database would contradict [Worked Examples](Worked-Examples.md). [EF Core
+Integration](EF-Core-Integration.md) states the model, composition and migration rules the sample also
+has to satisfy.
 
 ### 1. The strategy as a pure witness
 
@@ -545,7 +547,9 @@ public sealed class AcmeModelCacheKeyFactory : IModelCacheKeyFactory
 ## How it is enforced
 
 The wiki cannot enforce this. A suite attached to the adopting repository does, and these are the
-checks to write. They are tests in that repository, not in this one.
+checks to write. They are tests in that repository, not in this one. `samples/Acme.Persistence` runs the
+executable subset — monotonicity, the UUIDv7 trap, timestamp round-trips and range bounds — through
+`just samples`; it is a sample self-check, not a suite in the pipeline.
 
 | Check | Shape |
 | -- | -- |
@@ -574,6 +578,7 @@ checks to write. They are tests in that repository, not in this one.
 ## See also
 
 - [Well-Known Identifiers](Well-Known-Identifiers.md) — the derived keys this convention must skip
+- [EF Core Integration](EF-Core-Integration.md) — the context, model and migration rules around it
 - [Contracts and Data Exchange](Contracts-And-Data-Exchange.md) — value-object identifiers and their
   converters
 - [Worked Examples](Worked-Examples.md) — why `src/` has no persistence to compile these against

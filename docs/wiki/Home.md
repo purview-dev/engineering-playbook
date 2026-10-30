@@ -41,6 +41,7 @@ rule in full.
 | [Contracts and Data Exchange](Contracts-And-Data-Exchange.md) | How value objects, schemas and results cross a boundary. |
 | [Well-Known Identifiers](Well-Known-Identifiers.md) | Identities whose value must be identical in every process and restart, derived with UUIDv5. |
 | [GUID Key Strategy](Guid-Key-Strategy.md) | Choosing and applying a store-ordered GUID key for SQL Server or PostgreSQL. |
+| [EF Core Integration](EF-Core-Integration.md) | How the context, providers, value objects, models and migrations fit together. |
 | [Testing and Test Data](Testing-And-Test-Data.md) | How tests are written, and where their data comes from. |
 | [Agent Enablement](Agent-Enablement.md) | How a repository is made legible to a coding agent. |
 | [Agent Skills Distribution](Agent-Skills-Distribution.md) | How a skill is published once and reaches both a package's consumers and an agent's own directories. |
@@ -61,6 +62,8 @@ Examples](Worked-Examples.md) walks it end to end.
 
 The conventions that need EF Core live in `samples/Acme.Persistence`, a standalone runnable sample
 started with `just samples`. It is outside `src/` so the reference implementation stays in-memory.
+[EF Core Integration](EF-Core-Integration.md), [Well-Known Identifiers](Well-Known-Identifiers.md) and
+[GUID Key Strategy](Guid-Key-Strategy.md) are the rules it proves.
 
 ## Provenance
 

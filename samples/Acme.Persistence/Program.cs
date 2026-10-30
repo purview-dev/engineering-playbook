@@ -55,14 +55,24 @@ static async Task<int> RunAsync<TProvider>(IServiceCollection services, SampleOp
 	Require(firstSnapshot == secondSnapshot, "the second bootstrap must not change any row");
 	Require(first.SystemTenantId == second.SystemTenantId, "the tenant id must be stable");
 
+	// Save the principal first: the foreign key must copy the generated customer key, not a value
+	// that was empty when the order was constructed.
 	var customer = new Customer { Name = "Acme" };
 	dbContext.Customers.Add(customer);
+	await dbContext.SaveChangesAsync();
+
 	var order = new Order { CustomerId = customer.Id, Reference = "A-1000" };
 	dbContext.Orders.Add(order);
+
+	var settingId = Guid.Parse("22222222-2222-4222-8222-222222222222");
+	var setting = new Setting { Id = settingId, Name = "explicit" };
+	dbContext.Settings.Add(setting);
 	await dbContext.SaveChangesAsync();
 
 	Require(order.Id.Value != Guid.Empty, "the order key was not generated");
+	Require(order.CustomerId == customer.Id, "the order's foreign key was not copied from the generated customer key");
 	Require(order.ExternalId is not null, "the nullable indexed GUID was not generated");
+	Require(setting.Id == settingId, "the explicitly configured setting key was overwritten");
 
 	var factory = scope.ServiceProvider.GetRequiredService<ISequentialGuidFactory>();
 	var factoryValue = factory.NewGuid();
@@ -76,7 +86,9 @@ static async Task<int> RunAsync<TProvider>(IServiceCollection services, SampleOp
 	Console.WriteLine("bootstrap           first run created; second run unchanged");
 	Console.WriteLine($"customer key        {customer.Id:D}");
 	Console.WriteLine($"order key           {order.Id.Value:D}");
+	Console.WriteLine($"order customer key  {order.CustomerId:D}");
 	Console.WriteLine($"nullable indexed    {order.ExternalId!.Value:D}");
+	Console.WriteLine($"explicit setting    {setting.Id:D}");
 	Console.WriteLine($"factory value       {factoryValue:D}");
 	Console.WriteLine($"factory timestamp   {timestamp:O}");
 	Console.WriteLine("all checks          passed");

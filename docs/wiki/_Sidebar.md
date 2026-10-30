@@ -8,6 +8,7 @@
 - [Contracts and Data Exchange](Contracts-And-Data-Exchange.md)
 - [Well-Known Identifiers](Well-Known-Identifiers.md)
 - [GUID Key Strategy](Guid-Key-Strategy.md)
+- [EF Core Integration](EF-Core-Integration.md)
 - [Testing and Test Data](Testing-And-Test-Data.md)
 - [Agent Enablement](Agent-Enablement.md)
 - [Agent Skills Distribution](Agent-Skills-Distribution.md)

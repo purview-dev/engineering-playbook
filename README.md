@@ -21,6 +21,7 @@ coding agents are enabled to work in a codebase without hand-holding.
 | [Contracts and data exchange](docs/wiki/Contracts-And-Data-Exchange.md) | How do value objects, schemas and results cross a boundary? |
 | [Well-known identifiers](docs/wiki/Well-Known-Identifiers.md) | How is an identity derived so every process and restart agrees? |
 | [GUID key strategy](docs/wiki/Guid-Key-Strategy.md) | How is a sequential GUID key chosen and applied per store? |
+| [EF Core integration](docs/wiki/EF-Core-Integration.md) | How do the context, providers, value objects, models and migrations fit together? |
 | [Testing and test data](docs/wiki/Testing-And-Test-Data.md) | How are tests written, and where does their data come from? |
 | [Agent enablement](docs/wiki/Agent-Enablement.md) | How is a repository made legible to a coding agent? |
 | [Agent skills distribution](docs/wiki/Agent-Skills-Distribution.md) | How is a skill published once and reach an agent? |

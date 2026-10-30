@@ -87,6 +87,29 @@ This repository contains `Acme.<Product>`, <one sentence on what it is and who u
   reviewer can check is stated as a review obligation and never described as enforced.
 - **A clean build has no warnings.** Fix it, or suppress it where it occurs with a stated justification.
 
+## Persistence conventions
+
+Delete this section if the repository does not persist data. These rules apply only when a store is real.
+
+- **Use `DbContext` directly.** Do not add `IRepository<T>` or a unit-of-work wrapper for testability;
+  `DbContext` already is both, and `Purview.Containers` gives you a real database in tests.
+- **One owner per identifier.** A value known before storage is derived with UUIDv5 over an
+  installation-scoped namespace and keyed `ValueGeneratedNever()`; every other GUID key uses one
+  strategy per store, applied by a model-finalising convention. SQL Server and PostgreSQL order GUIDs
+  differently. See [Well-Known
+  Identifiers](https://github.com/purview-dev/engineering-playbook/blob/main/docs/wiki/Well-Known-Identifiers.md)
+  and [GUID Key
+  Strategy](https://github.com/purview-dev/engineering-playbook/blob/main/docs/wiki/Guid-Key-Strategy.md).
+- **Map a value object once.** Configure the converter and comparer in the model, not per property. A
+  value-object key also needs a converter-aware value generator, or it receives a raw `Guid`.
+- **Design time matches runtime.** The design-time factory or host registration must make the same
+  provider, strategy and `ReplaceService` choices as the application.
+- **Migrations are code.** Persistence owns the definitions and a separate step applies them; do not
+  migrate at API startup in production.
+- **Integration tests use a real store.** The in-memory provider does not enforce foreign keys, unique
+  indexes or computed columns. See [EF Core
+  Integration](https://github.com/purview-dev/engineering-playbook/blob/main/docs/wiki/EF-Core-Integration.md).
+
 ## Local commands
 
 ```text

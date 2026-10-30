@@ -32,6 +32,7 @@ adopt, and that decision is a review obligation.
 | **Repository** | `src/src/<Project>`, one test project | `src/src/*` + `src/tests/*` + a shared testing project | As medium, plus `Sdk/` assets per package and `samples/` |
 | **SDK** | Yes | Yes | Yes |
 | **Test data builder** | Yes, from the first test | Yes | Yes |
+| **Persistence identifiers** | `Guid.NewGuid()` or a store default; UUIDv5 only if a value must be known before storage | One provider's strategy, plus derived ids where seeding needs them | Two-provider strategy, derived catalogue, design-time parity |
 | **Architecture tests** | No | Yes | Yes, and promoted into the build |
 | **CI tiers** | One | Two (`Unit`, plus one slow tier) | Several, with a release gate |
 | **Pack validation** | n/a | Only if it packs | Yes, exhaustively |
@@ -73,6 +74,9 @@ Everything from Small, plus:
   Keep the fast tier always on; make the slow tier explicit.
 - **A wiki page per public concern**, plus a getting-started page that is the shortest path to a working
   example.
+- **The EF Core integration rules as soon as persistence exists.** A `Persistence` project, value objects
+  mapped once, design-time and runtime options in step, and a real-store integration suite. See
+  [EF Core Integration](EF-Core-Integration.md).
 
 This is the profile the reference implementation in this repository is built to. It is the smallest shape
 where every mechanism in the playbook is visible.
@@ -88,6 +92,9 @@ Everything from Medium, plus:
   catches the drift between a package's contract page and the package.
 - **A release gate.** The slow tier runs before a release, not only on a pull request.
 - **Release channels** rather than a second repository for prereleases.
+- **The derived-identifier catalogue and the two-provider GUID strategy**, once a system tenant or a
+  second store appears. See [Well-Known Identifiers](Well-Known-Identifiers.md) and [GUID Key
+  Strategy](Guid-Key-Strategy.md).
 - **Your own agent skills**, packaged so the guidance travels with the code.
 - **Architecture rules promoted into the build.** At this size a rule that can be skipped is a rule that
   will be, so move it from a test into an analyzer or an MSBuild check that runs before compile.
@@ -99,6 +106,11 @@ Four things that are more expensive than they look when taken out of order.
 **Architecture tests before there is an architecture.** A test asserting that "the domain does not reference
 the web layer" is meaningless in a repository with one project, and it teaches the team that architecture
 tests are ceremony.
+
+**A GUID strategy before the second provider.** With one store and moderate write volume, a store default
+or `Guid.NewGuid()` is enough. The strategy witness, options extension and model-finalising convention
+earn their place when a second provider exists or the identifier must be known before `SaveChanges` —
+not in anticipation. See [GUID Key Strategy](Guid-Key-Strategy.md).
 
 **A test data builder after the tests.** Retrofitting `TestBuilder` means editing every test file at once,
 which means a large diff nobody reviews carefully. Adopt it with the first test, when the diff is one file.
@@ -136,5 +148,8 @@ where it belongs. A migration that leaves the conventions undocumented is a migr
 - [Getting Started](Getting-Started.md) — the same steps, in order, with the files inline
 - [Templates](https://github.com/purview-dev/engineering-playbook/tree/main/templates) — the copy-paste versions
 - [Engineering Principles](Engineering-Principles.md)
+- [EF Core Integration](EF-Core-Integration.md)
+- [Well-Known Identifiers](Well-Known-Identifiers.md)
+- [GUID Key Strategy](Guid-Key-Strategy.md)
 - [Worked Examples](Worked-Examples.md)
 - [Contributing](Contributing.md)

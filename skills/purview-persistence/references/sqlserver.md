@@ -27,8 +27,13 @@ ALTER TABLE [Orders] ADD CONSTRAINT [DF_Orders_Id]
     DEFAULT NEWSEQUENTIALID() FOR [Id];
 ```
 
-EF Core, for a `Guid` key on SQL Server, configures this by default — `ValueGeneratedOnAdd` maps to
-`NEWSEQUENTIALID()` through the default value-generation strategy.
+EF Core does **not** map `ValueGeneratedOnAdd` to `NEWSEQUENTIALID()` by default. For a `Guid` key on
+SQL Server the provider generates the value client-side with `SequentialGuidValueGenerator` (below).
+Configure a store default explicitly when the database must own the value:
+
+```csharp
+builder.Property(o => o.Id).HasDefaultValueSql("NEWSEQUENTIALID()");
+```
 
 Trade-offs:
 
