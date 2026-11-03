@@ -156,6 +156,13 @@ Three things are visible in that snippet, and all three are deliberate: the repo
 caller; the pack switches match `.config/purview-build.json`; and the filter is the same string as the one
 in the configuration, so the two cannot drift apart silently.
 
+The repository also owns a runnable sample, `samples/Acme.Persistence`, that the pipeline does **not**
+build. It sits outside `src/`, has no analyzers and is not in the canonical solution; `just samples` is
+its verification, and it fails with a non-zero exit code when its identifier or model checks are untrue.
+That is a deliberate fourth tier — a sample, not a test — and the page says so rather than counting it in
+the fast job. [EF Core Integration](EF-Core-Integration.md) lists the checks the sample and an adopting
+repository's integration suite should cover.
+
 ## A gate is not bypassed
 
 A check that runs before a merge — a hook, a required status check, a lint step in the pipeline — is
@@ -196,6 +203,7 @@ ten minutes.
 | The repository's configuration is valid | The pipeline, which validates the JSON against the schema |
 | A gate is never bypassed | **Review obligation** — and a required status check as the backstop, because a hook cannot enforce its own non-bypass |
 | The slow tier is run before a release | Review — and, where it matters, a release gate |
+| The runnable sample still passes its own checks | **Review** — `just samples`, deliberately outside the pipeline |
 
 ## At your scale
 
@@ -211,6 +219,8 @@ ten minutes.
 - **A hook that is too slow.** Fix the hook — narrow what it runs, or move the slow tier behind a
   required check — rather than passing `--no-verify`. The exemption you take once is the one the next
   person takes by default.
+- **A convention whose evidence is a sample.** Keep the sample outside the solution and give it a single
+  command that fails loudly, as `just samples` does. Do not call it a test unless the pipeline runs it.
 - **A platform.** Make the gate a required status check as well as a hook, so the hook is a convenience
   and the check is the guarantee. Keep an audit trail of who merged with a check missing, because that
   is the only way a bypass is ever visible.

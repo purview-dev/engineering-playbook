@@ -39,6 +39,9 @@ rule in full.
 | [Architecture as Tests](Architecture-As-Tests.md) | How the build refuses a dependency that points the wrong way. |
 | [Verification Model](Verification-Model.md) | Which checks run, in which tier, for which change. |
 | [Contracts and Data Exchange](Contracts-And-Data-Exchange.md) | How value objects, schemas and results cross a boundary. |
+| [Well-Known Identifiers](Well-Known-Identifiers.md) | Identities whose value must be identical in every process and restart, derived with UUIDv5. |
+| [GUID Key Strategy](Guid-Key-Strategy.md) | Choosing and applying a store-ordered GUID key for SQL Server or PostgreSQL. |
+| [EF Core Integration](EF-Core-Integration.md) | How the context, providers, value objects, models and migrations fit together. |
 | [Testing and Test Data](Testing-And-Test-Data.md) | How tests are written, and where their data comes from. |
 | [Agent Enablement](Agent-Enablement.md) | How a repository is made legible to a coding agent. |
 | [Agent Skills Distribution](Agent-Skills-Distribution.md) | How a skill is published once and reaches both a package's consumers and an agent's own directories. |
@@ -58,14 +61,20 @@ just prose: the dependency-direction rules fail the build when they are broken, 
 conventions are shown in the form they are meant to be copied. [Worked
 Examples](Worked-Examples.md) walks it end to end.
 
+The conventions that need EF Core live in `samples/Acme.Persistence`, a standalone runnable sample
+started with `just samples`. It is outside `src/` so the reference implementation stays in-memory.
+[EF Core Integration](EF-Core-Integration.md), [Well-Known Identifiers](Well-Known-Identifiers.md) and
+[GUID Key Strategy](Guid-Key-Strategy.md) are the rules it proves.
+
 ## Provenance
 
-Every rule here is drawn from a public Purview repository — chiefly
+Every rule here is drawn from Purview repositories and the public specifications and packages cited on
+its page — chiefly
 [build-sdk](https://github.com/purview-dev/build-sdk) (the MSBuild SDK that supplies the defaults),
 [containers](https://github.com/purview-dev/containers) (a multi-package library with two backends),
 [value-objects](https://github.com/purview-dev/value-objects), [results](https://github.com/purview-dev/results)
 and [event-sourcing](https://github.com/purview-dev/event-sourcing) (data exchange at a boundary), and
 [purview-dev.github.io](https://github.com/purview-dev/purview-dev.github.io) (the public catalogue,
-and documentation as a published surface). Each page names the repositories it was derived from, so a
-claim can always be checked against running code; [Cross-Repository
-Harvest](Cross-Repository-Harvest.md) is how that claim stays true.
+and documentation as a published surface). Each page names the public repository, specification or
+package a claim can be checked against, so a claim can always be checked against running code;
+[Cross-Repository Harvest](Cross-Repository-Harvest.md) is how that claim stays true.

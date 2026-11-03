@@ -469,6 +469,20 @@ Four things in the steps above are deliberately **not** templated, because a cop
 on arrival: the solution file (its paths depend on your project list), the two `.csproj` files (they are
 empty by design), and the `Justfile` (see step 12). `templates/README.md` says which, and why.
 
+## When the repository persists data
+
+The steps above build a repository with no store, which is the floor. When persistence arrives, add the
+three conditional rules on their own pages rather than inventing a shape:
+
+| Concern | Rule | Page |
+| -- | -- | -- |
+| The context and the model | `DbContext` is the boundary; map value objects once; design time matches runtime; migrate deliberately | [EF Core Integration](EF-Core-Integration.md) |
+| A value known before storage | Derive it with UUIDv5 over an installation-scoped namespace and key it `ValueGeneratedNever()` | [Well-Known Identifiers](Well-Known-Identifiers.md) |
+| Every other GUID key | One strategy per store, applied by a model-finalising convention | [GUID Key Strategy](Guid-Key-Strategy.md) |
+
+The working example is `samples/Acme.Persistence`, run with `just samples`. It sits outside `src/` so the
+reference implementation in this repository stays in-memory and the canonical solution keeps its shape.
+
 ## How it is enforced
 
 Step 13 proved it by breaking a rule on purpose. The table below is the same statement for the whole
@@ -482,6 +496,7 @@ repository: which concern lives where, and what refuses a change that breaks it.
 | Code style | Bootstrapped `.editorconfig` | The build, with the style policy validated |
 | Test wiring | The `.csproj` filename | The build |
 | Test data | `TestBuilder` in `SharedTestingInfra` | Review |
+| Persistence identifiers and mapping | `Persistence` project, a model convention, `ValueGeneratedNever()` on derived keys | The architecture policy for direction; the sample and its checks for the conventions |
 | Architecture | Dependency-direction tests + `.config/architecture-policy.json` | The build |
 | Verification tiers | `TestFilter` in `purview-build.json` | The pipeline |
 | Documentation | `docs/wiki` + `_Sidebar.md` | The build (`DocumentationTests`) for navigation and fences; review for the rest |
