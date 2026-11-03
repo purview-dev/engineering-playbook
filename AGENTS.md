@@ -29,13 +29,14 @@ implementation whose only job is to prove the conventions compile, run, and fail
 | `src/tests/Domain.UnitTests` | Value-object behaviour; the value-object exception to `TestBuilder` |
 | `src/tests/Application.UnitTests` | The service, against a TUnit.Mocks substitute |
 | `src/tests/Architecture.UnitTests` | Assembly dependency-direction rules and the architecture policy; a wrong `ProjectReference` fails the build |
-| `src/tests/Repository.UnitTests` | The repository itself: skill conformance and documentation checks |
+| `src/tests/Repository.UnitTests` | The repository itself: skill conformance, documentation checks, the organisation snapshot, and the harvest script run as a subprocess |
 | `src/tests/SharedTestingInfra` | `TestBuilder`; referenced automatically by every test project |
 | `skills/` | Authored agent skills, installable with `npx skills add purview-dev/engineering-playbook` |
 | `templates/` | Ready-to-copy starter files for a repository adopting the playbook |
 | `src/Directory.Build.props` | `NamespacePrefix`, the SDK import, and `NamespaceRemoveSuffix` |
 | `.config/purview-build.json` | Pipeline configuration: solution, test discovery, filter |
 | `.config/architecture-policy.json` | The dependency and naming policy the architecture tests read |
+| `.config/org-inventory.json` | Generated snapshot of every public repository at `main`; `just org-inventory` reports the drift |
 | `Justfile` | Supported local commands |
 | `package.json` | Authoritative version; the release reads it and nothing else |
 
@@ -87,6 +88,7 @@ build-time `.agents/` mirror outright. The skills CLI clones the git repository,
 | `skills/purview-testing-conventions/` | TUnit, AAA, `TestBuilder`, substitutes, tiers |
 | `skills/purview-persistence/` | storage approach, EF Core abstraction, GUID key strategy |
 | `skills/purview-telemetry/` | logging, tracing, metrics, and when a project is "too small" for them |
+| `skills/purview-org-harvest/` | which repository owns which convention, and how it is read at `main` before anything is adopted |
 
 Every skill carries the `purview-` prefix: skills install into one flat directory per agent, shared with
 every skill a developer has installed from anywhere, so an unprefixed name collides and the loser is
@@ -128,6 +130,8 @@ just build              # dotnet build (Debug)
 just test               # dotnet test
 just lint-check         # CSharpier check
 just lint-fix           # CSharpier format
+just org-inventory      # drift between the organisation and .config/org-inventory.json
+just org-inventory-write # regenerate the snapshot; commit the diff with the harvest
 just pipeline-pr        # restore, build, lint, test through the shared Purview.Build tool
 just scrub              # reset bin/obj, forced restore, build-server shutdown
 ```
@@ -140,10 +144,18 @@ Commit messages follow Conventional Commits, enforced by the `commit-msg` hook. 
 
 Before handing work back:
 
+- **Never bypass a gate.** No `--no-verify` on a commit or a push, no `LEFTHOOK_EXCLUDE`/`SKIP`, no
+  `continue-on-error` or `|| true` on a check, no force-push over a protected ref. If a hook is wrong or
+  too slow, change the hook in its own reviewed change. "CI will run the same thing anyway" is a claim
+  about a different run, made by the party being checked — and a bypass leaves no trace, which is why it
+  is never a judgement call. See [Verification Model](docs/wiki/Verification-Model.md).
 - Confirm the requested behaviour and scope are satisfied, and that only intended files changed.
 - If a rule was added or changed: the page states the failure it prevents, says whether it is enforced or a
   review obligation, has an "at your scale" section, is in `_Sidebar.md` and the `Home.md` table, and is
   demonstrated in `src/` — or the page says why it is not.
+- If a page names a public repository: confirm the claim is true at that repository's `main` now, not at a
+  local clone, and that the name is still the current one. `just org-inventory` reports the drift; a renamed
+  repository keeps resolving through a redirect, so a stale citation looks healthy until it is compared.
 - If `src/` changed: the build is still warning-free, the architecture rules still pass, and the pages that
   describe the changed code are still accurate.
 - Run the checks in proportion to the risk, and state exactly what ran. If a check was skipped or blocked,

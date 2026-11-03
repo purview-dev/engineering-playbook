@@ -21,15 +21,14 @@ public sealed partial class DocumentationTests
 	[GeneratedRegex(@"\]\((?<target>[^)]+)\)")]
 	private static partial Regex LinkPattern();
 
-	static readonly string RepositoryRoot = FindRepositoryRoot();
-
-	static string WikiDirectory => Path.Combine(RepositoryRoot, "docs", "wiki");
-
 	[Test]
 	public async Task Pages_GivenTheSidebar_AreAllReachable(CancellationToken cancellationToken)
 	{
 		// Arrange
-		var sidebar = await File.ReadAllTextAsync(Path.Combine(WikiDirectory, "_Sidebar.md"), cancellationToken);
+		var sidebar = await File.ReadAllTextAsync(
+			Path.Combine(RepositoryLayout.WikiDirectory, "_Sidebar.md"),
+			cancellationToken
+		);
 
 		// Act
 		var missing = ContentPages()
@@ -47,7 +46,10 @@ public sealed partial class DocumentationTests
 	public async Task Pages_GivenTheHomeTable_AreAllDiscoverable(CancellationToken cancellationToken)
 	{
 		// Arrange
-		var home = await File.ReadAllTextAsync(Path.Combine(WikiDirectory, "Home.md"), cancellationToken);
+		var home = await File.ReadAllTextAsync(
+			Path.Combine(RepositoryLayout.WikiDirectory, "Home.md"),
+			cancellationToken
+		);
 
 		// Act
 		// Home is the hub itself, so it is the one page the hub's table does not list.
@@ -71,12 +73,15 @@ public sealed partial class DocumentationTests
 		// Act
 		foreach (var file in new[] { "_Sidebar.md", "Home.md" })
 		{
-			var lines = await File.ReadAllLinesAsync(Path.Combine(WikiDirectory, file), cancellationToken);
+			var lines = await File.ReadAllLinesAsync(
+				Path.Combine(RepositoryLayout.WikiDirectory, file),
+				cancellationToken
+			);
 			for (var index = 0; index < lines.Length; index++)
 			{
 				foreach (var target in RelativeLinkTargets(lines[index]))
 				{
-					if (!File.Exists(Path.Combine(WikiDirectory, target)))
+					if (!File.Exists(Path.Combine(RepositoryLayout.WikiDirectory, target)))
 						offenders.Add($"{file}:{index + 1}: '{target}' does not exist");
 				}
 			}
@@ -95,7 +100,7 @@ public sealed partial class DocumentationTests
 		List<string> offenders = [];
 
 		// Act
-		foreach (var path in Directory.EnumerateFiles(WikiDirectory, "*.md"))
+		foreach (var path in Directory.EnumerateFiles(RepositoryLayout.WikiDirectory, "*.md"))
 		{
 			var lines = await File.ReadAllLinesAsync(path, cancellationToken);
 			var inFence = false;
@@ -120,7 +125,7 @@ public sealed partial class DocumentationTests
 	static IReadOnlyList<string> ContentPages() =>
 		[
 			.. Directory
-				.EnumerateFiles(WikiDirectory, "*.md")
+				.EnumerateFiles(RepositoryLayout.WikiDirectory, "*.md")
 				.Select(path => Path.GetFileNameWithoutExtension(path) ?? string.Empty)
 				.Where(name => name is not "_Sidebar" and not "index")
 				.Order(StringComparer.Ordinal),
@@ -151,29 +156,5 @@ public sealed partial class DocumentationTests
 		}
 
 		return targets;
-	}
-
-	/// <summary>Walks up from the test binary to the repository root.</summary>
-	/// <returns>The repository root path.</returns>
-	static string FindRepositoryRoot()
-	{
-		DirectoryInfo? directory = new(AppContext.BaseDirectory);
-		while (directory is not null)
-		{
-			if (
-				File.Exists(Path.Combine(directory.FullName, "AGENTS.md"))
-				&& Directory.Exists(Path.Combine(directory.FullName, "docs", "wiki"))
-			)
-			{
-				return directory.FullName;
-			}
-
-			directory = directory.Parent;
-		}
-
-		throw new InvalidOperationException(
-			$"Could not locate the repository root above '{AppContext.BaseDirectory}'. "
-				+ "Expected an AGENTS.md and a docs/wiki folder."
-		);
 	}
 }

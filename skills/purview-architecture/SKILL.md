@@ -10,6 +10,7 @@ license: MIT
 metadata:
   author: Purview-Dev
   version: "1.0"
+  repository: purview-dev/engineering-playbook
 ---
 
 # Purview architecture

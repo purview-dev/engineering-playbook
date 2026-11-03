@@ -15,6 +15,14 @@ its navigation and its `edit_uri`.
 | `README.md` | The repository's front door on GitHub. Points into the wiki; does not duplicate it. |
 | `AGENTS.md` | The agent's front door. Points into the wiki; does not duplicate it. |
 
+**Scope.** This is the layout of a repository that publishes a site, and `docs/wiki` is the folder
+this playbook publishes from. Of the sixteen public repositories in the organisation, twelve use
+`docs/wiki`; `architests`, `value-objects` and `purview-dev.github.io` publish from `docs`, and
+`pm-skills` publishes no documentation folder at all, documenting itself through its skills. What the
+rule requires is the part those repositories share: the documentation lives with the code it
+describes, and the repository owns its `mkdocs.yml`. The folder name is the part that varies.
+[Cross-Repository Harvest](Cross-Repository-Harvest.md) records the deviations by name.
+
 ## Why
 
 **Ownership.** Documentation that lives outside the repository it describes is updated outside it. A page
@@ -106,7 +114,11 @@ else, state it here and say why.
 
 **Say which repository the evidence came from.** Every rule in this playbook came from a real repository and
 a real failure. Naming the repository turns a claim into something a reader can check against running code,
-and it is the fastest way for a reader to decide whether the rule applies to them.
+and it is the fastest way for a reader to decide whether the rule applies to them. Then check the name is
+still the current one: a renamed repository keeps resolving through a redirect, so a stale citation looks
+healthy until it is compared with the organisation. [Cross-Repository
+Harvest](Cross-Repository-Harvest.md) is that comparison, and the snapshot it records.
+
 
 ## Writing style
 

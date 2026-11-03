@@ -13,6 +13,7 @@ library, and they are the only place that guidance is written:
 | `purview-testing-conventions` | How are tests written and fed — framework, structure, naming, and `TestBuilder`? |
 | `purview-telemetry` | What instrumentation does a project of this size get? (Answer: always some.) |
 | `purview-persistence` | How is data stored, and — only when it applies — how are GUID keys generated? |
+| `purview-org-harvest` | Which repository owns which convention, and how is it read at `main` before anything is adopted? |
 
 Two obligations fall out of that, and both are enforced only by review:
 
