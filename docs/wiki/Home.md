@@ -44,6 +44,7 @@ rule in full.
 | [Agent Skills Distribution](Agent-Skills-Distribution.md) | How a skill is published once and reaches both a package's consumers and an agent's own directories. |
 | [Agent Guidance Skills](Agent-Guidance-Skills.md) | The shared architecture, telemetry and persistence guidance, and the context an agent must establish first. |
 | [Documentation Convention](Documentation-Convention.md) | How the wiki is written, structured and published. |
+| [Cross-Repository Harvest](Cross-Repository-Harvest.md) | Which repository owns which convention, how it is read at `main`, and what the snapshot records. |
 | [Worked Examples](Worked-Examples.md) | The reference implementation in this repository, walked end to end. |
 | [Adopting This at Your Scale](Adopting-This-At-Your-Scale.md) | Which parts apply to a small, medium or large repository. |
 | [Contributing](Contributing.md) | How to change the playbook itself. |
@@ -64,5 +65,7 @@ Every rule here is drawn from a public Purview repository — chiefly
 [containers](https://github.com/purview-dev/containers) (a multi-package library with two backends),
 [value-objects](https://github.com/purview-dev/value-objects), [results](https://github.com/purview-dev/results)
 and [event-sourcing](https://github.com/purview-dev/event-sourcing) (data exchange at a boundary), and
-[purview-dev](https://github.com/purview-dev/purview-dev) (documentation as a published surface). Each
-page names the repositories it was derived from, so a claim can always be checked against running code.
+[purview-dev.github.io](https://github.com/purview-dev/purview-dev.github.io) (the public catalogue,
+and documentation as a published surface). Each page names the repositories it was derived from, so a
+claim can always be checked against running code; [Cross-Repository
+Harvest](Cross-Repository-Harvest.md) is how that claim stays true.

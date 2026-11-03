@@ -661,3 +661,8 @@ sketch
 
 !build/
 .tools/
+
+# Purview addition, not in the SDK's template: the skills CLI's universal install location. An
+# install is reproducible from skills-lock.json, and it must not appear as an untracked change in
+# somebody's working tree. See docs/wiki/Agent-Enablement.md.
+.agents/

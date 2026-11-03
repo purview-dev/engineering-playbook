@@ -9,6 +9,7 @@ license: MIT
 metadata:
   author: Purview-Dev
   version: "2.0"
+  repository: purview-dev/engineering-playbook
 ---
 
 # Purview architecture testing

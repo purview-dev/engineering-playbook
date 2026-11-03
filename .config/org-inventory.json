@@ -1,0 +1,381 @@
+{
+	"schemaVersion": 1,
+	"org": "purview-dev",
+	"branch": "main",
+	"fetchedAt": "2026-11-03T15:46:07Z",
+	"repositories": [
+		{
+			"name": "architests",
+			"visibility": "public",
+			"archived": false,
+			"commitSha": "e51e9ea3f03fc6115a8631ede55fed63791c7aa8",
+			"pushedAt": "2026-11-02T23:13:25Z",
+			"docsDir": "docs",
+			"docsPages": 9,
+			"skills": [
+				"purview-architests",
+				"purview-architests-contracts",
+				"purview-architests-extending",
+				"purview-architests-migration",
+				"purview-architests-policy-authoring",
+				"purview-architests-type-rules"
+			],
+			"agentGuidance": [
+				"AGENTS.md"
+			],
+			"concerns": [
+				"architecture policy",
+				"dependency and naming rules"
+			]
+		},
+		{
+			"name": "aspire-resourcekit",
+			"visibility": "public",
+			"archived": false,
+			"commitSha": "346392d7b78289b2685a1ef1e71ebc9f08daa902",
+			"pushedAt": "2026-11-02T23:13:30Z",
+			"docsDir": "docs/wiki",
+			"docsPages": 20,
+			"skills": [
+				"purview-resourcekit-authoring",
+				"purview-resourcekit-diagnostics",
+				"purview-resourcekit-migration",
+				"purview-resourcekit-options",
+				"purview-resourcekit-testing"
+			],
+			"agentGuidance": [
+				"AGENTS.md",
+				".github/copilot-instructions.md"
+			],
+			"concerns": [
+				"Aspire hosting resources"
+			]
+		},
+		{
+			"name": "aspirec4",
+			"visibility": "public",
+			"archived": false,
+			"commitSha": "2c955081e4023ad1fca2c6012946dc00d4078ab9",
+			"pushedAt": "2026-11-02T23:13:35Z",
+			"docsDir": "docs/wiki",
+			"docsPages": 15,
+			"skills": [
+				"purview-aspirec4-configuration",
+				"purview-aspirec4-entityframework",
+				"purview-aspirec4-quickstart",
+				"purview-aspirec4-resources",
+				"purview-aspirec4-validation"
+			],
+			"agentGuidance": [
+				"AGENTS.md"
+			],
+			"concerns": [
+				"architecture diagrams from source"
+			]
+		},
+		{
+			"name": "build",
+			"visibility": "public",
+			"archived": false,
+			"commitSha": "d00b005dd565f59f5b8641b2b80377d4e6e52c32",
+			"pushedAt": "2026-11-02T23:03:07Z",
+			"docsDir": "docs/wiki",
+			"docsPages": 14,
+			"skills": [
+				"purview-build-adoption",
+				"purview-build-configuration",
+				"purview-build-pack-validation",
+				"purview-build-pipeline",
+				"purview-build-release-eligibility"
+			],
+			"agentGuidance": [
+				"AGENTS.md"
+			],
+			"concerns": [
+				"pipeline",
+				"release"
+			]
+		},
+		{
+			"name": "build-sdk",
+			"visibility": "public",
+			"archived": false,
+			"commitSha": "052cf6b99577a2d2fe41cdacdb246b9e82171e37",
+			"pushedAt": "2026-11-02T23:27:34Z",
+			"docsDir": "docs/wiki",
+			"docsPages": 19,
+			"skills": [
+				"purview-buildsdk-adoption",
+				"purview-buildsdk-configuration",
+				"purview-buildsdk-project-detection",
+				"purview-buildsdk-project-layout",
+				"purview-buildsdk-repository-review",
+				"purview-buildsdk-skill-installation",
+				"purview-buildsdk-skill-tests",
+				"purview-buildsdk-testing"
+			],
+			"agentGuidance": [
+				"AGENTS.md",
+				".github/copilot-instructions.md"
+			],
+			"concerns": [
+				"repository shape",
+				"analyzers and style",
+				"MSBuild defaults",
+				"skill authoring"
+			]
+		},
+		{
+			"name": "containers",
+			"visibility": "public",
+			"archived": false,
+			"commitSha": "b94d92afd52af1d509bc481b20c83fb9bb57badd",
+			"pushedAt": "2026-11-02T23:27:39Z",
+			"docsDir": "docs/wiki",
+			"docsPages": 19,
+			"skills": [
+				"purview-containers-capabilities",
+				"purview-containers-consumer-requirements",
+				"purview-containers-lifecycle",
+				"purview-containers-quickstart",
+				"purview-containers-testing"
+			],
+			"agentGuidance": [
+				"AGENTS.md",
+				".github/copilot-instructions.md"
+			],
+			"concerns": [
+				"local dependencies in tests"
+			]
+		},
+		{
+			"name": "engineering-playbook",
+			"visibility": "public",
+			"archived": false,
+			"commitSha": "ccf5b3d14616c1cbc904167439635909ed21d14c",
+			"pushedAt": "2026-11-03T15:40:26Z",
+			"docsDir": "docs/wiki",
+			"docsPages": 19,
+			"skills": [
+				"purview-architecture",
+				"purview-architecture-testing",
+				"purview-engineering-principles",
+				"purview-persistence",
+				"purview-telemetry",
+				"purview-testing-conventions"
+			],
+			"agentGuidance": [
+				"AGENTS.md",
+				".github/copilot-instructions.md"
+			],
+			"concerns": [
+				"the conventions themselves"
+			]
+		},
+		{
+			"name": "event-sourcing",
+			"visibility": "public",
+			"archived": false,
+			"commitSha": "607ff712d5cdcadb9afabc4f6293402b306474b2",
+			"pushedAt": "2026-11-02T23:13:42Z",
+			"docsDir": "docs/wiki",
+			"docsPages": 23,
+			"skills": [],
+			"agentGuidance": [
+				"AGENTS.md",
+				".github/copilot-instructions.md"
+			],
+			"concerns": [
+				"event streams",
+				"event storage"
+			]
+		},
+		{
+			"name": "openapi-xmlcomments",
+			"visibility": "public",
+			"archived": false,
+			"commitSha": "2934a32647185c9e7af37f849e88aa68e910f90e",
+			"pushedAt": "2026-11-03T13:08:21Z",
+			"docsDir": "docs/wiki",
+			"docsPages": 10,
+			"skills": [
+				"purview-openapi-xmlcomments-duplicates"
+			],
+			"agentGuidance": [
+				"AGENTS.md",
+				".github/copilot-instructions.md"
+			],
+			"concerns": [
+				"OpenAPI from XML comments"
+			]
+		},
+		{
+			"name": "pm-skills",
+			"visibility": "public",
+			"archived": false,
+			"commitSha": "8460e52f4a36fd6cb59e6169e047448082b7b6ad",
+			"pushedAt": "2026-11-01T23:28:22Z",
+			"docsDir": null,
+			"docsPages": 0,
+			"skills": [
+				"pm-checkpoint",
+				"pm-discover",
+				"pm-help",
+				"pm-init",
+				"pm-item",
+				"pm-next",
+				"pm-park",
+				"pm-purview",
+				"pm-resume",
+				"pm-review",
+				"pm-setup",
+				"pm-shape",
+				"pm-status",
+				"pm-strategy"
+			],
+			"agentGuidance": [
+				"AGENTS.md",
+				".github/copilot-instructions.md"
+			],
+			"concerns": [
+				"skill-set design"
+			]
+		},
+		{
+			"name": "purview-dev.github.io",
+			"visibility": "public",
+			"archived": false,
+			"commitSha": "46fdb0e7a3155059aba132221737c1f6868542a6",
+			"pushedAt": "2026-11-03T15:28:00Z",
+			"docsDir": "docs",
+			"docsPages": 2,
+			"skills": [],
+			"agentGuidance": [
+				"AGENTS.md",
+				".github/copilot-instructions.md"
+			],
+			"concerns": [
+				"the public project catalogue"
+			]
+		},
+		{
+			"name": "results",
+			"visibility": "public",
+			"archived": false,
+			"commitSha": "31812cc154c6e43a775b9a588f5154cf5280737a",
+			"pushedAt": "2026-11-03T00:54:02Z",
+			"docsDir": "docs/wiki",
+			"docsPages": 18,
+			"skills": [
+				"purview-results-core",
+				"purview-results-http-mapping",
+				"purview-results-union-errors",
+				"purview-results-zodsharp-problems",
+				"purview-results-zodsharp-validation"
+			],
+			"agentGuidance": [
+				"AGENTS.md",
+				".github/copilot-instructions.md"
+			],
+			"concerns": [
+				"operation outcomes"
+			]
+		},
+		{
+			"name": "sourcegenerator-framework",
+			"visibility": "public",
+			"archived": false,
+			"commitSha": "744343dec62579478bed4d6039edaea21fec18ce",
+			"pushedAt": "2026-11-03T13:40:08Z",
+			"docsDir": "docs/wiki",
+			"docsPages": 17,
+			"skills": [
+				"purview-sourcegenerator-attribute-data-models",
+				"purview-sourcegenerator-codewriter",
+				"purview-sourcegenerator-diagnostics",
+				"purview-sourcegenerator-packaging",
+				"purview-sourcegenerator-pipeline",
+				"purview-sourcegenerator-testing",
+				"purview-sourcegenerator-tunit-tests"
+			],
+			"agentGuidance": [
+				"AGENTS.md",
+				".github/copilot-instructions.md"
+			],
+			"concerns": [
+				"source generator authoring"
+			]
+		},
+		{
+			"name": "telemetry-sourcegenerator",
+			"visibility": "public",
+			"archived": false,
+			"commitSha": "032933fb39bb5302ec7faceed72803d2ebce56f8",
+			"pushedAt": "2026-11-03T15:21:28Z",
+			"docsDir": "docs/wiki",
+			"docsPages": 25,
+			"skills": [
+				"purview-telemetry-design",
+				"purview-telemetry-diagnostics",
+				"purview-telemetry-migration",
+				"purview-telemetry-multi-targeting",
+				"purview-telemetry-quickstart"
+			],
+			"agentGuidance": [
+				"AGENTS.md",
+				".github/copilot-instructions.md"
+			],
+			"concerns": [
+				"logging",
+				"tracing",
+				"metrics"
+			]
+		},
+		{
+			"name": "value-objects",
+			"visibility": "public",
+			"archived": false,
+			"commitSha": "b8d604926fb9d800927c5e24ac0eb6e4216fd655",
+			"pushedAt": "2026-11-03T00:15:52Z",
+			"docsDir": "docs",
+			"docsPages": 6,
+			"skills": [
+				"purview-value-objects",
+				"purview-value-objects-diagnostics",
+				"purview-value-objects-efcore",
+				"purview-value-objects-zodsharp"
+			],
+			"agentGuidance": [
+				"AGENTS.md"
+			],
+			"concerns": [
+				"validated identity types"
+			]
+		},
+		{
+			"name": "zodsharp",
+			"visibility": "public",
+			"archived": false,
+			"commitSha": "d0dbc74417d4445226a58ef96464d4d3519bd3c4",
+			"pushedAt": "2026-11-02T23:19:42Z",
+			"docsDir": "docs/wiki",
+			"docsPages": 35,
+			"skills": [
+				"purview-zodsharp-aspnetcore",
+				"purview-zodsharp-blazor",
+				"purview-zodsharp-core",
+				"purview-zodsharp-custom-rules",
+				"purview-zodsharp-diagnostics",
+				"purview-zodsharp-json",
+				"purview-zodsharp-source-generator"
+			],
+			"agentGuidance": [
+				"AGENTS.md",
+				".github/copilot-instructions.md"
+			],
+			"concerns": [
+				"TypeScript contracts from C#"
+			]
+		}
+	]
+}

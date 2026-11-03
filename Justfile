@@ -100,6 +100,22 @@ version:
     bun -e "console.log('Current Version: {{ GREEN }}' + require('./package.json').version + '{{ NORMAL }}')"
 
 # -----------------------------------------------------------------------------
+# Organisation
+# -----------------------------------------------------------------------------
+
+# Prints what changed in the organisation since the committed snapshot was taken
+[group('Organisation')]
+org-inventory *args:
+    echo "Reading {{ BLUE }}purview-dev{{ NORMAL }} at main..."
+    node skills/purview-org-harvest/scripts/inventory.mjs {{ args }}
+
+# Regenerates .config/org-inventory.json from the organisation; commit the diff with the harvest
+[group('Organisation')]
+org-inventory-write *args:
+    echo "Rewriting {{ BLUE }}.config/org-inventory.json{{ NORMAL }}..."
+    node skills/purview-org-harvest/scripts/inventory.mjs --write {{ args }}
+
+# -----------------------------------------------------------------------------
 # System / Shell
 # -----------------------------------------------------------------------------
 

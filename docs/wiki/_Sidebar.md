@@ -11,6 +11,7 @@
 - [Agent Skills Distribution](Agent-Skills-Distribution.md)
 - [Agent Guidance Skills](Agent-Guidance-Skills.md)
 - [Documentation Convention](Documentation-Convention.md)
+- [Cross-Repository Harvest](Cross-Repository-Harvest.md)
 - [Worked Examples](Worked-Examples.md)
 - [Adopting This at Your Scale](Adopting-This-At-Your-Scale.md)
 - [Contributing](Contributing.md)

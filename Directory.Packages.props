@@ -23,12 +23,12 @@
 		<MSExtensionVersion>10.10.0</MSExtensionVersion>
 	</PropertyGroup>
 	<PropertyGroup Label="Purview Versions">
-		<PurviewTelemetryVersion>5.0.5</PurviewTelemetryVersion>
+		<PurviewTelemetryVersion>5.1.0</PurviewTelemetryVersion>
 		<!--
 			The build-sdk's test-support packages ship together and track the SDK version pinned in
 			global.json, so they share one property: a bump cannot be applied to half the family.
 		-->
-		<PurviewBuildSdkTestingVersion>1.1.0</PurviewBuildSdkTestingVersion>
+		<PurviewBuildSdkTestingVersion>1.2.0</PurviewBuildSdkTestingVersion>
 	</PropertyGroup>
 	<PropertyGroup Label="Testing Versions">
 		<TUnitVersion>1.76.0</TUnitVersion>
@@ -48,7 +48,7 @@
 	</ItemGroup>
 	<ItemGroup Label="Other">
 		<!-- Injected by the SDK and added to every assembly. -->
-		<PackageVersion Include="Microsoft.SourceLink.GitHub" Version="10.0.402" />
+		<PackageVersion Include="Microsoft.SourceLink.GitHub" Version="10.0.403" />
 	</ItemGroup>
 	<ItemGroup Label="Testing">
 		<!-- The test packages the SDK wires into test and shared-testing projects. -->
