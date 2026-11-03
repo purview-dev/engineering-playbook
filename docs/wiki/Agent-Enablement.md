@@ -87,10 +87,14 @@ whose `description` is the trigger — it is what tells an agent that this skill
 ---
 name: purview-persistence
 description: >-
-  Use when a .NET project actually persists data and you are choosing a storage approach, deciding
-  whether to abstract EF Core, or selecting a GUID primary-key strategy.
+  Use when a .NET project actually persists data and you are choosing a storage approach, integrating
+  or abstracting EF Core, deriving a well-known identifier, or selecting a GUID primary-key strategy.
 ---
 ```
+
+The persistence skill owns the whole persistence decision, not only the key: EF Core integration, the
+derived-identifier gate and the provider-specific GUID strategy are one activation, because an agent that
+is already answering "how do we store this" is the agent that must not answer only half of it.
 
 Writing a good trigger is most of writing a good skill. "Use when X, and you need Y" is far more
 useful than a topic label, because the agent is matching a situation, not searching an index.
