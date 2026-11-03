@@ -140,6 +140,11 @@ Commit messages follow Conventional Commits, enforced by the `commit-msg` hook. 
 
 Before handing work back:
 
+- **Never bypass a gate.** No `--no-verify` on a commit or a push, no `LEFTHOOK_EXCLUDE`/`SKIP`, no
+  `continue-on-error` or `|| true` on a check, no force-push over a protected ref. If a hook is wrong or
+  too slow, change the hook in its own reviewed change. "CI will run the same thing anyway" is a claim
+  about a different run, made by the party being checked — and a bypass leaves no trace, which is why it
+  is never a judgement call. See [Verification Model](docs/wiki/Verification-Model.md).
 - Confirm the requested behaviour and scope are satisfied, and that only intended files changed.
 - If a rule was added or changed: the page states the failure it prevents, says whether it is enforced or a
   review obligation, has an "at your scale" section, is in `_Sidebar.md` and the `Home.md` table, and is

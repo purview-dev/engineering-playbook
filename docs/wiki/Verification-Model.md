@@ -156,6 +156,37 @@ Three things are visible in that snippet, and all three are deliberate: the repo
 caller; the pack switches match `.config/purview-build.json`; and the filter is the same string as the one
 in the configuration, so the two cannot drift apart silently.
 
+## A gate is not bypassed
+
+A check that runs before a merge — a hook, a required status check, a lint step in the pipeline — is
+never skipped by the person or agent being checked. Not because the gate looks redundant, not because
+it is slow, not because "CI will run the same thing anyway".
+
+The concrete forms of the violation, which is why they are worth listing:
+
+| Command | What it skips |
+| -- | -- |
+| `git commit --no-verify` | The pre-commit hooks |
+| `git push --no-verify`, `git push -n` | The pre-push chain |
+| `LEFTHOOK_EXCLUDE=…`, `SKIP=…`, `HUSKY=0` | The named hooks, silently |
+| `--force` / `--force-with-lease` onto a protected ref | The history the gate ran against |
+| `continue-on-error`, `if: always()`, trailing `|| true` on a gate step | The gate's ability to fail |
+| Deleting or renaming the failing step | Any evidence that it ever ran |
+
+**Why the list matters: a bypass leaves no trace.** A failing check is visible on the pull request
+forever; a skipped one is indistinguishable from a passing one afterwards. So the cost is not the one
+run — it is that the next person has no way to tell the gate was ever honoured.
+
+`purview-dev.github.io` is where this was earned. A `pre-push` hook ran `just validate`; the chain
+hung in its network-dependent data sync, and the push was retried with `--no-verify`. The full chain
+had passed minutes earlier and CI passed afterwards, so nothing shipped broken — and that is precisely
+the trap: "it passed elsewhere" is a claim about a different run, made by the party with the incentive
+to make it. The exemption was invisible, and it would have been invisible again next time.
+
+**If the gate is wrong or too slow, the gate is the thing to change**, in its own reviewed change,
+with the reason attached. A gate that is routinely bypassed is not a gate — it is a comment that costs
+ten minutes.
+
 ## How it is enforced
 
 | Rule | Enforced by |
@@ -163,6 +194,7 @@ in the configuration, so the two cannot drift apart silently.
 | The fast tier runs on every pull request | The caller workflow, and branch protection that makes it required |
 | The tier is derived from the project name | The build (SDK category emission) |
 | The repository's configuration is valid | The pipeline, which validates the JSON against the schema |
+| A gate is never bypassed | **Review obligation** — and a required status check as the backstop, because a hook cannot enforce its own non-bypass |
 | The slow tier is run before a release | Review — and, where it matters, a release gate |
 
 ## At your scale
@@ -173,6 +205,15 @@ in the configuration, so the two cannot drift apart silently.
   and never a pass.
 - **A package.** Turn on `run-pack` and `validate-pack`, and treat pack validation as the gate that stops a
   package shipping without the assets it documents.
+- **One repository, no hooks.** Nothing to bypass yet. The trap to avoid is the made-up gate: a step that
+  runs the checks and then ignores the result (`|| true`, `continue-on-error`) is worse than no step,
+  because it looks like evidence.
+- **A hook that is too slow.** Fix the hook — narrow what it runs, or move the slow tier behind a
+  required check — rather than passing `--no-verify`. The exemption you take once is the one the next
+  person takes by default.
+- **A platform.** Make the gate a required status check as well as a hook, so the hook is a convenience
+  and the check is the guarantee. Keep an audit trail of who merged with a check missing, because that
+  is the only way a bypass is ever visible.
 - **Several repositories.** Keep the pipeline shared and let each repository own only its caller workflow
   and its configuration. That is the arrangement that makes a fix in one place a fix everywhere.
 
