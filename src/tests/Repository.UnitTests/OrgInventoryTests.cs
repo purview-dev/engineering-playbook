@@ -18,7 +18,7 @@ namespace Purview.EngineeringPlaybook.Repository;
 /// These tests are offline deliberately: the pipeline has the file, not the organisation, and a test
 /// that called GitHub would fail whenever the network did. Whether the snapshot is <i>current</i> is
 /// therefore a review obligation — <c>just org-inventory</c> reports the drift, and this file does
-/// not pretend to. See <c>docs/wiki/Cross-Repository-Harvest.md</c>.
+/// not pretend to. See <c>docs/wiki/governance/Cross-Repository-Harvest.md</c>.
 /// </para>
 /// </remarks>
 public sealed partial class OrgInventoryTests

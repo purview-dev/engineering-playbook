@@ -289,8 +289,8 @@ stops an API startup path from mutating a production schema.
 
 Persistence also owns the `DbContext`, the mappings and the identifier strategy's model wiring; the
 provider choice belongs where the context is registered, usually Composition or the host. Core and
-Application never see EF Core. [EF Core Integration](EF-Core-Integration.md) states the rules that keep
-that boundary honest, and [GUID Key Strategy](Guid-Key-Strategy.md) owns the identifier-specific part.
+Application never see EF Core. [EF Core Integration](../data/EF-Core-Integration.md) states the rules that keep
+that boundary honest, and [GUID Key Strategy](../data/Guid-Key-Strategy.md) owns the identifier-specific part.
 
 ### Diagram G — persistence and migration
 
@@ -464,7 +464,7 @@ flowchart TD
 ## See also
 
 - [Architecture as Tests](Architecture-As-Tests.md) — how a dependency rule becomes a failing build
-- [EF Core Integration](EF-Core-Integration.md) — what the Persistence project owns
+- [EF Core Integration](../data/EF-Core-Integration.md) — what the Persistence project owns
 - [Repository Shape](Repository-Shape.md)
-- [Engineering Principles](Engineering-Principles.md)
-- [Adopting This at Your Scale](Adopting-This-At-Your-Scale.md)
+- [Engineering Principles](../Engineering-Principles.md)
+- [Adopting This at Your Scale](../governance/Adopting-This-At-Your-Scale.md)

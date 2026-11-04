@@ -66,8 +66,8 @@ Everything in Small, plus:
 - One test project per layer, named `*.UnitTests`.
 - `architecture-policy.json` in `.config/`, and one test class deriving from `PurviewArchitectureTests`
   (the `Purview.Architecture.Testing` package) so a wrong `ProjectReference` fails the build — see
-  [Project Responsibilities](https://github.com/purview-dev/engineering-playbook/blob/main/docs/wiki/Project-Responsibilities.md)
-  and [Architecture as Tests](https://github.com/purview-dev/engineering-playbook/blob/main/docs/wiki/Architecture-As-Tests.md).
+  [Project Responsibilities](https://github.com/purview-dev/engineering-playbook/blob/main/docs/wiki/foundations/Project-Responsibilities.md)
+  and [Architecture as Tests](https://github.com/purview-dev/engineering-playbook/blob/main/docs/wiki/foundations/Architecture-As-Tests.md).
 - A second CI job for any suite that needs a real resource.
 
 ### Large — several packages
@@ -94,5 +94,5 @@ Everything in Medium, plus:
 ## See also
 
 - [Getting Started](https://github.com/purview-dev/engineering-playbook/blob/main/docs/wiki/Getting-Started.md)
-- [Adopting This at Your Scale](https://github.com/purview-dev/engineering-playbook/blob/main/docs/wiki/Adopting-This-At-Your-Scale.md)
-- [Repository Shape](https://github.com/purview-dev/engineering-playbook/blob/main/docs/wiki/Repository-Shape.md)
+- [Adopting This at Your Scale](https://github.com/purview-dev/engineering-playbook/blob/main/docs/wiki/governance/Adopting-This-At-Your-Scale.md)
+- [Repository Shape](https://github.com/purview-dev/engineering-playbook/blob/main/docs/wiki/foundations/Repository-Shape.md)

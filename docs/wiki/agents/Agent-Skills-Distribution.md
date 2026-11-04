@@ -262,6 +262,6 @@ belong in `skills/` at all. A skill here ships to somebody else; put repository-
 ## See also
 
 - [Agent Enablement](Agent-Enablement.md) — `AGENTS.md`, `.agents/`, and what makes a good skill
-- [Documentation Convention](Documentation-Convention.md)
+- [Documentation Convention](../foundations/Documentation-Convention.md)
 - [skills CLI](https://github.com/vercel-labs/skills)
 - [Agent Skills specification](https://agentskills.io/specification)

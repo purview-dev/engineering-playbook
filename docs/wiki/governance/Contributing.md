@@ -31,12 +31,15 @@ because people rely on the guarantee and stop looking. Each criterion removes on
 
 ## Adding a page
 
-1. **Write the page** in `docs/wiki/<Page-Name>.md`. Title case, hyphens between words.
-2. **Follow the four sections** from [Documentation Convention](Documentation-Convention.md): the rule, why,
+1. **Write the page** in `docs/wiki/<Section>/<Page-Name>.md`. Use the topic folder for its section, a
+   title-case file name, and hyphens between words. A page that belongs to no existing section needs a new
+   folder, added to both `_Sidebar.md` and `Home.md`.
+2. **Follow the four sections** from [Documentation Convention](../foundations/Documentation-Convention.md): the rule, why,
    how it is enforced, at your scale.
-3. **Add it to `_Sidebar.md`.** A page that is not in the navigation is a page nobody finds.
-4. **Add it to the table in `Home.md`.** The hub is how a reader discovers a page they did not know to look
-   for.
+3. **Add it to `_Sidebar.md`** under the matching section. A page that is not in the navigation is a page
+   nobody finds.
+4. **Add it to the matching table in `Home.md`.** The hub is how a reader discovers a page they did not know
+   to look for, and the section it uses must match the sidebar label.
 5. **Link both ways.** A page with no inbound link is a page that will be deleted by accident; a page with no
    outbound links is a dead end.
 6. **Link to the authority, and name the evidence.** Where a rule is the SDK's, link to the SDK's page. Where
@@ -115,7 +118,7 @@ checks in [Validation before handing work back](#validation-before-handing-work-
 
 ## See also
 
-- [Documentation Convention](Documentation-Convention.md)
-- [Engineering Principles](Engineering-Principles.md)
+- [Documentation Convention](../foundations/Documentation-Convention.md)
+- [Engineering Principles](../Engineering-Principles.md)
 - [Adopting This at Your Scale](Adopting-This-At-Your-Scale.md)
 - [Release Flow](Release-Flow.md)

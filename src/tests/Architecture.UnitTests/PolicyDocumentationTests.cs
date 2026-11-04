@@ -10,14 +10,14 @@ namespace Purview.EngineeringPlaybook.Architecture;
 /// The policy is stated twice by necessity - once as JSON the tests evaluate, once as a table a human
 /// reads. Two statements of one rule drift, and the prose is the copy that drifts silently, because
 /// nothing fails when it is wrong. These tests make the documentation falsifiable.
-/// See <c>docs/wiki/Project-Responsibilities.md</c>.
+/// See <c>docs/wiki/foundations/Project-Responsibilities.md</c>.
 /// </remarks>
 public sealed partial class PolicyDocumentationTests
 {
 	static readonly ArchitecturePolicy Policy = ArchitecturePolicy.Load();
 
 	static string DocumentationPath =>
-		Path.Combine(ArchitecturePolicy.RepositoryRoot(), "docs", "wiki", "Project-Responsibilities.md");
+		Path.Combine(ArchitecturePolicy.RepositoryRoot(), "docs", "wiki", "foundations", "Project-Responsibilities.md");
 
 	/// <summary>Reads the responsibilities page.</summary>
 	/// <param name="cancellationToken">Cancels the read.</param>
@@ -25,7 +25,7 @@ public sealed partial class PolicyDocumentationTests
 	/// <remarks>
 	/// A method rather than a property, because a property cannot be <c>async</c> and a synchronous one
 	/// would hide <c>File.ReadAllText</c> from <c>VSTHRD103</c> - the analyzer only sees a synchronous
-	/// call when it sits inside a <c>Task</c>-returning method. See <c>docs/wiki/Testing-And-Test-Data.md</c>.
+	/// call when it sits inside a <c>Task</c>-returning method. See <c>docs/wiki/testing/Testing-And-Test-Data.md</c>.
 	/// </remarks>
 	static async Task<string> ReadDocumentationAsync(CancellationToken cancellationToken) =>
 		await File.ReadAllTextAsync(DocumentationPath, cancellationToken);
@@ -113,7 +113,7 @@ public sealed partial class PolicyDocumentationTests
 			{
 				mismatches.Add(
 					$"{name}: the page says '{documented}' but the policy says '{expected}'. "
-						+ "Update docs/wiki/Project-Responsibilities.md, or change the policy if the rule moved."
+						+ "Update docs/wiki/foundations/Project-Responsibilities.md, or change the policy if the rule moved."
 				);
 			}
 

@@ -117,7 +117,7 @@ A BDTest acceptance suite is a slow tier of this kind, with one addition: the jo
 in that shape at all. A container-backed suite adds a different one: pin the backend with
 `PURVIEW_CONTAINERS_BACKEND` in the job, so a runner without that runtime fails the job rather than
 skipping every test and reporting green. Both are covered in [Testing and Test
-Data](Testing-And-Test-Data.md).
+Data](../testing/Testing-And-Test-Data.md).
 
 ## The configuration file
 
@@ -160,7 +160,7 @@ The repository also owns a runnable sample, `samples/Acme.Persistence`, that the
 build. It sits outside `src/`, has no analyzers and is not in the canonical solution; `just samples` is
 its verification, and it fails with a non-zero exit code when its identifier or model checks are untrue.
 That is a deliberate fourth tier — a sample, not a test — and the page says so rather than counting it in
-the fast job. [EF Core Integration](EF-Core-Integration.md) lists the checks the sample and an adopting
+the fast job. [EF Core Integration](../data/EF-Core-Integration.md) lists the checks the sample and an adopting
 repository's integration suite should cover.
 
 ## A gate is not bypassed
@@ -229,8 +229,8 @@ ten minutes.
 
 ## See also
 
-- [Release Flow](Release-Flow.md)
-- [Testing and Test Data](Testing-And-Test-Data.md)
+- [Release Flow](../governance/Release-Flow.md)
+- [Testing and Test Data](../testing/Testing-And-Test-Data.md)
 - [Architecture as Tests](Architecture-As-Tests.md)
 - [build: Configuration
   Reference](https://github.com/purview-dev/build/blob/main/docs/wiki/Configuration-Reference.md)

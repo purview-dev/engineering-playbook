@@ -239,7 +239,7 @@ public async Task RegisterAsync_GivenAnAlreadyRegisteredConvention_DoesNotStoreI
 ```
 
 **`Architecture.UnitTests`** runs two kinds of rule. `DependencyDirectionTests` is the four rules from
-[Architecture as Tests](Architecture-As-Tests.md), reading the compiled assemblies; it is the reason the
+[Architecture as Tests](../foundations/Architecture-As-Tests.md), reading the compiled assemblies; it is the reason the
 `Application` project file carries a comment explaining that a reference to `Infrastructure` would fail
 the build. `ArchitectureTests` derives from `PurviewArchitectureTests` and enforces the policy in
 `.config/architecture-policy.json`, so the dependency matrix, naming, sibling-independence, composition,
@@ -255,7 +255,7 @@ repository, and that a reviewer would otherwise have to remember, belongs in a t
 ## The test data builder
 
 `TestBuilder` is flat rather than grouped, and
-[Testing and Test Data](Testing-And-Test-Data.md#two-constraints-that-shaped-the-builder) explains why. The
+[Testing and Test Data](../testing/Testing-And-Test-Data.md#two-constraints-that-shaped-the-builder) explains why. The
 contract is the interesting part:
 
 ```csharp
@@ -322,13 +322,13 @@ The fastest way to understand a rule is to watch it fail. Three edits, each of w
   [containers](https://github.com/purview-dev/containers) is the reference for them.
 - **No persistence in `src/`.** The adapter is in-memory. There is no migration, no schema and no
   connection string in the canonical solution.
-- **No persistence-specific identifier code in `src/`.** [Well-Known Identifiers](Well-Known-Identifiers.md),
-  [GUID Key Strategy](Guid-Key-Strategy.md) and [EF Core Integration](EF-Core-Integration.md) are
+- **No persistence-specific identifier code in `src/`.** [Well-Known Identifiers](../data/Well-Known-Identifiers.md),
+  [GUID Key Strategy](../data/Guid-Key-Strategy.md) and [EF Core Integration](../data/EF-Core-Integration.md) are
   implemented by the standalone sample at `samples/Acme.Persistence`. `just samples` builds and runs it;
   it sits outside the canonical `src/` solution because the reference implementation here is in-memory by
   design.
 - **No web layer.** The result-to-response mapping in [Contracts and Data
-  Exchange](Contracts-And-Data-Exchange.md) is described, not implemented, because
+  Exchange](../data/Contracts-And-Data-Exchange.md) is described, not implemented, because
   [results](https://github.com/purview-dev/results) already implements it and a second implementation here
   would be a worse copy.
 - **No integration tier.** Every test is deterministic, so the pipeline needs no second job.
@@ -338,12 +338,12 @@ The fastest way to understand a rule is to watch it fail. Three edits, each of w
 This is the **Medium** profile: a few layers, a shared testing project, and architecture tests. A small
 repository takes the SDK import, `Directory.Packages.props`, `AGENTS.md` and `TestBuilder` and stops there;
 a large one adds pack validation, consumer verification and a release gate. [Adopting This at Your
-Scale](Adopting-This-At-Your-Scale.md) is the page that decides.
+Scale](../governance/Adopting-This-At-Your-Scale.md) is the page that decides.
 
 ## See also
 
-- [Getting Started](Getting-Started.md)
-- [Architecture as Tests](Architecture-As-Tests.md)
-- [Testing and Test Data](Testing-And-Test-Data.md)
-- [Contracts and Data Exchange](Contracts-And-Data-Exchange.md)
-- [EF Core Integration](EF-Core-Integration.md)
+- [Getting Started](../Getting-Started.md)
+- [Architecture as Tests](../foundations/Architecture-As-Tests.md)
+- [Testing and Test Data](../testing/Testing-And-Test-Data.md)
+- [Contracts and Data Exchange](../data/Contracts-And-Data-Exchange.md)
+- [EF Core Integration](../data/EF-Core-Integration.md)

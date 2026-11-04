@@ -14,31 +14,31 @@ coding agents are enabled to work in a codebase without hand-holding.
 | -- | -- |
 | [Getting started](docs/wiki/Getting-Started.md) | What is the smallest repository that satisfies every rule, in the order you build it? |
 | [Engineering principles](docs/wiki/Engineering-Principles.md) | What are the non-negotiable rules, and where is each one stated in full? |
-| [Repository shape](docs/wiki/Repository-Shape.md) | Where does a file go, and what is it called? |
-| [Project responsibilities](docs/wiki/Project-Responsibilities.md) | What is each project for, how is it named, and what may it depend on? |
-| [Architecture as tests](docs/wiki/Architecture-As-Tests.md) | How does the build refuse a dependency that points the wrong way? |
-| [Verification model](docs/wiki/Verification-Model.md) | Which checks run, in which tier, for which change? |
-| [Contracts and data exchange](docs/wiki/Contracts-And-Data-Exchange.md) | How do value objects, schemas and results cross a boundary? |
-| [Well-known identifiers](docs/wiki/Well-Known-Identifiers.md) | How is an identity derived so every process and restart agrees? |
-| [GUID key strategy](docs/wiki/Guid-Key-Strategy.md) | How is a sequential GUID key chosen and applied per store? |
-| [EF Core integration](docs/wiki/EF-Core-Integration.md) | How do the context, providers, value objects, models and migrations fit together? |
-| [Testing and test data](docs/wiki/Testing-And-Test-Data.md) | How are tests written, and where does their data come from? |
-| [Agent enablement](docs/wiki/Agent-Enablement.md) | How is a repository made legible to a coding agent? |
-| [Agent skills distribution](docs/wiki/Agent-Skills-Distribution.md) | How is a skill published once and reach an agent? |
-| [Agent guidance skills](docs/wiki/Agent-Guidance-Skills.md) | Which shared guidance ships as a skill, and what context comes first? |
-| [Documentation convention](docs/wiki/Documentation-Convention.md) | How is the wiki written, structured and published? |
-| [Worked examples](docs/wiki/Worked-Examples.md) | What does the reference implementation under `src/` actually demonstrate? |
-| [Adopting this at your scale](docs/wiki/Adopting-This-At-Your-Scale.md) | Which parts apply to a small, medium or large repository? |
-| [Contributing](docs/wiki/Contributing.md) | How do I change the playbook itself? |
-| [Release flow](docs/wiki/Release-Flow.md) | How does a change become a version, and what does a release mean here? |
+| [Repository shape](docs/wiki/foundations/Repository-Shape.md) | Where does a file go, and what is it called? |
+| [Project responsibilities](docs/wiki/foundations/Project-Responsibilities.md) | What is each project for, how is it named, and what may it depend on? |
+| [Architecture as tests](docs/wiki/foundations/Architecture-As-Tests.md) | How does the build refuse a dependency that points the wrong way? |
+| [Verification model](docs/wiki/foundations/Verification-Model.md) | Which checks run, in which tier, for which change? |
+| [Contracts and data exchange](docs/wiki/data/Contracts-And-Data-Exchange.md) | How do value objects, schemas and results cross a boundary? |
+| [Well-known identifiers](docs/wiki/data/Well-Known-Identifiers.md) | How is an identity derived so every process and restart agrees? |
+| [GUID key strategy](docs/wiki/data/Guid-Key-Strategy.md) | How is a sequential GUID key chosen and applied per store? |
+| [EF Core integration](docs/wiki/data/EF-Core-Integration.md) | How do the context, providers, value objects, models and migrations fit together? |
+| [Testing and test data](docs/wiki/testing/Testing-And-Test-Data.md) | How are tests written, and where does their data come from? |
+| [Agent enablement](docs/wiki/agents/Agent-Enablement.md) | How is a repository made legible to a coding agent? |
+| [Agent skills distribution](docs/wiki/agents/Agent-Skills-Distribution.md) | How is a skill published once and reach an agent? |
+| [Agent guidance skills](docs/wiki/agents/Agent-Guidance-Skills.md) | Which shared guidance ships as a skill, and what context comes first? |
+| [Documentation convention](docs/wiki/foundations/Documentation-Convention.md) | How is the wiki written, structured and published? |
+| [Worked examples](docs/wiki/examples/Worked-Examples.md) | What does the reference implementation under `src/` actually demonstrate? |
+| [Adopting this at your scale](docs/wiki/governance/Adopting-This-At-Your-Scale.md) | Which parts apply to a small, medium or large repository? |
+| [Contributing](docs/wiki/governance/Contributing.md) | How do I change the playbook itself? |
+| [Release flow](docs/wiki/governance/Release-Flow.md) | How does a change become a version, and what does a release mean here? |
 
 ## Start here
 
 - **New to the playbook?** [Getting started](docs/wiki/Getting-Started.md) walks the smallest
   repository that satisfies every rule.
-- **Adopting it?** [Adopting this at your scale](docs/wiki/Adopting-This-At-Your-Scale.md) picks the
+- **Adopting it?** [Adopting this at your scale](docs/wiki/governance/Adopting-This-At-Your-Scale.md) picks the
   subset that fits, and [`templates/`](templates) is the copy-paste starting point.
-- **Want to see it run?** [Worked examples](docs/wiki/Worked-Examples.md) walks the reference
+- **Want to see it run?** [Worked examples](docs/wiki/examples/Worked-Examples.md) walks the reference
   implementation under [`src/`](src), which this repository's own pipeline builds and tests.
 
 ## Repository layout

@@ -152,6 +152,6 @@ never appears in a status output.
 ## See also
 
 - [Agent Skills Distribution](Agent-Skills-Distribution.md)
-- [Documentation Convention](Documentation-Convention.md)
-- [Repository Shape](Repository-Shape.md)
+- [Documentation Convention](../foundations/Documentation-Convention.md)
+- [Repository Shape](../foundations/Repository-Shape.md)
 - [Agent Skills specification](https://agentskills.io/specification)

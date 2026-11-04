@@ -444,7 +444,7 @@ Three rules make such a suite safe to own:
 
 - **It lives in its own `<Target>.IntegrationTests` project.** The tier comes from the name, which keeps it
   out of the pull-request filter without anybody remembering an attribute. See
-  [Verification Model](Verification-Model.md).
+  [Verification Model](../foundations/Verification-Model.md).
 - **It skips locally when no backend is usable, and fails in CI.** Those are two different situations and
   must not share an outcome. Locally, probe and skip; in CI, pin the backend with
   `PURVIEW_CONTAINERS_BACKEND`, because a named backend never falls back, so an unavailable runtime fails
@@ -471,7 +471,7 @@ no persistence and its pipeline runs the `[Category=Unit]` tier only. `samples/A
 EF Core side — a real provider when given a connection string, in-memory only for the runnable default —
 but it is a console self-check rather than a test project, and `just samples` is its check.
 [containers](https://github.com/purview-dev/containers) is the repository to read for the second-job
-pattern in use, and [EF Core Integration](EF-Core-Integration.md) states the rules a container-backed suite
+pattern in use, and [EF Core Integration](../data/EF-Core-Integration.md) states the rules a container-backed suite
 should prove.
 
 ## How it is enforced
@@ -507,14 +507,14 @@ should prove.
   repository with no such audience should keep writing unit tests. Reach for the HTML report only once
   somebody is actually going to read it.
 - **A package with a documented contract.** Add the consumer-verification script described in
-  [Engineering Principles](Engineering-Principles.md).
+  [Engineering Principles](../Engineering-Principles.md).
 
 ## See also
 
-- [Verification Model](Verification-Model.md)
-- [Architecture as Tests](Architecture-As-Tests.md)
-- [EF Core Integration](EF-Core-Integration.md)
-- [Worked Examples](Worked-Examples.md)
+- [Verification Model](../foundations/Verification-Model.md)
+- [Architecture as Tests](../foundations/Architecture-As-Tests.md)
+- [EF Core Integration](../data/EF-Core-Integration.md)
+- [Worked Examples](../examples/Worked-Examples.md)
 - [BDTest](https://bdtest.tomlonghurst.dev/)
 - [Purview.Containers](https://purview.dev/docs/containers/)
 - [build-sdk: Testing

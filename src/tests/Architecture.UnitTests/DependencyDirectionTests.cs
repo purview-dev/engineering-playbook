@@ -13,7 +13,7 @@ namespace Purview.EngineeringPlaybook.Architecture;
 /// <remarks>
 /// These are the rules a diagram cannot keep true. Each one reads the compiled assemblies and their
 /// metadata references, so a ProjectReference that points the wrong way fails the build rather than
-/// being noticed in review. See <c>docs/wiki/Architecture-As-Tests.md</c>.
+/// being noticed in review. See <c>docs/wiki/foundations/Architecture-As-Tests.md</c>.
 /// </remarks>
 public sealed class DependencyDirectionTests
 {

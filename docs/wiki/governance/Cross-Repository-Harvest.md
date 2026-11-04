@@ -49,8 +49,8 @@ symptom was one extra hop nobody could see. This page's repository-name test was
 exactly that, and the correction to `Home.md` ships with it — a test with nothing to fail on is a
 test nobody believes.
 
-**A claim three pages agree on has not been checked.** `AGENTS.md`, `Agent-Enablement.md` and
-`Repository-Shape.md` all stated that `.agents/skills/` is gitignored. `git check-ignore
+**A claim three pages agree on has not been checked.** `AGENTS.md`, `agents/Agent-Enablement.md` and
+`foundations/Repository-Shape.md` all stated that `.agents/skills/` is gitignored. `git check-ignore
 .agents/skills/x/SKILL.md` exits 1, and the SDK's own `.gitignore` template carries no such line: the
 rule was stated in three places and existed in none. Repetition reads as verification, which is why a
 harvest records a SHA rather than an impression. The rule is now in `.gitignore`, so the three pages
@@ -67,7 +67,7 @@ other's question produces an answer with a citation that does not support it.
 
 ## Deviations the first harvest found
 
-The [Documentation Convention](Documentation-Convention.md) says a wiki lives in `docs/wiki`. Of the
+The [Documentation Convention](../foundations/Documentation-Convention.md) says a wiki lives in `docs/wiki`. Of the
 sixteen public repositories, twelve do. `architests`, `value-objects` and `purview-dev.github.io`
 publish from `docs`, and `pm-skills` publishes no documentation folder at all, documenting itself
 through its fourteen skills.
@@ -129,8 +129,8 @@ behind its tip. Regenerating the snapshot is part of merging a harvest, not part
 
 ## See also
 
-- [Documentation Convention](Documentation-Convention.md) — where a page lives, and why ownership is
+- [Documentation Convention](../foundations/Documentation-Convention.md) — where a page lives, and why ownership is
   the rule rather than the folder name
-- [Agent Skills Distribution](Agent-Skills-Distribution.md) — how a skill reaches a consumer
-- [Engineering Principles](Engineering-Principles.md) — the rules a harvest most often finds behind
+- [Agent Skills Distribution](../agents/Agent-Skills-Distribution.md) — how a skill reaches a consumer
+- [Engineering Principles](../Engineering-Principles.md) — the rules a harvest most often finds behind
 - [Adopting This at Your Scale](Adopting-This-At-Your-Scale.md)
