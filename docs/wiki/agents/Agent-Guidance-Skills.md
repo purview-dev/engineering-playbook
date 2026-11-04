@@ -108,7 +108,7 @@ initialisation order.
 
 This guidance activates only when persistence is real. For a stateless CLI or a pure library, the
 correct output is silence. The EF Core integration rules are in [EF Core
-Integration](EF-Core-Integration.md); the decision diagram below is the identifier-specific branch.
+Integration](../data/EF-Core-Integration.md); the decision diagram below is the identifier-specific branch.
 
 **Diagram N — persistence-specific GUID strategy selection.**
 
@@ -157,8 +157,8 @@ serves both providers, the strategy is carried as data on the context options, n
 the value is known before the row exists — a system tenant, a seeded reference row, an installation's
 service principal — derive it with UUIDv5 in an installation-scoped namespace and configure
 `ValueGeneratedNever()`. The full rule, catalogue and tests are on [Well-Known
-Identifiers](Well-Known-Identifiers.md); the convention that must skip it is on [GUID Key
-Strategy](Guid-Key-Strategy.md).
+Identifiers](../data/Well-Known-Identifiers.md); the convention that must skip it is on [GUID Key
+Strategy](../data/Guid-Key-Strategy.md).
 
 No **NuGet** package provides the *strategy/convention pattern*. A reviewed generator such as
 `FastGuid` supplies a store-ordered implementation, but the witness, options extension, value generator
@@ -170,7 +170,7 @@ rollover and thread safety are all live hazards, and the failure shows up as dup
 
 The persistence skill also covers the non-identifier half of the same decision, because an agent that is
 already choosing a store is the agent that will otherwise invent a repository over `DbContext`. The full
-rule is on [EF Core Integration](EF-Core-Integration.md); the four points worth keeping in mind are:
+rule is on [EF Core Integration](../data/EF-Core-Integration.md); the four points worth keeping in mind are:
 
 - **`DbContext` is the boundary.** No `IRepository<T>` or unit-of-work wrapper added for testability;
   `Purview.Containers` gives a real database in tests.
@@ -235,5 +235,5 @@ thing when read.
 
 - [Agent Skills Distribution](Agent-Skills-Distribution.md) — how these skills reach a consumer
 - [Agent Enablement](Agent-Enablement.md)
-- [Engineering Principles](Engineering-Principles.md)
-- [Adopting This at Your Scale](Adopting-This-At-Your-Scale.md)
+- [Engineering Principles](../Engineering-Principles.md)
+- [Adopting This at Your Scale](../governance/Adopting-This-At-Your-Scale.md)

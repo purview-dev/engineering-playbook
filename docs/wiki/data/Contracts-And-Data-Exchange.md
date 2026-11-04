@@ -186,10 +186,10 @@ a hope.
 
 ## See also
 
-- [Worked Examples](Worked-Examples.md)
+- [Worked Examples](../examples/Worked-Examples.md)
 - [EF Core Integration](EF-Core-Integration.md) — value converters and value-object keys in the model
 - [Well-Known Identifiers](Well-Known-Identifiers.md) — value objects that carry a derived identity
-- [Testing and Test Data](Testing-And-Test-Data.md)
+- [Testing and Test Data](../testing/Testing-And-Test-Data.md)
 - [value-objects](https://github.com/purview-dev/value-objects)
 - [results](https://github.com/purview-dev/results)
 - [zodsharp](https://github.com/purview-dev/zodsharp)

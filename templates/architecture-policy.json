@@ -12,7 +12,7 @@
 	//
 	// `[InheritsTests]` is required - TUnit does not walk base types during discovery, so without it
 	// the class compiles, the run is green, and nothing is enforced. See
-	// docs/wiki/Project-Responsibilities.md.
+	// docs/wiki/foundations/Project-Responsibilities.md.
 	//
 	// Delete the responsibilities you do not have. A small application with `Core` and a host is a
 	// complete and correct architecture; the catalogue is not a list of projects to create.

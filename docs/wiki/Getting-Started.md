@@ -100,7 +100,7 @@ says.
 `Purview.Telemetry.SourceGenerator`, `Microsoft.Extensions.Telemetry.Abstractions` and
 `Microsoft.SourceLink.GitHub` are injected by the SDK itself — telemetry and SourceLink are on by
 default. The rest are the test stack: TUnit is the framework, TUnit.Mocks the substitute library, Bogus
-the test-data generator. See [Testing and Test Data](Testing-And-Test-Data.md).
+the test-data generator. See [Testing and Test Data](testing/Testing-And-Test-Data.md).
 
 ### Versions are properties, packages are items
 
@@ -152,7 +152,7 @@ the reviewer, and it is cheap to keep because the file is read far more often th
 `NamespacePrefix` must be set **before** the import, because the SDK derives `RootNamespace` from it
 during `.props` evaluation. From this point every project beneath `src/` gets the target framework,
 language version, nullable context, analyzers, code-style enforcement and assembly identity without
-declaring any of them. See [Repository Shape](Repository-Shape.md).
+declaring any of them. See [Repository Shape](foundations/Repository-Shape.md).
 
 > **Where the file goes.** MSBuild walks up from each project to the nearest `Directory.Build.props`, so
 > the import can sit at the repository root or at `src/`. This repository and the multi-project Purview
@@ -220,7 +220,7 @@ public sealed record CustomerId
 ```
 
 `Create` validates, `Hydrate` trusts. That split is the subject of [Contracts and Data
-Exchange](Contracts-And-Data-Exchange.md).
+Exchange](data/Contracts-And-Data-Exchange.md).
 
 > **One trap, immediately.** The SDK strips a list of layer suffixes (`Core`, `Infrastructure`,
 > `Persistence`, `Abstractions`, …) from `RootNamespace`, so a project called `Infrastructure` declares
@@ -279,7 +279,7 @@ public sealed class CustomerIdTests
 
 The name is one of a recognised set, so the SDK treats it as a shared testing project: it gets the test
 packages but not the runner, stays a library, and is referenced automatically by the test projects
-beside it. This is where `TestBuilder` lives — see [Testing and Test Data](Testing-And-Test-Data.md).
+beside it. This is where `TestBuilder` lives — see [Testing and Test Data](testing/Testing-And-Test-Data.md).
 
 ### Step 8 — Point the shared pipeline at the solution
 
@@ -307,14 +307,14 @@ Paths are anchored to the **repository root**, not to the configuration file, so
 
 `RunPack` and `ValidatePack` are off because this repository ships no package. The shared workflow
 defaults both to `true`, so leaving them unset would give a green local build and a failing pipeline.
-See [Verification Model](Verification-Model.md).
+See [Verification Model](foundations/Verification-Model.md).
 
 `TestPatterns` is left at its default, `*Tests.csproj`, on purpose. Discovery and tiering are two
 mechanisms, and only one of them should carry the tier: `TestPatterns` chooses which project files are
 discovered, `TestFilter` chooses which discovered tests run. Leave discovery wide and the day you add
 `Domain.IntegrationTests` it is kept out of the pull-request tier by its category alone, with no second
 edit. Narrow `TestPatterns` and you have to remember both. See [Verification
-Model](Verification-Model.md).
+Model](foundations/Verification-Model.md).
 
 ### Step 9 — Add the caller workflow
 
@@ -345,8 +345,8 @@ jobs:
 
 The two pack switches repeat `Build:RunPack` and `Build:ValidatePack` from the configuration, so the
 workflow and the JSON agree about what a green build means. The workflow is a caller; the pipeline
-itself lives in one shared repository. See [Verification Model](Verification-Model.md) and
-[Release Flow](Release-Flow.md).
+itself lives in one shared repository. See [Verification Model](foundations/Verification-Model.md) and
+[Release Flow](governance/Release-Flow.md).
 
 ### Step 10 — Add the wiki
 
@@ -367,14 +367,14 @@ markdown_extensions: [admonition, attr_list, md_in_html, pymdownx.details, pymdo
 
 Then `docs/wiki/index.md`, `docs/wiki/Home.md` and `docs/wiki/_Sidebar.md`, and the pages behind them.
 `_Sidebar.md` is the navigation list, so a new page that is not in it is a page nobody finds. See
-[Documentation Convention](Documentation-Convention.md).
+[Documentation Convention](foundations/Documentation-Convention.md).
 
 ### Step 11 — Make the repository legible to an agent
 
 Add `AGENTS.md` at the root: purpose, layout table, conventions, completion checklist, local commands.
 Then install the SDK's own skills with `npx skills add purview-dev/build-sdk`, so an agent gets that
 guidance without you writing it. Installation is explicit - no build writes into an agent directory.
-See [Agent Enablement](Agent-Enablement.md).
+See [Agent Enablement](agents/Agent-Enablement.md).
 
 ### Step 12 — Add the local tools and the commands that run them
 
@@ -476,9 +476,9 @@ three conditional rules on their own pages rather than inventing a shape:
 
 | Concern | Rule | Page |
 | -- | -- | -- |
-| The context and the model | `DbContext` is the boundary; map value objects once; design time matches runtime; migrate deliberately | [EF Core Integration](EF-Core-Integration.md) |
-| A value known before storage | Derive it with UUIDv5 over an installation-scoped namespace and key it `ValueGeneratedNever()` | [Well-Known Identifiers](Well-Known-Identifiers.md) |
-| Every other GUID key | One strategy per store, applied by a model-finalising convention | [GUID Key Strategy](Guid-Key-Strategy.md) |
+| The context and the model | `DbContext` is the boundary; map value objects once; design time matches runtime; migrate deliberately | [EF Core Integration](data/EF-Core-Integration.md) |
+| A value known before storage | Derive it with UUIDv5 over an installation-scoped namespace and key it `ValueGeneratedNever()` | [Well-Known Identifiers](data/Well-Known-Identifiers.md) |
+| Every other GUID key | One strategy per store, applied by a model-finalising convention | [GUID Key Strategy](data/Guid-Key-Strategy.md) |
 
 The working example is `samples/Acme.Persistence`, run with `just samples`. It sits outside `src/` so the
 reference implementation in this repository stays in-memory and the canonical solution keeps its shape.
@@ -503,13 +503,13 @@ repository: which concern lives where, and what refuses a change that breaks it.
 
 ## At your scale
 
-This page is the floor, not the whole playbook. [Adopting This at Your Scale](Adopting-This-At-Your-Scale.md)
+This page is the floor, not the whole playbook. [Adopting This at Your Scale](governance/Adopting-This-At-Your-Scale.md)
 decides which parts to take for a small, medium or large repository, and [Worked
-Examples](Worked-Examples.md) walks the reference implementation that results from taking all of them.
+Examples](examples/Worked-Examples.md) walks the reference implementation that results from taking all of them.
 
 ## See also
 
 - [Engineering Principles](Engineering-Principles.md)
-- [Repository Shape](Repository-Shape.md)
-- [Adopting This at Your Scale](Adopting-This-At-Your-Scale.md)
-- [Worked Examples](Worked-Examples.md)
+- [Repository Shape](foundations/Repository-Shape.md)
+- [Adopting This at Your Scale](governance/Adopting-This-At-Your-Scale.md)
+- [Worked Examples](examples/Worked-Examples.md)

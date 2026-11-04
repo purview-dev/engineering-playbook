@@ -6,7 +6,7 @@
 
 		This project keeps its own namespace only because src/Directory.Build.props removes
 		`Infrastructure` from the SDK's `NamespaceRemoveSuffix` list. Without that line the SDK would
-		fold the types into `Purview.EngineeringPlaybook`. See docs/wiki/Repository-Shape.md.
+		fold the types into `Purview.EngineeringPlaybook`. See docs/wiki/foundations/Repository-Shape.md.
 	-->
 	<ItemGroup>
 		<ProjectReference Include="../Application/Application.csproj" />

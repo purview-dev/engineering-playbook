@@ -90,8 +90,8 @@ needs the design-time parity and the cache key if the model varies at design tim
 | One owner per generated value | Review, plus the tests below in the adopting repository |
 | Design-time and runtime options agree | An integration test that builds the model both ways and compares the snapshot |
 | The model cache key covers the model's inputs | A test with two strategies and one context type asserts two models |
-| Migrations are applied deliberately | Review, and the `Migrator` host in [Project Responsibilities](Project-Responsibilities.md) |
-| Integration tests use a real store | The `*.IntegrationTests` project name and the `Purview.Containers` rule in [Testing and Test Data](Testing-And-Test-Data.md) |
+| Migrations are applied deliberately | Review, and the `Migrator` host in [Project Responsibilities](../foundations/Project-Responsibilities.md) |
+| Integration tests use a real store | The `*.IntegrationTests` project name and the `Purview.Containers` rule in [Testing and Test Data](../testing/Testing-And-Test-Data.md) |
 | The connection string stays out of source and telemetry | Review; in an adopting repository, a secret scanner and a redaction test turn it into a build failure |
 
 The checks worth writing in an adopting repository are small and specific:
@@ -129,6 +129,6 @@ says so rather than claiming a check it does not have.
 - [Well-Known Identifiers](Well-Known-Identifiers.md) — the derived owner of a key
 - [GUID Key Strategy](Guid-Key-Strategy.md) — the generated owner, and the full convention
 - [Contracts and Data Exchange](Contracts-And-Data-Exchange.md) — value objects and their converters
-- [Testing and Test Data](Testing-And-Test-Data.md) — real stores and container-backed suites
-- [Project Responsibilities](Project-Responsibilities.md) — Persistence owns definitions, Migrator executes them
+- [Testing and Test Data](../testing/Testing-And-Test-Data.md) — real stores and container-backed suites
+- [Project Responsibilities](../foundations/Project-Responsibilities.md) — Persistence owns definitions, Migrator executes them
 - [Working with EF Core](https://learn.microsoft.com/en-us/ef/core/) — the framework's own documentation

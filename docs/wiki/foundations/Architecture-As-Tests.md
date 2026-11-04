@@ -141,7 +141,7 @@ rather than *from* them. A shared testing project's internals are not visible to
 The corollary is that an `internal` helper is not an option, and a `public` nested type is a build error —
 the SDK ships `dotnet_diagnostic.CA1034.severity = error`, and `PRSGD0008` refuses to let a repository add
 `CA1034` to `NoWarn`. Factories therefore sit flat on the builder class rather than in nested groups. See
-[Testing and Test Data](Testing-And-Test-Data.md).
+[Testing and Test Data](../testing/Testing-And-Test-Data.md).
 
 ## What these tests do not cover
 
@@ -183,5 +183,5 @@ are adopted with a policy file and one derived test class rather than with C#. S
 
 - [Repository Shape](Repository-Shape.md)
 - [Verification Model](Verification-Model.md)
-- [Testing and Test Data](Testing-And-Test-Data.md)
-- [Worked Examples](Worked-Examples.md)
+- [Testing and Test Data](../testing/Testing-And-Test-Data.md)
+- [Worked Examples](../examples/Worked-Examples.md)

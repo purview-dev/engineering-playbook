@@ -43,7 +43,7 @@ Repository/
 `artifacts/`, `.tools/` and `TestResults/` are generated and gitignored; they are in the layout above
 only so that seeing them is not a surprise.
 
-Not every file above is created by [Getting Started](Getting-Started.md), and the difference is worth
+Not every file above is created by [Getting Started](../Getting-Started.md), and the difference is worth
 knowing before you follow it expecting a finished repository:
 
 | File | Where it comes from |
@@ -210,7 +210,7 @@ directories.
 
 ## See also
 
-- [Getting Started](Getting-Started.md)
+- [Getting Started](../Getting-Started.md)
 - [Architecture as Tests](Architecture-As-Tests.md)
 - [Documentation Convention](Documentation-Convention.md)
-- [Agent Enablement](Agent-Enablement.md)
+- [Agent Enablement](../agents/Agent-Enablement.md)

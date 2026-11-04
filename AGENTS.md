@@ -56,7 +56,8 @@ demonstrate it.
 
 ## Documentation conventions
 
-- **One page per concern**, in `docs/wiki/<Page-Name>.md`. Title case, hyphens between words.
+- **One page per concern**, in `docs/wiki/<Section>/<Page-Name>.md`. The section is the topic folder,
+  the file name is title case with hyphens between words, and the folder name is lower-case.
 - **Four sections, in order:** the rule, why, how it is enforced, at your scale. A rule a build cannot check
   is labelled a review obligation — never described as enforced. `Home.md` and `index.md` are navigation,
   and `Engineering-Principles.md` is an index that links to the page stating each rule in full.
@@ -76,7 +77,7 @@ Authored skills live in `skills/<name>/SKILL.md` at the repository root. `.agent
 CLI's install location for skills from **other** repositories and is gitignored; this repository's own
 skills are never installed into it, because two copies drift apart. A skill states when it applies in its
 `description`, keeps the workflow in `SKILL.md`, and pushes detail into `references/`. See
-[Agent Skills Distribution](docs/wiki/Agent-Skills-Distribution.md).
+[Agent Skills Distribution](docs/wiki/agents/Agent-Skills-Distribution.md).
 
 Nothing packs a skill into a NuGet package - `Purview.BuildSdk` 1.0.6 removed skill packaging and the
 build-time `.agents/` mirror outright. The skills CLI clones the git repository, and that is the only route.
@@ -130,13 +131,13 @@ These apply only when the repository persists data; a stateless CLI or a pure li
 
 - **A value known before storage is derived, not generated.** Use UUIDv5 over an installation-scoped
   namespace and key it `ValueGeneratedNever()`, so a sequential convention never overwrites it. See
-  [Well-Known Identifiers](docs/wiki/Well-Known-Identifiers.md).
+  [Well-Known Identifiers](docs/wiki/data/Well-Known-Identifiers.md).
 - **Every other GUID key uses one strategy per store.** SQL Server and PostgreSQL order GUIDs
   differently, so the strategy is carried as context-options data and applied by a model-finalising
-  convention. See [GUID Key Strategy](docs/wiki/Guid-Key-Strategy.md).
+  convention. See [GUID Key Strategy](docs/wiki/data/Guid-Key-Strategy.md).
 - **EF Core is the boundary.** Use `DbContext` directly rather than a repository added for testability;
   map value objects once; keep design-time and runtime options in step; apply migrations deliberately.
-  See [EF Core Integration](docs/wiki/EF-Core-Integration.md).
+  See [EF Core Integration](docs/wiki/data/EF-Core-Integration.md).
 - **The runnable evidence is the sample.** `samples/Acme.Persistence` is outside `src/` and outside the
   canonical solution; `just samples` builds, runs and self-checks it. Run it when you change the sample
   or an identifier convention.
@@ -167,7 +168,7 @@ Before handing work back:
   `continue-on-error` or `|| true` on a check, no force-push over a protected ref. If a hook is wrong or
   too slow, change the hook in its own reviewed change. "CI will run the same thing anyway" is a claim
   about a different run, made by the party being checked — and a bypass leaves no trace, which is why it
-  is never a judgement call. See [Verification Model](docs/wiki/Verification-Model.md).
+  is never a judgement call. See [Verification Model](docs/wiki/foundations/Verification-Model.md).
 - Confirm the requested behaviour and scope are satisfied, and that only intended files changed.
 - If a rule was added or changed: the page states the failure it prevents, says whether it is enforced or a
   review obligation, has an "at your scale" section, is in `_Sidebar.md` and the `Home.md` table, and is

@@ -39,7 +39,7 @@ The complete implementation is `samples/Acme.Persistence` at the repository root
 and runs it, and `--provider` selects SQL Server, PostgreSQL or the UUIDv7 fallback. The page shows the
 parts that carry the decision, and the sample is the copyable whole. It lives outside `src/` because the
 reference implementation there is in-memory by design, and adding EF Core, a persistence project and a
-database would contradict [Worked Examples](Worked-Examples.md). [EF Core
+database would contradict [Worked Examples](../examples/Worked-Examples.md). [EF Core
 Integration](EF-Core-Integration.md) states the model, composition and migration rules the sample also
 has to satisfy.
 
@@ -581,4 +581,4 @@ executable subset — monotonicity, the UUIDv7 trap, timestamp round-trips and r
 - [EF Core Integration](EF-Core-Integration.md) — the context, model and migration rules around it
 - [Contracts and Data Exchange](Contracts-And-Data-Exchange.md) — value-object identifiers and their
   converters
-- [Worked Examples](Worked-Examples.md) — why `src/` has no persistence to compile these against
+- [Worked Examples](../examples/Worked-Examples.md) — why `src/` has no persistence to compile these against

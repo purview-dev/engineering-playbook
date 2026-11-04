@@ -66,7 +66,7 @@ Skip:
 
 Everything from Small, plus:
 
-- **Architecture tests.** Rules 1–3 from [Architecture as Tests](Architecture-As-Tests.md). A page of code,
+- **Architecture tests.** Rules 1–3 from [Architecture as Tests](../foundations/Architecture-As-Tests.md). A page of code,
   and it pays for itself the first time someone adds a reference "just to reuse a helper".
 - **A shared testing project.** Once two test projects need the same builder or fixture, `SharedTestingInfra`
   gives them one home and the SDK references it automatically.
@@ -76,7 +76,7 @@ Everything from Small, plus:
   example.
 - **The EF Core integration rules as soon as persistence exists.** A `Persistence` project, value objects
   mapped once, design-time and runtime options in step, and a real-store integration suite. See
-  [EF Core Integration](EF-Core-Integration.md).
+  [EF Core Integration](../data/EF-Core-Integration.md).
 
 This is the profile the reference implementation in this repository is built to. It is the smallest shape
 where every mechanism in the playbook is visible.
@@ -93,8 +93,8 @@ Everything from Medium, plus:
 - **A release gate.** The slow tier runs before a release, not only on a pull request.
 - **Release channels** rather than a second repository for prereleases.
 - **The derived-identifier catalogue and the two-provider GUID strategy**, once a system tenant or a
-  second store appears. See [Well-Known Identifiers](Well-Known-Identifiers.md) and [GUID Key
-  Strategy](Guid-Key-Strategy.md).
+  second store appears. See [Well-Known Identifiers](../data/Well-Known-Identifiers.md) and [GUID Key
+  Strategy](../data/Guid-Key-Strategy.md).
 - **Your own agent skills**, packaged so the guidance travels with the code.
 - **Architecture rules promoted into the build.** At this size a rule that can be skipped is a rule that
   will be, so move it from a test into an analyzer or an MSBuild check that runs before compile.
@@ -110,7 +110,7 @@ tests are ceremony.
 **A GUID strategy before the second provider.** With one store and moderate write volume, a store default
 or `Guid.NewGuid()` is enough. The strategy witness, options extension and model-finalising convention
 earn their place when a second provider exists or the identifier must be known before `SaveChanges` —
-not in anticipation. See [GUID Key Strategy](Guid-Key-Strategy.md).
+not in anticipation. See [GUID Key Strategy](../data/Guid-Key-Strategy.md).
 
 **A test data builder after the tests.** Retrofitting `TestBuilder` means editing every test file at once,
 which means a large diff nobody reviews carefully. Adopt it with the first test, when the diff is one file.
@@ -145,11 +145,11 @@ where it belongs. A migration that leaves the conventions undocumented is a migr
 
 ## See also
 
-- [Getting Started](Getting-Started.md) — the same steps, in order, with the files inline
+- [Getting Started](../Getting-Started.md) — the same steps, in order, with the files inline
 - [Templates](https://github.com/purview-dev/engineering-playbook/tree/main/templates) — the copy-paste versions
-- [Engineering Principles](Engineering-Principles.md)
-- [EF Core Integration](EF-Core-Integration.md)
-- [Well-Known Identifiers](Well-Known-Identifiers.md)
-- [GUID Key Strategy](Guid-Key-Strategy.md)
-- [Worked Examples](Worked-Examples.md)
+- [Engineering Principles](../Engineering-Principles.md)
+- [EF Core Integration](../data/EF-Core-Integration.md)
+- [Well-Known Identifiers](../data/Well-Known-Identifiers.md)
+- [GUID Key Strategy](../data/Guid-Key-Strategy.md)
+- [Worked Examples](../examples/Worked-Examples.md)
 - [Contributing](Contributing.md)

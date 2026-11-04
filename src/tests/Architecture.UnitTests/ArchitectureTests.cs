@@ -20,7 +20,7 @@ namespace Purview.EngineeringPlaybook.Architecture;
 /// <para>
 /// <see cref="DependencyDirectionTests"/> stays hand-written and separate: it reads compiled assembly
 /// metadata, which catches a dependency that arrived indirectly and which the policy graph - built
-/// from declared <c>ProjectReference</c>s - cannot see. See <c>docs/wiki/Architecture-As-Tests.md</c>.
+/// from declared <c>ProjectReference</c>s - cannot see. See <c>docs/wiki/foundations/Architecture-As-Tests.md</c>.
 /// </para>
 /// </remarks>
 [InheritsTests]

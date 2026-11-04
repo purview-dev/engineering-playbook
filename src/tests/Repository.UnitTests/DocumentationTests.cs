@@ -3,23 +3,28 @@ using System.Text.RegularExpressions;
 namespace Purview.EngineeringPlaybook.Repository;
 
 /// <summary>
-/// Asserts that the wiki obeys the conventions in <c>docs/wiki/Documentation-Convention.md</c>.
+/// Asserts that the wiki obeys the conventions in <c>docs/wiki/foundations/Documentation-Convention.md</c>.
 /// </summary>
 /// <remarks>
 /// <para>
-/// Two documentation rules are machine-checkable and both break silently: a page that is not in the
-/// navigation is a page nobody finds, and a bare code fence renders as an untyped block. The
-/// convention page states both; these tests make the statement true rather than aspirational.
+/// Three documentation rules are machine-checkable and all break silently: a page that is not in the
+/// navigation is a page nobody finds, a link that points at the wrong folder is a 404 nobody sees in
+/// review, and a bare code fence renders as an untyped block. The convention page states all three;
+/// these tests make the statement true rather than aspirational.
 /// </para>
 /// <para>
-/// <c>index.md</c> is the landing page rather than a content page, so the navigation checks exclude
-/// it; the fence rule applies to every page, including the landing page.
+/// The page walk is recursive, so a page in a topic folder is held to the same rules as one at the wiki
+/// root. <c>index.md</c> is the landing page rather than a content page, so the navigation checks
+/// exclude it; the link and fence rules apply to every page, including the landing page.
 /// </para>
 /// </remarks>
 public sealed partial class DocumentationTests
 {
 	[GeneratedRegex(@"\]\((?<target>[^)]+)\)")]
 	private static partial Regex LinkPattern();
+
+	[GeneratedRegex(@"^\s*-\s+\*\*(?<label>.+)\*\*\s*$")]
+	private static partial Regex SectionLabelPattern();
 
 	[Test]
 	public async Task Pages_GivenTheSidebar_AreAllReachable(CancellationToken cancellationToken)
@@ -40,6 +45,48 @@ public sealed partial class DocumentationTests
 			.That(missing)
 			.IsEmpty()
 			.Because($"these pages are not in _Sidebar.md: {string.Join(", ", missing)}");
+	}
+
+	[Test]
+	public async Task Sections_GivenTheSidebar_MatchTheHomeHeadings(CancellationToken cancellationToken)
+	{
+		// Arrange
+		var sidebar = await File.ReadAllLinesAsync(
+			Path.Combine(RepositoryLayout.WikiDirectory, "_Sidebar.md"),
+			cancellationToken
+		);
+		var home = await File.ReadAllTextAsync(
+			Path.Combine(RepositoryLayout.WikiDirectory, "Home.md"),
+			cancellationToken
+		);
+
+		// Act
+		// The sidebar groups pages under `- **Label**`; Home groups tables under `## Label`. A reader
+		// who sees one order in the navigation and another on the hub is being told two different maps.
+		var labels = sidebar
+			.Select(line => SectionLabelPattern().Match(line))
+			.Where(match => match.Success)
+			.Select(match => match.Groups["label"].Value)
+			.ToArray();
+		var headings = home.Split('\n')
+			.Where(line => line.StartsWith("## ", StringComparison.Ordinal))
+			.Select(line => line[3..].Trim())
+			.ToArray();
+		var missing = labels.Where(label => !headings.Contains(label, StringComparer.Ordinal)).ToArray();
+		var positions = labels.Select(label => Array.IndexOf(headings, label)).ToArray();
+		var outOfOrder = positions
+			.Where((position, index) => position < 0 || (index > 0 && position < positions[index - 1]))
+			.ToArray();
+
+		// Assert
+		await Assert
+			.That(missing)
+			.IsEmpty()
+			.Because($"these sidebar sections have no matching Home.md heading: {string.Join(", ", missing)}");
+		await Assert
+			.That(outOfOrder)
+			.IsEmpty()
+			.Because("the sidebar sections and the Home.md headings are not in the same order");
 	}
 
 	[Test]
@@ -65,23 +112,32 @@ public sealed partial class DocumentationTests
 	}
 
 	[Test]
-	public async Task Navigation_GivenItsLinks_AllResolve(CancellationToken cancellationToken)
+	public async Task Pages_GivenTheirLinks_AllResolve(CancellationToken cancellationToken)
 	{
 		// Arrange
 		List<string> offenders = [];
 
 		// Act
-		foreach (var file in new[] { "_Sidebar.md", "Home.md" })
+		foreach (var path in Directory.EnumerateFiles(WikiDirectory(), "*.md", SearchOption.AllDirectories))
 		{
-			var lines = await File.ReadAllLinesAsync(
-				Path.Combine(RepositoryLayout.WikiDirectory, file),
-				cancellationToken
-			);
+			var file = Path.GetRelativePath(WikiDirectory(), path).Replace('\\', '/');
+			var lines = await File.ReadAllLinesAsync(path, cancellationToken);
+			var inFence = false;
 			for (var index = 0; index < lines.Length; index++)
 			{
+				if (lines[index].StartsWith("```", StringComparison.Ordinal))
+				{
+					inFence = !inFence;
+					continue;
+				}
+
+				if (inFence)
+					continue;
+
 				foreach (var target in RelativeLinkTargets(lines[index]))
 				{
-					if (!File.Exists(Path.Combine(RepositoryLayout.WikiDirectory, target)))
+					var resolved = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(path)!, target));
+					if (!File.Exists(resolved))
 						offenders.Add($"{file}:{index + 1}: '{target}' does not exist");
 				}
 			}
@@ -100,7 +156,7 @@ public sealed partial class DocumentationTests
 		List<string> offenders = [];
 
 		// Act
-		foreach (var path in Directory.EnumerateFiles(RepositoryLayout.WikiDirectory, "*.md"))
+		foreach (var path in Directory.EnumerateFiles(WikiDirectory(), "*.md", SearchOption.AllDirectories))
 		{
 			var lines = await File.ReadAllLinesAsync(path, cancellationToken);
 			var inFence = false;
@@ -120,13 +176,20 @@ public sealed partial class DocumentationTests
 		await Assert.That(offenders).IsEmpty().Because(string.Join("; ", offenders));
 	}
 
-	/// <summary>The content pages: every wiki file except the navigation file and the landing page.</summary>
-	/// <returns>The page names, without extension.</returns>
+	static string WikiDirectory() => RepositoryLayout.WikiDirectory;
+
+	/// <summary>
+	/// The content pages: every wiki file except the navigation file and the landing page. A page's
+	/// path is relative to the wiki root, with forward slashes, so a page in a topic folder is named
+	/// <c>foundations/Repository-Shape</c> here and linked as <c>(foundations/Repository-Shape.md)</c>.
+	/// </summary>
+	/// <returns>The page paths, without extension.</returns>
 	static IReadOnlyList<string> ContentPages() =>
 		[
 			.. Directory
-				.EnumerateFiles(RepositoryLayout.WikiDirectory, "*.md")
-				.Select(path => Path.GetFileNameWithoutExtension(path) ?? string.Empty)
+				.EnumerateFiles(WikiDirectory(), "*.md", SearchOption.AllDirectories)
+				.Select(path => Path.ChangeExtension(Path.GetRelativePath(WikiDirectory(), path), null))
+				.Select(name => name.Replace('\\', '/'))
 				.Where(name => name is not "_Sidebar" and not "index")
 				.Order(StringComparer.Ordinal),
 		];

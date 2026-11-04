@@ -13,16 +13,16 @@ A rule that claims enforcement it does not have is worse than no rule, because p
 
 | # | Principle | In one line | Detail |
 | -- | -- | -- | -- |
-| 1 | Convention over configuration | A repository declares as little as possible; one MSBuild SDK supplies the defaults, so a project file is short. | [Repository Shape](Repository-Shape.md) |
-| 2 | Identity is derived, never repeated | A name appears once, in the folder and file name; `RootNamespace` and `AssemblyName` are computed from it. | [Repository Shape](Repository-Shape.md) |
-| 3 | Architecture is a test, not a diagram | The dependencies a layer may have are asserted by tests, so a wrong `ProjectReference` fails the build. | [Architecture as Tests](Architecture-As-Tests.md), [Project Responsibilities](Project-Responsibilities.md) |
-| 4 | The build is the only authority | A convention a build can check is checked by the build; the rest is labelled a review obligation, never described as enforced. | [Documentation Convention](Documentation-Convention.md) |
-| 5 | Warnings are not acceptable output | A clean build has no warnings: fix one, suppress it where it occurs with a justification, or turn the rule off deliberately. | [Testing and Test Data](Testing-And-Test-Data.md) |
-| 6 | Every claim about a consumer is proved by a consumer | A package that documents how it must be used ships something that builds that documented consumer and asserts the documented outcome. | [Contracts and Data Exchange](Contracts-And-Data-Exchange.md) |
-| 7 | Documentation is a build artefact of the repository | The wiki lives in the repository it describes, and the repository owns its `mkdocs.yml`, navigation and `edit_uri`. | [Documentation Convention](Documentation-Convention.md) |
-| 8 | Everything a test needs is built by one builder | Domain content in a test comes from `TestBuilder`; a test overrides only the value it is proving. | [Testing and Test Data](Testing-And-Test-Data.md) |
-| 9 | An agent is a reader with no memory | A repository states its purpose, layout and conventions in `AGENTS.md`; nothing important is discoverable only from the code. | [Agent Enablement](Agent-Enablement.md) |
-| 10 | A change is verified in proportion to its risk | Checks are tiered; a pull request runs the fast tier, and the slow tier is run deliberately. | [Verification Model](Verification-Model.md) |
+| 1 | Convention over configuration | A repository declares as little as possible; one MSBuild SDK supplies the defaults, so a project file is short. | [Repository Shape](foundations/Repository-Shape.md) |
+| 2 | Identity is derived, never repeated | A name appears once, in the folder and file name; `RootNamespace` and `AssemblyName` are computed from it. | [Repository Shape](foundations/Repository-Shape.md) |
+| 3 | Architecture is a test, not a diagram | The dependencies a layer may have are asserted by tests, so a wrong `ProjectReference` fails the build. | [Architecture as Tests](foundations/Architecture-As-Tests.md), [Project Responsibilities](foundations/Project-Responsibilities.md) |
+| 4 | The build is the only authority | A convention a build can check is checked by the build; the rest is labelled a review obligation, never described as enforced. | [Documentation Convention](foundations/Documentation-Convention.md) |
+| 5 | Warnings are not acceptable output | A clean build has no warnings: fix one, suppress it where it occurs with a justification, or turn the rule off deliberately. | [Testing and Test Data](testing/Testing-And-Test-Data.md) |
+| 6 | Every claim about a consumer is proved by a consumer | A package that documents how it must be used ships something that builds that documented consumer and asserts the documented outcome. | [Contracts and Data Exchange](data/Contracts-And-Data-Exchange.md) |
+| 7 | Documentation is a build artefact of the repository | The wiki lives in the repository it describes, and the repository owns its `mkdocs.yml`, navigation and `edit_uri`. | [Documentation Convention](foundations/Documentation-Convention.md) |
+| 8 | Everything a test needs is built by one builder | Domain content in a test comes from `TestBuilder`; a test overrides only the value it is proving. | [Testing and Test Data](testing/Testing-And-Test-Data.md) |
+| 9 | An agent is a reader with no memory | A repository states its purpose, layout and conventions in `AGENTS.md`; nothing important is discoverable only from the code. | [Agent Enablement](agents/Agent-Enablement.md) |
+| 10 | A change is verified in proportion to its risk | Checks are tiered; a pull request runs the fast tier, and the slow tier is run deliberately. | [Verification Model](foundations/Verification-Model.md) |
 
 ### Conditional persistence rules
 
@@ -32,9 +32,9 @@ silent there. Each is stated in full on its own page.
 
 | Rule | In one line | Detail | Page |
 | -- | -- | -- | -- |
-| P1 | A value known before storage is derived, not generated | UUIDv5 over an installation-scoped namespace, keyed `ValueGeneratedNever()` so no generator overwrites it. | [Well-Known Identifiers](Well-Known-Identifiers.md) |
-| P2 | A GUID key strategy is chosen once per store | One provider-specific strategy, carried as context-options data and applied to every key by convention. | [GUID Key Strategy](Guid-Key-Strategy.md) |
-| P3 | EF Core is the persistence boundary | `DbContext` used directly, value objects mapped once, design-time and runtime options in step, migrations applied deliberately. | [EF Core Integration](EF-Core-Integration.md) |
+| P1 | A value known before storage is derived, not generated | UUIDv5 over an installation-scoped namespace, keyed `ValueGeneratedNever()` so no generator overwrites it. | [Well-Known Identifiers](data/Well-Known-Identifiers.md) |
+| P2 | A GUID key strategy is chosen once per store | One provider-specific strategy, carried as context-options data and applied to every key by convention. | [GUID Key Strategy](data/Guid-Key-Strategy.md) |
+| P3 | EF Core is the persistence boundary | `DbContext` used directly, value objects mapped once, design-time and runtime options in step, migrations applied deliberately. | [EF Core Integration](data/EF-Core-Integration.md) |
 
 Enforcement is stated per rule on the linked page. Three of the ten are enforced by the build in a way
 worth knowing at a glance: identity (rule 2) by `PurviewProjectFileNameMismatch` and the SDK's
@@ -45,7 +45,7 @@ says which.
 ## At your scale
 
 Every rule has a smaller version, and taking one before the problem it prevents exists is pure cost.
-[Adopting This at Your Scale](Adopting-This-At-Your-Scale.md) decides which rules apply to a small,
+[Adopting This at Your Scale](governance/Adopting-This-At-Your-Scale.md) decides which rules apply to a small,
 medium or large repository, and in what order to adopt them.
 
 The conditional persistence rules are the clearest example: a repository that stores nothing takes none
@@ -54,11 +54,11 @@ of them, and a repository with low write volume takes only P3. The smaller versi
 
 ## See also
 
-- [Repository Shape](Repository-Shape.md)
-- [Architecture as Tests](Architecture-As-Tests.md)
-- [Verification Model](Verification-Model.md)
-- [Testing and Test Data](Testing-And-Test-Data.md)
-- [Well-Known Identifiers](Well-Known-Identifiers.md)
-- [GUID Key Strategy](Guid-Key-Strategy.md)
-- [EF Core Integration](EF-Core-Integration.md)
-- [Adopting This at Your Scale](Adopting-This-At-Your-Scale.md)
+- [Repository Shape](foundations/Repository-Shape.md)
+- [Architecture as Tests](foundations/Architecture-As-Tests.md)
+- [Verification Model](foundations/Verification-Model.md)
+- [Testing and Test Data](testing/Testing-And-Test-Data.md)
+- [Well-Known Identifiers](data/Well-Known-Identifiers.md)
+- [GUID Key Strategy](data/Guid-Key-Strategy.md)
+- [EF Core Integration](data/EF-Core-Integration.md)
+- [Adopting This at Your Scale](governance/Adopting-This-At-Your-Scale.md)

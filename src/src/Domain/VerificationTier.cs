@@ -7,7 +7,7 @@ namespace Purview.EngineeringPlaybook.Domain;
 /// The tier is part of the convention's identity because it decides where the convention is allowed to
 /// fail: a <see cref="Unit"/> rule has to be fast and deterministic enough to run on every commit,
 /// while an <see cref="Integration"/> rule may need a real external resource and is therefore selected
-/// rather than assumed. See <c>docs/wiki/Verification-Model.md</c>.
+/// rather than assumed. See <c>docs/wiki/foundations/Verification-Model.md</c>.
 /// </remarks>
 public enum VerificationTier
 {

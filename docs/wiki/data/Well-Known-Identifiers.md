@@ -68,7 +68,7 @@ for a small, known set of identities; every other key takes [GUID Key Strategy](
 The complete implementation is `samples/Acme.Persistence` at the repository root; `just samples` builds
 and runs it. The page shows the parts that carry the decision, and the sample is the copyable whole. It
 lives outside `src/` because the reference implementation there is in-memory by design, and adding EF
-Core, a persistence project and a database would contradict [Worked Examples](Worked-Examples.md).
+Core, a persistence project and a database would contradict [Worked Examples](../examples/Worked-Examples.md).
 
 ### 1. The helper
 
@@ -313,4 +313,4 @@ is why the helper above exists rather than a package reference.
 - [GUID Key Strategy](Guid-Key-Strategy.md) — the sequential keys every other table uses
 - [EF Core Integration](EF-Core-Integration.md) — mapping the key and the bootstrap in the model
 - [Contracts and Data Exchange](Contracts-And-Data-Exchange.md) — value objects that carry an identifier
-- [Worked Examples](Worked-Examples.md) — why `src/` has no persistence
+- [Worked Examples](../examples/Worked-Examples.md) — why `src/` has no persistence

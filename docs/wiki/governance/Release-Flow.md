@@ -184,7 +184,7 @@ have done.
 
 ## See also
 
-- [Verification Model](Verification-Model.md)
-- [Engineering Principles](Engineering-Principles.md)
+- [Verification Model](../foundations/Verification-Model.md)
+- [Engineering Principles](../Engineering-Principles.md)
 - [build: Release Flow](https://github.com/purview-dev/build/blob/main/docs/wiki/Release-Flow.md)
 - [build: Release Models](https://github.com/purview-dev/build/blob/main/docs/wiki/Release-Models.md)
