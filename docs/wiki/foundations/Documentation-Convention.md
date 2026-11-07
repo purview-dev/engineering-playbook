@@ -2,16 +2,15 @@
 
 ## The rule
 
-The wiki lives in the repository it describes, in `docs/wiki`, and the repository owns its `mkdocs.yml`,
-its navigation and its `edit_uri`.
+The wiki lives in the repository it describes, in `docs/wiki`, as plain Markdown. The repository owns **no
+site configuration at all** — no theme, no plugin list, no navigation file to build — because the site
+that publishes the pages lives in one place and reads them out of the repository.
 
 | Path | Purpose |
 | -- | -- |
-| `docs/wiki/index.md` | The landing page. Short, with links in. |
 | `docs/wiki/Home.md` | The hub: what the project is, how to read a page, and a table linking every page. |
 | `docs/wiki/_Sidebar.md` | The navigation list, grouped by section. The leading underscore keeps it out of the content listing. |
 | `docs/wiki/<Section>/<Page-Name>.md` | One page per concern, in the lower-case folder for its topic. Title case file name, hyphens between words. |
-| `mkdocs.yml` | Site configuration; `docs_dir: docs/wiki`. |
 | `README.md` | The repository's front door on GitHub. Points into the wiki; does not duplicate it. |
 | `AGENTS.md` | The agent's front door. Points into the wiki; does not duplicate it. |
 
@@ -20,16 +19,16 @@ its navigation and its `edit_uri`.
 `Home.md` tables carry those sections in the same order. A page's folder is part of its published URL, so
 `foundations/Repository-Shape.md` is published under `foundations/`; move a page between folders only when
 its topic changes, because every inbound link has to move with it. Only the navigation and entry pages stay
-at the wiki root: `Home.md`, `index.md`, `_Sidebar.md`, and the getting-started and principles pages that
-the landing page links first. A wiki with one page needs no folders; add a folder when a topic has enough
+at the wiki root: `Home.md`, `_Sidebar.md`, and the getting-started and principles pages that the hub
+links first. A wiki with one page needs no folders; add a folder when a topic has enough
 pages that a flat list stops being readable.
 
-**Scope.** This is the layout of a repository that publishes a site, and `docs/wiki` is the folder
-this playbook publishes from. Of the sixteen public repositories in the organisation, twelve use
-`docs/wiki`; `architests`, `value-objects` and `purview-dev.github.io` publish from `docs`, and
+**Scope.** This is the layout of a repository whose documentation is published, and `docs/wiki` is the
+folder this playbook publishes from. Of the seventeen public repositories in the organisation, thirteen
+use `docs/wiki`; `architests`, `value-objects` and `purview-dev.github.io` publish from `docs`, and
 `pm-skills` publishes no documentation folder at all, documenting itself through its skills. What the
-rule requires is the part those repositories share: the documentation lives with the code it
-describes, and the repository owns its `mkdocs.yml`. The folder name is the part that varies.
+rule requires is the part those repositories share: the documentation lives with the code it describes,
+as Markdown, with its navigation in the folder beside it. The folder name is the only part that varies.
 [Cross-Repository Harvest](../governance/Cross-Repository-Harvest.md) records the deviations by name.
 
 ## Why
@@ -50,44 +49,50 @@ the reader where in the playbook they are about to land.
 needs the layout and the conventions. They link to the same pages and should not restate them; a fact
 stated twice is a fact that will disagree with itself.
 
-## `mkdocs.yml`
+## Plain Markdown, and nothing else
 
-```yaml
-site_name: Acme
-site_description: Developer documentation for Acme
-repo_url: https://github.com/acme/acme
-edit_uri: edit/main/docs/wiki/
-docs_dir: docs/wiki
+There is no site configuration in the repository: no theme, no plugin list, no `pip install`, no
+lockfile beside the docs. A document is a `.md` file, and the tooling that renders it belongs to the
+site rather than to the repository. That is not minimalism for its own sake — a second configuration
+file is a second place for the navigation to be wrong, and a navigation that lives in a build tool's
+file is edited by whoever last touched the build rather than by whoever last touched the pages.
 
-theme:
-  name: material
-  palette:
-    - media: "(prefers-color-scheme: light)"
-      scheme: default
-      primary: indigo
-      accent: cyan
-    - media: "(prefers-color-scheme: dark)"
-      scheme: slate
-      primary: indigo
-      accent: cyan
-  features: [navigation.instant, navigation.sections, navigation.top, search.highlight, search.suggest, content.code.copy]
+Two consequences of owning no configuration:
 
-plugins: [search, techdocs-core]
-markdown_extensions: [admonition, attr_list, md_in_html, pymdownx.details, pymdownx.superfences]
-```
+- **`_Sidebar.md` is the whole navigation.** It is a document in the wiki, so it is reviewed with the
+  pages it lists and a link that is dead is a link a reviewer can see. A page that is not in it is
+  published nowhere that a reader can reach.
+- **No diagram extension, no custom syntax.** A ` ```mermaid ` fence has nothing to render it, so raw
+  Mermaid source goes in a ` ```text ` block — copy-pasteable into any renderer, and honest about being
+  source rather than a picture.
 
-Three of those lines are load-bearing:
+## How the portal publishes a wiki
 
-- **`edit_uri`.** It is the "edit this page" link, and it is the only mechanism that turns a reader into a
-  contributor. Get the branch wrong and the link 404s.
-- **`docs_dir: docs/wiki`.** The wiki is a folder inside the repository rather than the repository root, so
-  the root stays available for the things that belong there.
-- **`plugins: [search, techdocs-core]`.** `techdocs-core` is what the aggregating portal expects. Without
-  it the site builds and the portal does not pick the pages up.
+The public site reads the Markdown out of the repositories; there is no site to configure and nothing to
+build. For each project it reads an entry in the catalogue (`src/src/data/projects/<id>.yml` in
+`purview-dev.github.io`), fetches the Markdown that entry names, and renders it. The behaviour is
+defined by that repository's own `docs-aggregation-rules` skill and its `src/src/lib/docs/`; what
+follows is the part an author has to know:
 
-> **Mermaid is not enabled.** `pymdownx.superfences` is configured without a Mermaid custom fence, so a
-> ` ```mermaid ` block renders as unstyled text. Raw Mermaid source in a ` ```text ` block is the honest
-> workaround: it is copy-pasteable into any renderer, and it does not pretend to be a diagram.
+| The catalogue entry declares | What the portal does with it |
+| -- | -- |
+| `docs.source: github-path` and `docs.path` | Walks `<path>/**/*.md` at the channel's ref. `wiki` and `readme` are the other two sources. |
+| `docs.rootPage` | The page served at `/docs/<id>/`. In this playbook's entry it is `Home.md`. |
+| `docs.exclude` | Base file names never published. This playbook excludes `_Sidebar.md`. |
+| `docs.channels` | A second published view of the same tree, normally a prerelease channel pinned to a tag. |
+| `docs.redirects` | Old addresses that keep working after a page moves into a topic folder. |
+
+Page order comes from `docs.order`, then from the `_Sidebar.md` link order, then from a default. That is
+why `_Sidebar.md` is a published contract rather than a local convenience.
+
+Two consequences worth acting on:
+
+- **The catalogue entry, not the repository, decides what is published.** A project joins the portal by
+  an entry in that catalogue — there is no file in the repository to add. Its `path`, `rootPage` and
+  `exclude` are the published surface, so a page the entry cannot reach exists only in a clone.
+- **Write Markdown that survives being rendered as Markdown.** The portal converts or strips everything
+  that is not plain Markdown: HTML attribute lists, template syntax and include directives are removed.
+  Anything that works only because a renderer extension happens to be installed cannot carry meaning.
 
 ## How to write a page
 
@@ -100,10 +105,10 @@ Every content page uses the same four sections, in this order:
 | **How it is enforced** | The mechanism that makes it true — or an explicit statement that it is a review obligation. |
 | **At your scale** | What to do when the repository is smaller or larger than the one the rule came from. |
 
-Three pages are deliberately not content pages. `Home.md` is the hub and `index.md` is the landing
-page, so both are navigation rather than rules. `Engineering-Principles.md` is an index: it states each
-of the ten universal rules in one line, plus the conditional persistence rules, and links to the page
-that states it in full, so a rule is never written twice.
+`_Sidebar.md` is navigation rather than a content page. `Home.md` is the hub rather than a rule, and
+`Engineering-Principles.md` is an index: it states each of the eleven universal rules in one line, plus
+the conditional persistence rules, and links to the page that states it in full, so a rule is never
+written twice.
 
 The shape is not decoration. It forces three questions that a page written as prose usually skips: *is this
 actually a rule, or an opinion?*; *what breaks if we drop it?*; and *is it enforced, or are we asking a
@@ -149,7 +154,7 @@ Harvest](../governance/Cross-Repository-Harvest.md) is that comparison, and the 
 
 | Rule | Enforced by |
 | -- | -- |
-| The site configuration is present and points at `docs/wiki` | Review |
+| The wiki is plain Markdown in `docs/wiki`, with no site configuration beside it | Review |
 | Every content page, including pages in topic folders, is in `_Sidebar.md` and the `Home.md` table | `DocumentationTests` |
 | The sidebar sections and the `Home.md` headings carry the same labels, in the same order | `DocumentationTests` |
 | Every relative link in every page resolves | `DocumentationTests` |
@@ -166,7 +171,7 @@ obligation, and this page says so rather than implying otherwise.
 
 ## At your scale
 
-- **One page.** `docs/wiki/index.md` plus `Home.md` and `_Sidebar.md`, and a `mkdocs.yml`. Three small files.
+- **One page.** `docs/wiki/Home.md` and `_Sidebar.md`. Two small files.
   No folders, and the sidebar is a flat list.
 - **A library.** One page per public concern, plus a getting-started page that is the shortest path to a
   working example. Add a folder once a topic has two or three pages. Keep the consumer contract on its own

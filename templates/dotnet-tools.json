@@ -18,7 +18,7 @@
 		// `just pipeline-pr` runs `dotnet purview-build`. Pinning it here means the shared pipeline
 		// version is restored by `dotnet tool restore` rather than installed globally per machine.
 		"purview.build": {
-			"version": "0.5.3",
+			"version": "0.8.1",
 			"commands": ["purview-build"],
 			"rollForward": false
 		}

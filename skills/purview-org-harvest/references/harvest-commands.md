@@ -92,7 +92,7 @@ It resolves the snapshot path from `git rev-parse --show-toplevel`, so it writes
 you are standing in rather than into the one the script was installed from. That is what lets another
 repository adopt it unchanged.
 
-`--repo` merges on write, so reading one repository does not erase the other fifteen.
+`--repo` merges on write, so reading one repository does not erase the other sixteen.
 
 ## Replaying a harvest, with no network
 

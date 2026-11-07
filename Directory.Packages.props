@@ -20,10 +20,10 @@
 
 	<!-- Version Definitions -->
 	<PropertyGroup Label=".NET Versions">
-		<MSExtensionVersion>10.10.0</MSExtensionVersion>
+		<MSExtensionVersion>10.11.0</MSExtensionVersion>
 	</PropertyGroup>
 	<PropertyGroup Label="Purview Versions">
-		<PurviewTelemetryVersion>5.1.0</PurviewTelemetryVersion>
+		<PurviewTelemetryVersion>5.2.0</PurviewTelemetryVersion>
 		<!--
 			The build-sdk's test-support packages ship together and track the SDK version pinned in
 			global.json, so they share one property: a bump cannot be applied to half the family.
@@ -31,7 +31,7 @@
 		<PurviewBuildSdkTestingVersion>1.2.0</PurviewBuildSdkTestingVersion>
 	</PropertyGroup>
 	<PropertyGroup Label="Testing Versions">
-		<TUnitVersion>1.76.0</TUnitVersion>
+		<TUnitVersion>1.81.10</TUnitVersion>
 	</PropertyGroup>
 
 	<!-- Packages -->

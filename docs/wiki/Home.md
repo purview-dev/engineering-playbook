@@ -27,10 +27,9 @@ it changes topic.
 | Adoption and governance | `governance/` |
 | The reference implementation | `examples/` |
 
-Five pages stay at the wiki root: `Home.md` is this hub, `index.md` is the landing page, `_Sidebar.md`
-is the navigation, `Getting-Started.md` is the first page to read, and `Engineering-Principles.md` is
-the index that links each rule to the page stating it in full. Every other content page belongs to a
-topic folder.
+Four pages stay at the wiki root: `Home.md` is this hub, `_Sidebar.md` is the navigation,
+`Getting-Started.md` is the first page to read, and `Engineering-Principles.md` is the index that links
+each rule to the page stating it in full. Every other content page belongs to a topic folder.
 
 ## How to read a page
 
@@ -47,7 +46,7 @@ Rules a build can enforce are labelled as such. Rules only a reviewer can enforc
 review obligations. A convention that claims to be enforced when it is not is worse than no convention
 at all, so the two are never blurred.
 
-This page and [`index.md`](index.md) are navigation rather than rules, and
+This page is navigation rather than a rule, and
 [Engineering Principles](Engineering-Principles.md) is an index that links to the page stating each
 rule in full.
 
@@ -72,6 +71,7 @@ documentation itself is written.
 | [Architecture as Tests](foundations/Architecture-As-Tests.md) | How the build refuses a dependency that points the wrong way. |
 | [Verification Model](foundations/Verification-Model.md) | Which checks run, in which tier, for which change. |
 | [Documentation Convention](foundations/Documentation-Convention.md) | How the wiki is written, structured and published. |
+| [Dependency Versions](foundations/Dependency-Versions.md) | Which version to declare — the latest for an application, the lowest compatible for a published component. |
 
 ## Data and persistence
 

@@ -7,13 +7,14 @@ library, and they are the only place that guidance is written:
 
 | Skill | Answers |
 | -- | -- |
-| `purview-engineering-principles` | What are the ten universal conventions and the conditional persistence rules, what does each prevent, and is it enforced by a build or by a reviewer? |
+| `purview-engineering-principles` | What are the eleven universal conventions and the conditional persistence rules, what does each prevent, and is it enforced by a build or by a reviewer? |
 | `purview-architecture` | How much structure does this project actually need, and what do I need to know before saying? |
 | `purview-architecture-testing` | How does a boundary become a failing build rather than a review comment? |
 | `purview-testing-conventions` | How are tests written and fed — framework, structure, naming, and `TestBuilder`? |
 | `purview-telemetry` | What instrumentation does a project of this size get? (Answer: always some.) |
 | `purview-persistence` | How is data stored with EF Core, how are identifiers derived when they are known in advance, and — only when it applies — how are GUID keys generated? |
 | `purview-org-harvest` | Which repository owns which convention, and how is it read at `main` before anything is adopted? |
+| `purview-component-compatibility` | Which dependency version does a published component declare, per target framework — and how is that floor proved rather than assumed? |
 
 Two obligations fall out of that, and both are enforced only by review:
 

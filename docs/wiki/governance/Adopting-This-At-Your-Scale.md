@@ -52,7 +52,7 @@ Adopt:
 - `AGENTS.md`. The cheapest thing here, and the one with the largest effect on an agent's first ten minutes.
 - `TestBuilder` in the test project, from the first test. Retrofitting it later is a mechanical edit across
   every file, and it is the kind of edit that is postponed forever.
-- `docs/wiki/index.md`, `Home.md` and `_Sidebar.md` — three small files that make the project documentable.
+- `docs/wiki/Home.md` and `_Sidebar.md` — two small files that make the project documentable.
 
 Skip:
 

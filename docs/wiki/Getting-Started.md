@@ -26,18 +26,24 @@ There are **two** versions in play here, and the file pins both:
 ```json
 {
 	"sdk": {
-		"version": "10.0.401",
+		"version": "LATEST",
 		"rollForward": "disable",
 		"allowPrerelease": false
 	},
 	"msbuild-sdks": {
-		"Purview.BuildSdk": "1.0.6"
+		"Purview.BuildSdk": "LATEST"
 	},
 	"test": {
 		"runner": "Microsoft.Testing.Platform"
 	}
 }
 ```
+
+Both numbers are a **lookup, not a rule**. `LATEST` stands for the newest version your runtime supports:
+`dotnet --list-sdks` for the .NET SDK, and the badge for the SDK package —
+![Purview.BuildSdk](https://img.shields.io/nuget/v/Purview.BuildSdk). This page does not name either
+number, because a page that names a version is wrong within a release. See
+[Dependency Versions](foundations/Dependency-Versions.md).
 
 `sdk.version` pins the **.NET SDK** — the `dotnet` that runs the build. `rollForward: "disable"` means
 exactly that version and nothing else, so a machine with several SDKs installed cannot pick a different
@@ -56,10 +62,15 @@ bootstrapping](https://github.com/purview-dev/build-sdk/blob/main/docs/wiki/Repo
 ### Step 2 — Declare the versions the SDK injects, in `Directory.Packages.props`
 
 Central Package Management is on by default, so every `PackageReference` the SDK adds has to have a
-matching `PackageVersion` or restore fails with `NU1010`. The versions below are the ones this
-repository builds with today — check them against the SDK's current release before you commit, as
-[`templates/README.md`](https://github.com/purview-dev/engineering-playbook/blob/main/templates/README.md)
-says.
+matching `PackageVersion` or restore fails with `NU1010`. What follows is the **shape**, not a version
+list: a family whose packages ship together gets one property, and every `PackageVersion` in that family
+references it, so a bump cannot be applied to half of it. Each `LATEST` is the version the badge for that
+package reports, or what `dotnet add package <id>` writes for you.
+
+If the repository publishes a package rather than running an application, the number you declare is the
+**lowest compatible** version rather than the latest — see
+[Dependency Versions](foundations/Dependency-Versions.md) and the `purview-component-compatibility`
+skill.
 
 ```xml
 <Project>
@@ -69,13 +80,13 @@ says.
 
 	<!-- Version Definitions -->
 	<PropertyGroup Label=".NET Versions">
-		<MSExtensionVersion>10.10.0</MSExtensionVersion>
+		<MSExtensionVersion>LATEST</MSExtensionVersion>
 	</PropertyGroup>
 	<PropertyGroup Label="Purview Versions">
-		<PurviewTelemetryVersion>5.0.4</PurviewTelemetryVersion>
+		<PurviewTelemetryVersion>LATEST</PurviewTelemetryVersion>
 	</PropertyGroup>
 	<PropertyGroup Label="Testing Versions">
-		<TUnitVersion>1.75.0</TUnitVersion>
+		<TUnitVersion>LATEST</TUnitVersion>
 	</PropertyGroup>
 
 	<!-- Packages -->
@@ -86,13 +97,13 @@ says.
 		<PackageVersion Include="Microsoft.Extensions.Telemetry.Abstractions" Version="$(MSExtensionVersion)" />
 	</ItemGroup>
 	<ItemGroup Label="Other">
-		<PackageVersion Include="Microsoft.SourceLink.GitHub" Version="10.0.402" />
+		<PackageVersion Include="Microsoft.SourceLink.GitHub" Version="LATEST" />
 	</ItemGroup>
 	<ItemGroup Label="Testing">
 		<PackageVersion Include="TUnit" Version="$(TUnitVersion)" />
 		<PackageVersion Include="TUnit.Core" Version="$(TUnitVersion)" />
 		<PackageVersion Include="TUnit.Mocks" Version="$(TUnitVersion)" />
-		<PackageVersion Include="Bogus" Version="35.6.5" />
+		<PackageVersion Include="Bogus" Version="LATEST" />
 	</ItemGroup>
 </Project>
 ```
@@ -350,24 +361,12 @@ itself lives in one shared repository. See [Verification Model](foundations/Veri
 
 ### Step 10 — Add the wiki
 
-`mkdocs.yml`:
-
-```yaml
-site_name: Acme
-site_description: Developer documentation for Acme
-repo_url: https://github.com/acme/acme
-edit_uri: edit/main/docs/wiki/
-docs_dir: docs/wiki
-
-theme:
-  name: material
-plugins: [search, techdocs-core]
-markdown_extensions: [admonition, attr_list, md_in_html, pymdownx.details, pymdownx.superfences]
-```
-
-Then `docs/wiki/index.md`, `docs/wiki/Home.md` and `docs/wiki/_Sidebar.md`, and the pages behind them.
-`_Sidebar.md` is the navigation list, so a new page that is not in it is a page nobody finds. See
-[Documentation Convention](foundations/Documentation-Convention.md).
+Create `docs/wiki/Home.md` and `docs/wiki/_Sidebar.md`, and the pages behind them. That is the whole of
+it: the wiki is plain Markdown, `_Sidebar.md` is the navigation list so a new page that is not in it is a
+page nobody finds, and there is no site configuration in the repository. The site that publishes the
+pages reads them from `docs/wiki` and takes its navigation, its root page and its cross-project grouping
+from an entry in the catalogue, not from anything you add here. Write Markdown that still reads correctly
+when it is rendered as Markdown. See [Documentation Convention](foundations/Documentation-Convention.md).
 
 ### Step 11 — Make the repository legible to an agent
 
@@ -389,12 +388,12 @@ installed globally per machine:
 	"isRoot": true,
 	"tools": {
 		"csharpier": {
-			"version": "1.3.0",
+			"version": "LATEST",
 			"commands": ["csharpier"],
 			"rollForward": true
 		},
 		"purview.build": {
-			"version": "0.5.3",
+			"version": "LATEST",
 			"commands": ["purview-build"],
 			"rollForward": false
 		}
@@ -404,7 +403,10 @@ installed globally per machine:
 
 `Purview.Build` belongs here too, for the same reason CSharpier does: the manifest pins the version, and
 `dotnet tool restore` is the one command that installs it. A repository should never hand-roll
-`dotnet tool install --tool-path` for it.
+`dotnet tool install --tool-path` for it. Both `LATEST` values are a lookup —
+![Purview.Build](https://img.shields.io/nuget/v/Purview.Build) and
+![CSharpier](https://img.shields.io/nuget/v/csharpier) — because the manifest needs a number and this page
+must not be the place it comes from.
 
 Run `dotnet tool restore` once after adding it.
 

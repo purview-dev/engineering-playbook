@@ -13,6 +13,7 @@
   - [Architecture as Tests](foundations/Architecture-As-Tests.md)
   - [Verification Model](foundations/Verification-Model.md)
   - [Documentation Convention](foundations/Documentation-Convention.md)
+  - [Dependency Versions](foundations/Dependency-Versions.md)
 - **Data and persistence**
   - [Contracts and Data Exchange](data/Contracts-And-Data-Exchange.md)
   - [Well-Known Identifiers](data/Well-Known-Identifiers.md)
