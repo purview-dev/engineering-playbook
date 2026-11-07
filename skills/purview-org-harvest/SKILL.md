@@ -15,7 +15,7 @@ metadata:
 
 # Purview organisation harvest
 
-Sixteen public repositories, each with its own wiki, its own `skills/` folder and its own `AGENTS.md`.
+Seventeen public repositories, each with its own wiki, its own `skills/` folder and its own `AGENTS.md`.
 They are not equally up to date, and the one you have cloned is not necessarily the one that has the
 answer. Two failures follow, and this skill exists to prevent both.
 
@@ -89,11 +89,11 @@ That is the same script, not a variant, so what you review is what runs.
 
 ## 4. Harvest in two tiers
 
-Sixteen repositories is not a reading list; it is a budget. Two tiers keep it affordable.
+Seventeen repositories is not a reading list; it is a budget. Two tiers keep it affordable.
 
 | Tier | Call | Answers |
 | -- | -- | -- |
-| 1 — shape | `gh api repos/purview-dev/<repo>/git/trees/main?recursive=1`, for all sixteen | Which folders exist, how many pages the wiki has, whether `skills/` is authored, whether `AGENTS.md` exists. Cheap enough for everything. |
+| 1 — shape | `gh api repos/purview-dev/<repo>/git/trees/main?recursive=1`, for all seventeen | Which folders exist, how many pages the wiki has, whether `skills/` is authored, whether `AGENTS.md` exists. Cheap enough for everything. |
 | 2 — content | `gh api -H 'Accept: application/vnd.github.raw' repos/purview-dev/<repo>/contents/<path>`, **only for the owner of the concern** | What the convention actually says. |
 
 Tier 1 tells you where the evidence is. Tier 2 reads it, in the one repository that wrote it down.

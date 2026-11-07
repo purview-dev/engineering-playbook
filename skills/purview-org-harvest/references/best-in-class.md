@@ -19,9 +19,10 @@ regenerated rather than trusted.
 | Logging, tracing, metrics | `telemetry-sourcegenerator` | `docs/wiki`, `skills/purview-telemetry-*` |
 | Event streams and event storage | `event-sourcing` | `docs/wiki` — **no skills folder** |
 | Operation outcomes without exceptions | `results` | `docs/wiki`, `skills/purview-results-*` |
-| Validated identity types | `value-objects` | `docs` — **no `docs/wiki`, no `mkdocs.yml`** |
+| Validated identity types | `value-objects` | `docs` — **no `docs/wiki`** |
 | Aspire hosting resources | `aspire-resourcekit` | `docs/wiki`, `skills/purview-resourcekit-*` |
 | Architecture diagrams generated from source | `aspirec4` | `docs/wiki`, `skills/purview-aspirec4-*` |
+| LikeC4 diagrams inside an Astro or Starlight site | `astroc4` | `docs/wiki`, `skills/purview-astroc4-*` — an npm package, not .NET |
 | Source generator authoring | `sourcegenerator-framework` | `docs/wiki`, `skills/purview-sourcegenerator-*` |
 | Skill-set design, and the dated-snapshot pattern | `pm-skills` | `skills/pm-*` — **no documentation folder at all** |
 | OpenAPI generated from XML comments | `openapi-xmlcomments` | `docs/wiki`, `skills/purview-openapi-xmlcomments-*` |
@@ -48,6 +49,12 @@ goes here.
 test-time resource — a real SQL Server, PostgreSQL or queue — and `aspire-resourcekit` owns the
 development-time orchestration. A test that needs a database is `containers`; an AppHost that needs
 one is `aspire-resourcekit`.
+
+**`aspirec4` and `astroc4` both draw LikeC4 diagrams.** `aspirec4` owns the diagram generated from a
+running Aspire resource graph; `astroc4` owns putting a `.c4` model inside an Astro or Starlight site —
+the fence transform and the LikeC4 syntax highlighting. A question about the .NET host is `aspirec4`; a
+question about the documentation site is `astroc4`, which is the one owner here that is not a .NET
+package, so it is read for its TypeScript conventions rather than for its MSBuild ones.
 
 ## Reading a repository you have not cloned
 

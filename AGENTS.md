@@ -20,8 +20,7 @@ implementation whose only job is to prove the conventions compile, run, and fail
 
 | Path | Purpose |
 | -- | -- |
-| `docs/wiki` | The playbook itself. `Home.md` is the hub and `_Sidebar.md` is the navigation. |
-| `mkdocs.yml` | Wiki site configuration (`docs_dir: docs/wiki`) |
+| `docs/wiki` | The playbook itself, as plain Markdown. `Home.md` is the hub and `_Sidebar.md` is the navigation. |
 | `src/EngineeringPlaybook.slnx` | Canonical solution for restore, build, lint and test |
 | `src/src/Domain` | The reference implementation's value objects and aggregate |
 | `src/src/Application` | The port (`IConventionRepository`) and the service that owns the rules |
@@ -59,8 +58,8 @@ demonstrate it.
 - **One page per concern**, in `docs/wiki/<Section>/<Page-Name>.md`. The section is the topic folder,
   the file name is title case with hyphens between words, and the folder name is lower-case.
 - **Four sections, in order:** the rule, why, how it is enforced, at your scale. A rule a build cannot check
-  is labelled a review obligation — never described as enforced. `Home.md` and `index.md` are navigation,
-  and `Engineering-Principles.md` is an index that links to the page stating each rule in full.
+  is labelled a review obligation — never described as enforced. `Home.md` is navigation rather than a
+  rule, and `Engineering-Principles.md` is an index that links to the page stating each rule in full.
 - **A new page goes in `_Sidebar.md` and in the table in `Home.md`.** A page in neither does not exist.
 - **Link to the authority rather than paraphrasing it.** The SDK's own wiki is authoritative on the SDK's
   behaviour; a paraphrase here is a second source of truth that will drift.
@@ -68,8 +67,8 @@ demonstrate it.
 - **No reference to a private repository or product, ever.** This playbook is public, and it is aggregated by
   a public site. A rule that can only be justified by something private cannot be reviewed by the people it
   is published to.
-- **Fences always declare a language.** Mermaid is not enabled in `mkdocs.yml`, so raw Mermaid source goes in
-  a ` ```text ` block.
+- **Fences always declare a language.** A wiki is plain Markdown and no diagram extension is configured, so
+  raw Mermaid source goes in a ` ```text ` block.
 
 ## Skills
 
@@ -84,13 +83,14 @@ build-time `.agents/` mirror outright. The skills CLI clones the git repository,
 
 | Skill | Answers |
 | -- | -- |
-| `skills/purview-engineering-principles/` | the ten universal conventions, the conditional persistence rules, and whether a build or a reviewer enforces each |
+| `skills/purview-engineering-principles/` | the eleven universal conventions, the conditional persistence rules, and whether a build or a reviewer enforces each |
 | `skills/purview-architecture/` | how many projects, which layers, where validation lives |
 | `skills/purview-architecture-testing/` | turning a boundary into a failing build |
 | `skills/purview-testing-conventions/` | TUnit, AAA, `TestBuilder`, substitutes, tiers |
 | `skills/purview-persistence/` | storage approach, EF Core integration, well-known identifiers, GUID key strategy |
 | `skills/purview-telemetry/` | logging, tracing, metrics, and when a project is "too small" for them |
 | `skills/purview-org-harvest/` | which repository owns which convention, and how it is read at `main` before anything is adopted |
+| `skills/purview-component-compatibility/` | the lowest compatible dependency version for a published component, per target framework |
 
 Every skill carries the `purview-` prefix: skills install into one flat directory per agent, shared with
 every skill a developer has installed from anywhere, so an unprefixed name collides and the loser is
@@ -119,6 +119,10 @@ folder is installed with it. Name the other skill in prose instead.
 - **Factories on `TestBuilder` are flat, not nested.** `CA1034` is an `error` in the SDK's style policy and
   `PRSGD0008` rejects adding it to `NoWarn`.
 - **A test class lives in the namespace of the class under test**, and is named `{Class}Tests`.
+- **A dependency version is a lookup, not a claim.** An application takes the latest version its runtime
+  supports; a published component declares the **lowest** version that compiles and passes, per target
+  framework. Never write a release number into a page or a skill — use a registry badge. See
+  [Dependency Versions](docs/wiki/foundations/Dependency-Versions.md).
 - **A family's package version is a property.** In `Directory.Packages.props`, a version shared by a family
   of packages — `TUnit`/`TUnit.Core`/`TUnit.Mocks` here — is declared once in a labelled `PropertyGroup` and
   referenced as `Version="$(TUnitVersion)"`, so a bump cannot be applied to half the family. A package with

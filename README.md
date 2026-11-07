@@ -45,11 +45,10 @@ coding agents are enabled to work in a codebase without hand-holding.
 
 | Path | Purpose |
 | -- | -- |
-| `docs/wiki` | The playbook. Aggregated by the purview-dev website. |
+| `docs/wiki` | The playbook, as plain Markdown. Aggregated by the purview-dev website. |
 | `templates/` | Ready-to-copy starter files for a repository adopting the playbook. |
 | `src/` | The reference implementation: a layered repository whose architecture rules are tests. |
 | `samples/` | Runnable samples for conventions that `src/` cannot host; run with `just samples`. |
-| `mkdocs.yml` | Wiki site configuration (`docs_dir: docs/wiki`). |
 | `.config/purview-build.json` | Pipeline configuration for the shared Purview build workflow. |
 | `Justfile` | Supported local workflow commands. |
 | `package.json` | Authoritative version for the repository. |

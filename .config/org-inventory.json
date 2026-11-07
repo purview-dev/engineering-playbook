@@ -2,7 +2,7 @@
 	"schemaVersion": 1,
 	"org": "purview-dev",
 	"branch": "main",
-	"fetchedAt": "2026-11-03T15:46:07Z",
+	"fetchedAt": "2026-11-07T08:43:42Z",
 	"repositories": [
 		{
 			"name": "architests",
@@ -74,11 +74,30 @@
 			]
 		},
 		{
+			"name": "astroc4",
+			"visibility": "public",
+			"archived": false,
+			"commitSha": "90398b736b4fee4751e7241689b94a5014ac9d8b",
+			"pushedAt": "2026-11-06T13:47:01Z",
+			"docsDir": "docs/wiki",
+			"docsPages": 2,
+			"skills": [
+				"purview-astroc4-grammar",
+				"purview-astroc4-plugin"
+			],
+			"agentGuidance": [
+				"AGENTS.md"
+			],
+			"concerns": [
+				"architecture diagrams in an Astro site"
+			]
+		},
+		{
 			"name": "build",
 			"visibility": "public",
 			"archived": false,
-			"commitSha": "d00b005dd565f59f5b8641b2b80377d4e6e52c32",
-			"pushedAt": "2026-11-02T23:03:07Z",
+			"commitSha": "ee3cfcac69ccf14624eb024dcc1684bb572ab631",
+			"pushedAt": "2026-11-04T19:39:01Z",
 			"docsDir": "docs/wiki",
 			"docsPages": 14,
 			"skills": [
@@ -129,8 +148,8 @@
 			"name": "containers",
 			"visibility": "public",
 			"archived": false,
-			"commitSha": "b94d92afd52af1d509bc481b20c83fb9bb57badd",
-			"pushedAt": "2026-11-02T23:27:39Z",
+			"commitSha": "a0fac5502d5d543c5a1f3bb99a441cc2093bf232",
+			"pushedAt": "2026-11-03T18:57:30Z",
 			"docsDir": "docs/wiki",
 			"docsPages": 19,
 			"skills": [
@@ -152,14 +171,15 @@
 			"name": "engineering-playbook",
 			"visibility": "public",
 			"archived": false,
-			"commitSha": "ccf5b3d14616c1cbc904167439635909ed21d14c",
-			"pushedAt": "2026-11-03T15:40:26Z",
+			"commitSha": "cbe10a734f4f4ef1e29ea5d2ba710d1ef10d2702",
+			"pushedAt": "2026-11-04T08:43:29Z",
 			"docsDir": "docs/wiki",
-			"docsPages": 19,
+			"docsPages": 5,
 			"skills": [
 				"purview-architecture",
 				"purview-architecture-testing",
 				"purview-engineering-principles",
+				"purview-org-harvest",
 				"purview-persistence",
 				"purview-telemetry",
 				"purview-testing-conventions"
@@ -213,11 +233,12 @@
 			"name": "pm-skills",
 			"visibility": "public",
 			"archived": false,
-			"commitSha": "8460e52f4a36fd6cb59e6169e047448082b7b6ad",
-			"pushedAt": "2026-11-01T23:28:22Z",
+			"commitSha": "c32db71ba89f66260d678e5f9f843f557459b7b4",
+			"pushedAt": "2026-11-04T18:06:35Z",
 			"docsDir": null,
 			"docsPages": 0,
 			"skills": [
+				"pm-board",
 				"pm-checkpoint",
 				"pm-discover",
 				"pm-help",
@@ -226,12 +247,15 @@
 				"pm-next",
 				"pm-park",
 				"pm-purview",
+				"pm-rejoin",
 				"pm-resume",
 				"pm-review",
+				"pm-roadmap",
 				"pm-setup",
 				"pm-shape",
 				"pm-status",
-				"pm-strategy"
+				"pm-strategy",
+				"pm-up-next"
 			],
 			"agentGuidance": [
 				"AGENTS.md",
@@ -245,8 +269,8 @@
 			"name": "purview-dev.github.io",
 			"visibility": "public",
 			"archived": false,
-			"commitSha": "46fdb0e7a3155059aba132221737c1f6868542a6",
-			"pushedAt": "2026-11-03T15:28:00Z",
+			"commitSha": "0d2d72d0d6e3b69b454710622bd8bbd1bb60f46c",
+			"pushedAt": "2026-11-06T14:01:41Z",
 			"docsDir": "docs",
 			"docsPages": 2,
 			"skills": [],
@@ -356,10 +380,10 @@
 			"name": "zodsharp",
 			"visibility": "public",
 			"archived": false,
-			"commitSha": "d0dbc74417d4445226a58ef96464d4d3519bd3c4",
-			"pushedAt": "2026-11-02T23:19:42Z",
+			"commitSha": "667add30a57a0d0a5c0cdaeab436f7fd6af34224",
+			"pushedAt": "2026-11-03T22:37:59Z",
 			"docsDir": "docs/wiki",
-			"docsPages": 35,
+			"docsPages": 5,
 			"skills": [
 				"purview-zodsharp-aspnetcore",
 				"purview-zodsharp-blazor",

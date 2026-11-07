@@ -57,9 +57,12 @@ harvest records a SHA rather than an impression. The rule is now in `.gitignore`
 are true rather than merely consistent.
 
 **An index maintained by hand under-counts silently.** The public catalogue in
-`purview-dev.github.io` carries fifteen project files, one of which is archived, against sixteen
-public live repositories: `openapi-xmlcomments` has no entry. A catalogue is a good reading order and
-a bad membership list, because it omits by never being edited. `gh repo list` decides membership.
+`purview-dev.github.io` carries seventeen project files, one of which is archived, against seventeen
+public live repositories, and the single repository without an entry is the catalogue's own: a
+catalogue does not list itself. `openapi-xmlcomments` gained its entry after the previous harvest,
+which is exactly how a hand-maintained index behaves — the omission is silent, and so is its
+correction. A catalogue is a good reading order and a bad membership list. `gh repo list` decides
+membership.
 
 **A convention copied from the wrong repository is worse than none.** `build-sdk` owns what the
 tooling does; this playbook owns why a repository is shaped that way. Reading either one for the
@@ -68,14 +71,15 @@ other's question produces an answer with a citation that does not support it.
 ## Deviations the first harvest found
 
 The [Documentation Convention](../foundations/Documentation-Convention.md) says a wiki lives in `docs/wiki`. Of the
-sixteen public repositories, twelve do. `architests`, `value-objects` and `purview-dev.github.io`
+seventeen public repositories, thirteen do. `architests`, `value-objects` and `purview-dev.github.io`
 publish from `docs`, and `pm-skills` publishes no documentation folder at all, documenting itself
-through its fourteen skills.
+through its eighteen skills.
 
-That is not sixteen repositories getting a rule wrong; it is one repository's shape written down as if
-it were universal. What the rule actually requires is that the documentation lives with the code and
-that the repository owns its site configuration — the folder name is the part that varies. The
-convention page now says so, and names each deviation rather than pretending the rule was followed.
+That is not seventeen repositories getting a rule wrong; it is one repository's shape written down as if
+it were universal. What the rule actually requires is that the documentation lives with the code — the
+folder name is the part that varies, and nothing else does, because no repository carries a site
+configuration any more (`astroc4` publishes `docs/wiki` and nothing beside it). The convention page now
+says so, and names each deviation rather than pretending the rule was followed.
 
 ## How it is enforced
 
@@ -93,7 +97,7 @@ shell — so the same assertions execute on Windows and on Linux, which is the p
 Node script rather than a PowerShell one and a Bash one that disagree. It replays a recorded membership
 with `--from` and `--details` instead of faking `gh` on `PATH`; a shim was tried first and rejected,
 because a non-shell spawn will not resolve a `.cmd` and the tests then reached the real `gh` and passed
-against sixteen live repositories.
+against seventeen live repositories.
 
 The second row is the one that catches a private repository by name, and it is deliberately blunt: it
 reads every `.md`, `.cs`, `.json`, `.yml`, `.props` and `.mjs` file in the repository rather than the

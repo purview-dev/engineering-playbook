@@ -14,8 +14,8 @@ namespace Purview.EngineeringPlaybook.Repository;
 /// </para>
 /// <para>
 /// The page walk is recursive, so a page in a topic folder is held to the same rules as one at the wiki
-/// root. <c>index.md</c> is the landing page rather than a content page, so the navigation checks
-/// exclude it; the link and fence rules apply to every page, including the landing page.
+/// root. <c>_Sidebar.md</c> is the navigation list rather than a content page, so the navigation checks
+/// exclude it; the link and fence rules apply to every page.
 /// </para>
 /// </remarks>
 public sealed partial class DocumentationTests
@@ -151,7 +151,7 @@ public sealed partial class DocumentationTests
 	public async Task Pages_GivenTheirFencedBlocks_AlwaysDeclareALanguage(CancellationToken cancellationToken)
 	{
 		// Arrange
-		// AGENTS.md: Mermaid is not enabled in mkdocs.yml, so Mermaid source lives in a text fence. A
+		// AGENTS.md: no diagram extension is configured, so Mermaid source lives in a text fence. A
 		// bare fence renders as an untyped block and is the easiest convention to break by accident.
 		List<string> offenders = [];
 
@@ -190,7 +190,7 @@ public sealed partial class DocumentationTests
 				.EnumerateFiles(WikiDirectory(), "*.md", SearchOption.AllDirectories)
 				.Select(path => Path.ChangeExtension(Path.GetRelativePath(WikiDirectory(), path), null))
 				.Select(name => name.Replace('\\', '/'))
-				.Where(name => name is not "_Sidebar" and not "index")
+				.Where(name => name is not "_Sidebar")
 				.Order(StringComparer.Ordinal),
 		];
 

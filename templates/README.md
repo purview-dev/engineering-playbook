@@ -14,7 +14,6 @@ already exists in this repository, with `Acme` standing in for your own namespac
 | [`pr.yml`](pr.yml) | `.github/workflows/pr.yml` | All |
 | [`release.yml`](release.yml) | `.github/workflows/release.yml` | All |
 | [`AGENTS.md`](AGENTS.md) | `AGENTS.md` | All |
-| [`mkdocs.yml`](mkdocs.yml) | `mkdocs.yml` | All |
 | [`TestBuilder.cs`](TestBuilder.cs) | `src/tests/SharedTestingInfra/Builders/TestBuilder.cs` | Medium and up |
 | [`architecture-policy.json`](architecture-policy.json) | `.config/architecture-policy.json` | Medium and up |
 
@@ -23,10 +22,11 @@ already exists in this repository, with `Acme` standing in for your own namespac
 1. **Pick a profile.** [Profiles](#profiles) below says which files each one needs.
 2. **Replace `Acme`.** It appears in `Directory.Build.props` (as `NamespacePrefix`), in the names in
    `AGENTS.md`, and in the paths in `purview-build.json`.
-3. **Pin the versions.** The SDK version in `global.json` and the package versions in
-   `Directory.Packages.props` are the ones this repository builds with today, plus one illustrative
-   package family (`Purview.Containers`) you delete if you do not use it. Check them against the SDK's
-   current release before you commit.
+3. **Check the versions.** The files carry the versions this repository resolved when they were last
+   updated, and they are a starting point rather than a target. Take the latest version your runtime
+   supports; if the repository publishes a package, take the lowest version that compiles and passes
+   instead, because a consumer inherits your floor. Neither rule needs this page to be edited — see
+   [Dependency Versions](../docs/wiki/foundations/Dependency-Versions.md).
 4. **Read the comment in each file.** Every template explains the one thing about it that is easy to get
    wrong — the order of the `NamespacePrefix` and the import, the `NU1010` trap, why the workflow repeats the
    test filter that is already in the JSON.
@@ -49,7 +49,6 @@ purview-build.json
 dotnet-tools.json
 pr.yml
 AGENTS.md
-mkdocs.yml
 ```
 
 Then create `src/src/<Project>/<Project>.csproj` and `src/tests/<Project>.UnitTests/<Project>.UnitTests.csproj`

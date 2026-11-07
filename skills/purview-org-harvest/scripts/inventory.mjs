@@ -51,6 +51,7 @@ const CONCERNS = new Map([
 	["architests", ["architecture policy", "dependency and naming rules"]],
 	["aspire-resourcekit", ["Aspire hosting resources"]],
 	["aspirec4", ["architecture diagrams from source"]],
+	["astroc4", ["architecture diagrams in an Astro site"]],
 	["build", ["pipeline", "release"]],
 	["build-sdk", ["repository shape", "analyzers and style", "MSBuild defaults", "skill authoring"]],
 	["containers", ["local dependencies in tests"]],

@@ -1,6 +1,6 @@
 {
 	"msbuild-sdks": {
-		"Purview.BuildSdk": "1.0.6"
+		"Purview.BuildSdk": "1.2.0"
 	},
 	"test": {
 		"runner": "Microsoft.Testing.Platform"

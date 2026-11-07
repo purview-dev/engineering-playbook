@@ -16,7 +16,7 @@ Repository/
 ├── .agents/skills/               skills installed from elsewhere by the skills CLI; gitignored
 ├── .purview/                     SDK state; gitignored
 ├── docs/
-│   └── wiki/                     the wiki; docs_dir in mkdocs.yml
+│   └── wiki/                     the playbook, as plain Markdown
 ├── src/
 │   ├── <Name>.slnx               canonical solution
 │   ├── Directory.Build.props     NamespacePrefix + the SDK import
@@ -34,7 +34,6 @@ Repository/
 ├── global.json                   SDK pin + test runner
 ├── Justfile                      supported local commands
 ├── LICENSE.md
-├── mkdocs.yml                    wiki site configuration
 ├── nuget.config
 ├── package.json                  authoritative version
 └── README.md
