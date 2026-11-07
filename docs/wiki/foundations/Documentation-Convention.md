@@ -28,7 +28,9 @@ folder this playbook publishes from. Of the seventeen public repositories in the
 use `docs/wiki`; `architests`, `value-objects` and `purview-dev.github.io` publish from `docs`, and
 `pm-skills` publishes no documentation folder at all, documenting itself through its skills. What the
 rule requires is the part those repositories share: the documentation lives with the code it describes,
-as Markdown, with its navigation in the folder beside it. The folder name is the only part that varies.
+as Markdown, with its navigation in the folder beside it. The folder name is the part that varies. Some
+repositories still carry a site configuration file from before the portal read Markdown directly; it is
+harmless, the portal ignores it, and this playbook does not ship one.
 [Cross-Repository Harvest](../governance/Cross-Repository-Harvest.md) records the deviations by name.
 
 ## Why

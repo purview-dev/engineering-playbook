@@ -76,10 +76,10 @@ publish from `docs`, and `pm-skills` publishes no documentation folder at all, d
 through its eighteen skills.
 
 That is not seventeen repositories getting a rule wrong; it is one repository's shape written down as if
-it were universal. What the rule actually requires is that the documentation lives with the code — the
-folder name is the part that varies, and nothing else does, because no repository carries a site
-configuration any more (`astroc4` publishes `docs/wiki` and nothing beside it). The convention page now
-says so, and names each deviation rather than pretending the rule was followed.
+it were universal. What the rule actually requires is that the documentation lives with the code, as
+Markdown the portal can read: the folder name is the part that varies, and `astroc4` publishes
+`docs/wiki` with no site configuration beside it, which is the shape the rule now states. The convention
+page now says so, and names each deviation rather than pretending the rule was followed.
 
 ## How it is enforced
 
