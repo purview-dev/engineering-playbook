@@ -1,10 +1,10 @@
-# The purview.dev catalogue record for this project (ADR 0013 in purview-dev/purview-dev).
+# The purview.dev catalogue record for this project (ADR 0013 in the purview.dev site repository).
 # The site reads this file from the default branch of this repository, so the record
 # changes in the same pull request as the thing it describes.
 #
 # `$schema` is an editor hint and nothing more: the enforcing validation is the site's
 # loader, which `just check-projects` runs there.
-$schema: https://raw.githubusercontent.com/purview-dev/purview-dev/main/src/src/lib/manifest/schema.ts
+$schema: https://raw.githubusercontent.com/purview-dev/purview-dev.github.io/main/src/src/lib/manifest/schema.ts
 
 id: engineering-playbook
 name: Engineering Playbook
