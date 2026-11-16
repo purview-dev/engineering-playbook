@@ -20,7 +20,7 @@ any row — a family that multi-targets changes its floors on every release.
 | Value Objects | `Purview.ValueObjects` | `net8.0`, `net9.0`, `net10.0`, `net11.0` | nothing |
 | Source Generator Framework | `Purview.SourceGeneratorFramework`, `.Testing`, `.Testing.TUnit` | `netstandard2.0` | Roslyn (`Microsoft.CodeAnalysis.CSharp`), `System.Collections.Immutable`, `System.Reflection.Metadata` |
 | Aspire ResourceKit | `Purview.Aspire.ResourceKit` | `net8.0`, `net9.0`, `net10.0` | `Aspire.Hosting`, OpenTelemetry exporter and hosting, `Microsoft.Extensions.*` |
-| Astroc4 | `@purview-dev/astroc4` (npm, not NuGet) | an Astro/Starlight plugin | `likec4`, `@astrojs/starlight`, `astro` as peers |
+| AstroC4 | `@purview-dev/astroc4` (npm, not NuGet) | an Astro/Starlight plugin | `likec4`, `@astrojs/starlight`, `astro` as peers |
 
 ## Reading the shape
 
