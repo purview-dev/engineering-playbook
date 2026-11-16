@@ -8,6 +8,8 @@ coding agents are enabled to work in a codebase without hand-holding.
 > conventions themselves, ready-to-copy templates, and a small in-repo reference implementation whose
 > only job is to prove the conventions compile, run, and fail when they should.
 
+**Documentation:** [Engineering Playbook documentation](https://purview.dev/docs/engineering-playbook/)
+
 ## What's inside
 
 | Area | Question it answers |
